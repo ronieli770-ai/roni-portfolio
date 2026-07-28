@@ -268,8 +268,10 @@ function DesktopCanvas() {
         </h1>
       </Box>
 
-      <Box x={333} y={321} w={1062} h={796} className="pointer-events-none">
-        <img src="/assets/rocket.png" alt="" className="h-full w-full object-contain" />
+      {/* Figma node is 1062×796 holding the 2124² source at 50%, top-aligned —
+          so the exhaust plume is clipped by the frame bottom, as in the comp. */}
+      <Box x={333} y={321} w={1062} h={796} className="overflow-hidden pointer-events-none">
+        <img src="/assets/rocket.png" alt="" className="block w-full" />
       </Box>
 
       <Box x={1107} y={823} w={583} h={253} className={glass} />
