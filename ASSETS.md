@@ -10,7 +10,7 @@
 | שם הקובץ | שכבה בפיגמה | גודל בעיצוב (px) |
 |---|---|---|
 | `logo.png` | `Artboard 1 copy@2x 1` | 170 × 64 |
-| `rocket.png` | `pngtree-space-rocket-launch-png-image_14610177 1` | 1062 × 796 |
+| `rocket.webp` | `pngtree-space-rocket-launch-png-image_14610177 1` | 554 × 698 (חתוך מראש) |
 | `mars-dome.png` | `מראס שיעבוד 1` | 1067 × 577 |
 | `planet-saturn.png` | `17ac2c68-efd2-44d1-a0f2-72f5e3367264 1` | 398 × 698 — נחתך בכוונה בקצה הימני |
 | `planet-earth.png` | `72db65bc-bf7f-496b-94be-b4dd72a70b68 1` | 326 × 440 |

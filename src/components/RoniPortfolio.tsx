@@ -268,10 +268,12 @@ function DesktopCanvas() {
         </h1>
       </Box>
 
-      {/* Figma node is 1062×796 holding the 2124² source at 50%, top-aligned —
-          so the exhaust plume is clipped by the frame bottom, as in the comp. */}
-      <Box x={333} y={321} w={1062} h={796} className="overflow-hidden pointer-events-none">
-        <img src="/assets/rocket.png" alt="" className="block w-full" />
+      {/* Pre-cropped to what the Figma frame actually shows: the node is
+          1062×796 holding the 2124² source at 50%, so the plume was clipped at
+          the frame bottom and the transparent margins were never visible.
+          Baking that crop in cut the asset from 1896 KB to 171 KB. */}
+      <Box x={590} y={418} w={554} h={698} className="pointer-events-none">
+        <img src="/assets/rocket.webp" alt="" className="block h-full w-full" />
       </Box>
 
       <Box x={1107} y={823} w={583} h={253} className={glass} />
