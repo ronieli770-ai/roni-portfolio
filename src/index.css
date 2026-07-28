@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ---- core surface ------------------------------------------------ */
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+
+    /* ---- brand (Figma #e0783c -> #fa9154) ---------------------------- */
+    --brand: 22 73% 56%;
+    --brand-light: 22 94% 65%;
+    --brand-foreground: 0 0% 100%;
+
+    /* ---- display-type gradient start (Figma #8da8cb) ----------------- */
+    --heading-from: 214 37% 67%;
+
+    /* ---- ambient glows ---------------------------------------------- */
+    --glow-blue: 216 46% 32%;
+    --glow-warm: 26 62% 46%;
+    /* Figma: Ellipse fill #F7E1BA, Layer blur uniform 400. See .glow-cream-*. */
+    --glow-cream: 38 71% 85%;
+
+    /* ---- geometry (design px, kept as tokens so they stay editable) -- */
+    --card-radius: 20px;
+    --btn-radius: 10px;
+    --field-radius: 5px;
+    --glass-blur: 42.3px;
+
+    /* shadcn compatibility aliases */
+    --primary: var(--brand);
+    --primary-foreground: var(--brand-foreground);
+    --border: 0 0% 100%;
+    --input: 0 0% 100%;
+    --ring: var(--brand-light);
+    --radius: 20px;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  /* The comp's glass panels: a 237° white sheen over a heavy blur. */
+  /* Safari needs an explicit transparent text fill for background-clip:text. */
+  .text-gradient-fill {
+    -webkit-text-fill-color: transparent;
+  }
+
+  .bg-glass {
+    background-image: linear-gradient(
+      237.5deg,
+      rgb(255 255 255 / 0) 12.5%,
+      rgb(255 255 255 / 0.2) 87.5%
+    );
+  }
+
+  /* Ambient light sources. Radii come from the element box, so these are
+     dropped straight onto an absolutely-positioned Box of the right size. */
+  .glow-blue {
+    background: radial-gradient(
+      closest-side,
+      hsl(var(--glow-blue) / 0.95),
+      hsl(var(--glow-blue) / 0.55) 45%,
+      hsl(var(--glow-blue) / 0) 78%
+    );
+    filter: blur(60px);
+    pointer-events: none;
+  }
+
+  /* ---------------------------------------------------------------------
+     The cream halo behind the orange planet.
+
+     Figma: an ellipse filled #F7E1BA at 100%, with Layer blur uniform 400.
+     Implemented here as the *analytic result* of that blur rather than as
+     `filter: blur(400px)` on a solid ellipse. The two are the same pixels —
+     the stop alphas below are the Gaussian-blurred ellipse profile sampled
+     numerically, and the half-max radii set the gradient's extent — but a
+     400px filter region on an element this large gets clipped by the
+     compositor, which produced a hard horizontal seam across the section.
+     A gradient has no filter region, so it can't tear, and costs nothing.
+
+     Peak alpha .396 / .376 is where blur(400) lands a solid fill: the source
+     ellipses (1042×673, 1147×589) are smaller than the blur radius, so the
+     centre washes out to ~40%. That matches the Figma render's measured
+     rgb(124,105,84) once both ellipses composite.
+
+     Box geometry is the blurred extent, not the source ellipse:
+       Ellipse 3  1042×673 @ (278,1627)  ->  3099×2829 @ (-751,549)
+       Ellipse 4  1147×589 @ (298,1866)  ->  3224×2829 @ (-740,746)
+     --------------------------------------------------------------------- */
+  .glow-cream-a,
+  .glow-cream-b {
+    pointer-events: none;
+  }
+
+  .glow-cream-a {
+    background: radial-gradient(
+      closest-side,
+      rgb(247 225 186 / 0.396) 0%,
+      rgb(247 225 186 / 0.384) 7.7%,
+      rgb(247 225 186 / 0.353) 15.4%,
+      rgb(247 225 186 / 0.31) 23.1%,
+      rgb(247 225 186 / 0.255) 30.8%,
+      rgb(247 225 186 / 0.196) 38.5%,
+      rgb(247 225 186 / 0.145) 46.2%,
+      rgb(247 225 186 / 0.078) 57.7%,
+      rgb(247 225 186 / 0.035) 69.2%,
+      rgb(247 225 186 / 0.008) 84.6%,
+      rgb(247 225 186 / 0) 100%
+    );
+  }
+
+  .glow-cream-b {
+    background: radial-gradient(
+      closest-side,
+      rgb(247 225 186 / 0.376) 0%,
+      rgb(247 225 186 / 0.365) 7.7%,
+      rgb(247 225 186 / 0.337) 15.4%,
+      rgb(247 225 186 / 0.29) 23.1%,
+      rgb(247 225 186 / 0.239) 30.8%,
+      rgb(247 225 186 / 0.184) 38.5%,
+      rgb(247 225 186 / 0.133) 46.2%,
+      rgb(247 225 186 / 0.071) 57.7%,
+      rgb(247 225 186 / 0.031) 69.2%,
+      rgb(247 225 186 / 0.008) 84.6%,
+      rgb(247 225 186 / 0) 100%
+    );
+  }
+
+  .glow-warm {
+    background: radial-gradient(
+      closest-side,
+      hsl(var(--glow-warm) / 0.9),
+      hsl(var(--glow-warm) / 0.45) 45%,
+      hsl(var(--glow-warm) / 0) 78%
+    );
+    filter: blur(70px);
+    pointer-events: none;
+  }
+
+  /* Full-bleed warm band behind the portfolio mock-ups. */
+  .glow-band {
+    background: radial-gradient(
+      38% 42% at 34% 46%,
+      hsl(var(--glow-warm) / 0.9),
+      hsl(var(--glow-warm) / 0.34) 52%,
+      hsl(var(--glow-warm) / 0) 100%
+    );
+    filter: blur(calc(40 * var(--u)));
+    pointer-events: none;
+  }
+
+  /* Mobile variants — same light, sized to the flow container. */
+  .glow-blue-m {
+    background: radial-gradient(120% 70% at 50% 0%, hsl(var(--glow-blue) / 0.55), transparent 70%);
+  }
+  .glow-warm-m {
+    background: radial-gradient(120% 70% at 20% 100%, hsl(var(--glow-warm) / 0.5), transparent 70%);
+  }
+}

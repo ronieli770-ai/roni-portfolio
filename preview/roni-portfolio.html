@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>סטודיו רוני — תצוגה מקדימה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:#000;overflow-x:hidden}
+body{font-family:"IBM Plex Sans Hebrew",system-ui,sans-serif;color:#fff;min-height:100dvh}
+:root{--glow-blur:400;--brand:#e0783c;--brand-light:#fa9154;--heading-from:#8da8cb;--glow-blue:#2c4a75;--glow-warm:#bd7530}
+.canvas{position:relative;width:100%;container-type:inline-size;--u:calc(100cqw / 1728);height:calc(8958 * var(--u));overflow:hidden;background:#000}
+.b{position:absolute}
+.fit,.fit-contain,.fit-cover{width:100%;height:100%;display:block}
+.fit-contain{object-fit:contain}
+.fit-cover{object-fit:cover}
+.clip{overflow:hidden}
+.center{text-align:center}.right{text-align:right}
+.w400{font-weight:400}.w500{font-weight:500}.w600{font-weight:600}.w700{font-weight:700}
+h1,h2,h3{font-weight:400}
+.grad{background-image:linear-gradient(to right,var(--heading-from),#fff);
+ -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.glass{border-radius:calc(20 * var(--u));border:1px solid rgba(255,255,255,0);
+ background-image:linear-gradient(237.5deg,rgba(255,255,255,0) 12.5%,rgba(255,255,255,.2) 87.5%);
+ -webkit-backdrop-filter:blur(calc(42.3 * var(--u)));backdrop-filter:blur(calc(42.3 * var(--u)))}
+.glow-blue{pointer-events:none;filter:blur(calc(60 * var(--u)));
+ background:radial-gradient(closest-side,rgba(44,74,117,.95),rgba(44,74,117,.55) 45%,rgba(44,74,117,0) 78%)}
+.glow-warm{pointer-events:none;filter:blur(calc(70 * var(--u)));
+ background:radial-gradient(closest-side,rgba(189,117,48,.9),rgba(189,117,48,.45) 45%,rgba(189,117,48,0) 78%)}
+.glow-cream-a,.glow-cream-b{pointer-events:none}
+.glow-cream-a{background:radial-gradient(closest-side,rgba(247,225,186,.396) 0%,rgba(247,225,186,.384) 7.7%,rgba(247,225,186,.353) 15.4%,rgba(247,225,186,.310) 23.1%,rgba(247,225,186,.255) 30.8%,rgba(247,225,186,.196) 38.5%,rgba(247,225,186,.145) 46.2%,rgba(247,225,186,.078) 57.7%,rgba(247,225,186,.035) 69.2%,rgba(247,225,186,.008) 84.6%,rgba(247,225,186,0) 100%)}
+.glow-cream-b{background:radial-gradient(closest-side,rgba(247,225,186,.376) 0%,rgba(247,225,186,.365) 7.7%,rgba(247,225,186,.337) 15.4%,rgba(247,225,186,.290) 23.1%,rgba(247,225,186,.239) 30.8%,rgba(247,225,186,.184) 38.5%,rgba(247,225,186,.133) 46.2%,rgba(247,225,186,.071) 57.7%,rgba(247,225,186,.031) 69.2%,rgba(247,225,186,.008) 84.6%,rgba(247,225,186,0) 100%)}
+.glow-band{pointer-events:none;filter:blur(calc(40 * var(--u)));background:radial-gradient(38% 42% at 34% 46%,rgba(189,117,48,.9),rgba(189,117,48,.34) 52%,rgba(189,117,48,0) 100%)}
+.burger span{position:absolute;background:#fff}
+.btn-fill,.btn-outline{width:100%;height:100%;display:grid;place-items:center;color:#fff;
+ font-family:inherit;font-weight:600;cursor:pointer;border-radius:calc(10 * var(--u))}
+.btn-fill{border:0;background:linear-gradient(to left,var(--brand),var(--brand-light))}
+.btn-fill:hover{filter:brightness(1.1)}
+.btn-outline{background:transparent;border:1px solid var(--brand)}
+.btn-outline:hover{background:rgba(224,120,60,.15)}
+.eyebrow{color:var(--brand-light)}
+.dot{position:absolute;border-radius:50%;border:2px solid #fff;background:rgba(255,255,255,.85)}
+.deck{pointer-events:none;background:linear-gradient(to bottom,#e9eaec,#b9bcc1 55%,#7e8288);
+ border-radius:0 0 calc(10 * var(--u)) calc(10 * var(--u));clip-path:polygon(1.5% 0,98.5% 0,100% 100%,0 100%)}
+.deck-hinge{position:absolute;left:50%;transform:translateX(-50%);top:0;background:#8d9197}
+.lid{pointer-events:none;background:#1b1c1e;box-shadow:0 0 0 1px rgba(255,255,255,.06)}
+.screen{position:absolute;background:#fff;overflow:hidden}
+.benefit{display:flex;flex-direction:column;align-items:center}
+.avatar{border-radius:50%;object-fit:cover;flex:none}
+.card-title{position:absolute;width:100%;padding:0 6%;text-align:center;color:#fff}
+.card-body{position:absolute;width:100%;padding:0 10%;text-align:center;color:#fff}
+
+.stack p+p{margin-top:1.4em}
+.galaxy-box{overflow:hidden;background:#000}
+#galaxy{width:100%;height:100%;display:block}
+.contact-row{display:flex;align-items:center;justify-content:flex-end;gap:3.2em}
+.contact-row a{display:flex;align-items:center;gap:.7em;color:#fff;text-decoration:none;font-weight:600}
+.contact-row a:hover{color:var(--brand-light)}
+.contact-row i{display:block;flex:none}
+.field{width:100%;height:100%;border:1px solid #fff;border-radius:calc(5 * var(--u));
+ background-image:linear-gradient(237.5deg,rgba(255,255,255,0) 12.5%,rgba(255,255,255,.2) 87.5%);
+ -webkit-backdrop-filter:blur(calc(42.3 * var(--u)));backdrop-filter:blur(calc(42.3 * var(--u)));
+ color:#fff;text-align:center;font-family:inherit;resize:none}
+.field::placeholder{color:#fff;opacity:1}
+.field:focus{outline:2px solid var(--brand-light);outline-offset:0}
+</style>
+</head>
+<body>
+<div class="canvas">
+<div class="b glow-blue" style="top:calc(152 * var(--u));left:calc(-302 * var(--u));width:calc(806 * var(--u));height:calc(806 * var(--u))"></div>
+<div class="b glow-blue" style="top:calc(-175 * var(--u));left:calc(1107 * var(--u));width:calc(806 * var(--u));height:calc(806 * var(--u))"></div>
+<div class="b glow-cream-a" style="top:calc(549 * var(--u));left:calc(-751 * var(--u));width:calc(3099 * var(--u));height:calc(2829 * var(--u))"></div>
+<div class="b glow-cream-b" style="top:calc(746 * var(--u));left:calc(-740 * var(--u));width:calc(3224 * var(--u));height:calc(2829 * var(--u))"></div>
+<div class="b glow-band" style="top:calc(2231 * var(--u));left:calc(0 * var(--u));width:calc(1728 * var(--u));height:calc(787 * var(--u))"></div>
+<div class="b glow-band" style="top:calc(4489 * var(--u));left:calc(0 * var(--u));width:calc(1728 * var(--u));height:calc(1467 * var(--u))"></div>
+<div class="b glow-blue" style="top:calc(5836 * var(--u));left:calc(666 * var(--u));width:calc(806 * var(--u));height:calc(806 * var(--u))"></div>
+<div class="b glow-warm" style="top:calc(8230 * var(--u));left:calc(-281 * var(--u));width:calc(892 * var(--u));height:calc(892 * var(--u))"></div>
+<div class="b " style="top:calc(44 * var(--u));left:calc(38 * var(--u));width:calc(170 * var(--u));height:calc(64 * var(--u))"><img src="../public/assets/logo.png" alt="סטודיו רוני" class="fit-contain"></div>
+<div class="b burger" style="top:calc(44 * var(--u));left:calc(1613 * var(--u));width:calc(77 * var(--u));height:calc(65 * var(--u))"><span style="left:0;top:calc(0.0 * var(--u));width:calc(34.5 * var(--u));height:calc(10.8 * var(--u))"></span><span style="left:0;top:calc(21.67 * var(--u));width:calc(34.5 * var(--u));height:calc(10.8 * var(--u))"></span><span style="left:0;top:calc(43.34 * var(--u));width:calc(34.5 * var(--u));height:calc(10.8 * var(--u))"></span><span style="left:calc(41.4 * var(--u));top:calc(10.8 * var(--u));width:calc(34.5 * var(--u));height:calc(10.8 * var(--u))"></span><span style="left:calc(41.4 * var(--u));top:calc(32.47 * var(--u));width:calc(34.5 * var(--u));height:calc(10.8 * var(--u))"></span><span style="left:calc(41.4 * var(--u));top:calc(54.14 * var(--u));width:calc(34.5 * var(--u));height:calc(10.8 * var(--u))"></span></div>
+<div class="b " style="top:calc(261 * var(--u));left:calc(152 * var(--u));width:calc(1424 * var(--u))"><h1 class="grad center" style="font-size:calc(120 * var(--u));line-height:.85"><span class="w400">אתרים שגורמים לעסק שלכם</span> <span class="w700">להיראות ראשון בתחום</span></h1></div>
+<div class="b " style="top:calc(321 * var(--u));left:calc(333 * var(--u));width:calc(1062 * var(--u));height:calc(796 * var(--u))"><img src="../public/assets/rocket.png" alt="" class="fit-contain"></div>
+<div class="b glass" style="top:calc(823 * var(--u));left:calc(1107 * var(--u));width:calc(583 * var(--u));height:calc(253 * var(--u))"></div>
+<div class="b " style="top:calc(860 * var(--u));left:calc(1131 * var(--u));width:calc(527 * var(--u))"><p class="right" style="font-size:calc(28 * var(--u))"><span class="w700">אני הופכת אתרים גנריים לחוויות דיגיטליות בסטנדרט פרימיום.</span><br>כאלה שיוצרים רושם מטורף מהשנייה הראשונה, שמים אתכם בטופ של התעשייה ומניעים את הגולשים לפעולה.</p></div>
+<div class="b " style="top:calc(1001 * var(--u));left:calc(38 * var(--u));width:calc(192 * var(--u));height:calc(72 * var(--u))"><button class="btn-outline" style="font-size:calc(24 * var(--u))">לתיק עבודות</button></div>
+<div class="b " style="top:calc(1001 * var(--u));left:calc(247 * var(--u));width:calc(192 * var(--u));height:calc(72 * var(--u))"><button class="btn-fill" style="font-size:calc(24 * var(--u))">בואו נדבר</button></div>
+<div class="b " style="top:calc(1276 * var(--u));left:calc(434 * var(--u));width:calc(861 * var(--u))"><h2 class="grad center" style="font-size:calc(80 * var(--u));line-height:.85"><span class="w400">למה לעבוד </span><span class="w600">דווקא איתי?</span></h2></div>
+<div class="b clip" style="top:calc(1657 * var(--u));left:calc(343 * var(--u));width:calc(1067 * var(--u));height:calc(577 * var(--u));border-radius:calc(533 * var(--u)) calc(533 * var(--u)) 0 0"><img src="../public/assets/mars-dome.png" alt="" class="fit-cover"></div>
+<div class="b " style="top:calc(1672 * var(--u));left:calc(1195 * var(--u));width:calc(250 * var(--u));height:calc(188 * var(--u))"><svg viewBox="0 0 250 188" fill="none" class="fit"><path d="M0 188 L250 0" stroke="rgba(255,255,255,.65)" stroke-width="3" stroke-dasharray="10 10"/><path d="M250 0 l-16 4 M250 0 l-4 16" stroke="rgba(255,255,255,.8)" stroke-width="3"/></svg><i class="dot" style="width:calc(34 * var(--u));height:calc(34 * var(--u));left:0;top:calc(100% - calc(17 * var(--u)))"></i></div>
+<div class="b " style="top:calc(1747 * var(--u));left:calc(745 * var(--u));width:calc(238 * var(--u));height:calc(248 * var(--u))"><svg viewBox="0 0 238 248" fill="none" class="fit"><path d="M119.0 248 L119.0 0" stroke="rgba(255,255,255,.65)" stroke-width="3" stroke-dasharray="10 10"/><path d="M119.0 0 l-11 16 M119.0 0 l11 16" stroke="rgba(255,255,255,.8)" stroke-width="3"/></svg><i class="dot" style="width:calc(34 * var(--u));height:calc(34 * var(--u));left:calc(50% - calc(17 * var(--u)));top:calc(100% - calc(17 * var(--u)))"></i></div>
+<div class="b " style="top:calc(1955 * var(--u));left:calc(554 * var(--u));width:calc(234 * var(--u));height:calc(207 * var(--u))"><svg viewBox="0 0 234 207" fill="none" class="fit"><path d="M234 207 L0 0" stroke="rgba(255,255,255,.65)" stroke-width="3" stroke-dasharray="10 10"/><path d="M0 0 l16 4 M0 0 l4 16" stroke="rgba(255,255,255,.8)" stroke-width="3"/></svg><i class="dot" style="width:calc(34 * var(--u));height:calc(34 * var(--u));left:calc(100% - calc(34 * var(--u)));top:calc(100% - calc(17 * var(--u)))"></i></div>
+<div class="b glass" style="top:calc(1486 * var(--u));left:calc(1238 * var(--u));width:calc(373 * var(--u));height:calc(159 * var(--u))"></div>
+<div class="b " style="top:calc(1508 * var(--u));left:calc(1254 * var(--u));width:calc(342 * var(--u))"><p class="right" style="font-size:calc(18 * var(--u))"><span class="w700">עיצוב פרימיום שיגרום להם להגיד וואו</span><br>לא עוד תבנית גנרית שכולם מכירים. כל פרויקט מקבל שפה ויזואלית ייחודית, קומפוזיציה מדויקת ותשומת לב לכל פיקסל - כזה שגורם לגולשים להבין מיד שאתם בטופ.</p></div>
+<div class="b glass" style="top:calc(1396 * var(--u));left:calc(621 * var(--u));width:calc(373 * var(--u));height:calc(159 * var(--u))"></div>
+<div class="b " style="top:calc(1430 * var(--u));left:calc(637 * var(--u));width:calc(342 * var(--u))"><p class="right" style="font-size:calc(18 * var(--u))"><span class="w700">מצוינות טכנולוגית ומעטפת מלאה</span><br>מאפיון מדויק, דרך סקיצה ייחודית ועד פיתוח חלק ומהיר. אתם מקבלים אתר מתקדם, עמיד ומרשים שנראה ופועל בקדמת הטכנולוגיה.</p></div>
+<div class="b glass" style="top:calc(1565 * var(--u));left:calc(117 * var(--u));width:calc(373 * var(--u));height:calc(159 * var(--u))"></div>
+<div class="b " style="top:calc(1587 * var(--u));left:calc(149 * var(--u));width:calc(310 * var(--u))"><p class="right" style="font-size:calc(18 * var(--u))"><span class="w700">חוויה אינטראקטיבית שמניעה לפעולה</span><br>אתר יפה זה לא מספיק. שילוב של אנימציות דינמיות, מיקרו-אינטראקציות וקופי מדויק שמחזיקים את המשתמש עד התחתית - וגורמים לו להשאיר פרטים.</p></div>
+<div class="b " style="top:calc(2323 * var(--u));left:calc(1330 * var(--u));width:calc(398 * var(--u));height:calc(698 * var(--u))"><img src="../public/assets/planet-saturn.png" alt="" class="fit"></div>
+<div class="b " style="top:calc(3420 * var(--u));left:calc(0 * var(--u));width:calc(326 * var(--u));height:calc(440 * var(--u))"><img src="../public/assets/planet-earth.png" alt="" class="fit-contain"></div>
+<div class="b " style="top:calc(4543 * var(--u));left:calc(1376 * var(--u));width:calc(352 * var(--u));height:calc(414 * var(--u))"><img src="../public/assets/planet-teal.png" alt="" class="fit-contain"></div>
+<div class="b deck" style="top:calc(3130 * var(--u));left:calc(40 * var(--u));width:calc(1057 * var(--u));height:calc(34 * var(--u))"><i class="deck-hinge" style="width:calc(150 * var(--u));height:calc(4 * var(--u));border-radius:calc(4 * var(--u))"></i></div>
+<div class="b lid" style="top:calc(2490 * var(--u));left:calc(86 * var(--u));width:calc(963 * var(--u));height:calc(630 * var(--u));border-radius:calc(16 * var(--u))"><div class="screen" style="inset:calc(27 * var(--u)) calc(24 * var(--u));border-radius:calc(3 * var(--u))"></div></div>
+<div class="b " style="top:calc(2752 * var(--u));right:calc(117 * var(--u));width:calc(260 * var(--u))"><p class="right eyebrow" style="font-size:calc(18 * var(--u))">Business name</p></div>
+<div class="b " style="top:calc(2782 * var(--u));right:calc(117 * var(--u));width:calc(342 * var(--u))"><h3 class="grad right" style="font-size:calc(60 * var(--u));line-height:.93">אתר / דף נחיתה</h3></div>
+<div class="b " style="top:calc(2917 * var(--u));right:calc(117 * var(--u));width:calc(349 * var(--u))"><p class="right" style="font-size:calc(16 * var(--u))"><span class="w700">עיצוב פרימיום שיגרום להם להגיד וואו</span><br>לא עוד תבנית גנרית שכולם מכירים. כל פרויקט מקבל שפה ויזואלית ייחודית, קומפוזיציה מדויקת ותשומת לב לכל פיקסל - כזה שגורם לגולשים להבין מיד שאתם בטופ.</p></div>
+<div class="b " style="top:calc(3047 * var(--u));right:calc(117 * var(--u));width:calc(280 * var(--u));height:calc(65 * var(--u))"><button class="btn-fill" style="font-size:calc(24 * var(--u))">למעבר לפרוייקט</button></div>
+<div class="b deck" style="top:calc(4256 * var(--u));left:calc(616 * var(--u));width:calc(1057 * var(--u));height:calc(34 * var(--u))"><i class="deck-hinge" style="width:calc(150 * var(--u));height:calc(4 * var(--u));border-radius:calc(4 * var(--u))"></i></div>
+<div class="b lid" style="top:calc(3616 * var(--u));left:calc(662 * var(--u));width:calc(963 * var(--u));height:calc(630 * var(--u));border-radius:calc(16 * var(--u))"><div class="screen" style="inset:calc(27 * var(--u)) calc(24 * var(--u));border-radius:calc(3 * var(--u))"></div></div>
+<div class="b " style="top:calc(3877 * var(--u));right:calc(1321 * var(--u));width:calc(260 * var(--u))"><p class="right eyebrow" style="font-size:calc(18 * var(--u))">Business name</p></div>
+<div class="b " style="top:calc(3907 * var(--u));right:calc(1321 * var(--u));width:calc(342 * var(--u))"><h3 class="grad right" style="font-size:calc(60 * var(--u));line-height:.93">אתר / דף נחיתה</h3></div>
+<div class="b " style="top:calc(4042 * var(--u));right:calc(1321 * var(--u));width:calc(349 * var(--u))"><p class="right" style="font-size:calc(16 * var(--u))"><span class="w700">עיצוב פרימיום שיגרום להם להגיד וואו</span><br>לא עוד תבנית גנרית שכולם מכירים. כל פרויקט מקבל שפה ויזואלית ייחודית, קומפוזיציה מדויקת ותשומת לב לכל פיקסל - כזה שגורם לגולשים להבין מיד שאתם בטופ.</p></div>
+<div class="b " style="top:calc(4172 * var(--u));right:calc(1321 * var(--u));width:calc(280 * var(--u));height:calc(65 * var(--u))"><button class="btn-fill" style="font-size:calc(24 * var(--u))">למעבר לפרוייקט</button></div>
+<div class="b deck" style="top:calc(5397 * var(--u));left:calc(40 * var(--u));width:calc(1057 * var(--u));height:calc(34 * var(--u))"><i class="deck-hinge" style="width:calc(150 * var(--u));height:calc(4 * var(--u));border-radius:calc(4 * var(--u))"></i></div>
+<div class="b lid" style="top:calc(4757 * var(--u));left:calc(86 * var(--u));width:calc(963 * var(--u));height:calc(630 * var(--u));border-radius:calc(16 * var(--u))"><div class="screen" style="inset:calc(27 * var(--u)) calc(24 * var(--u));border-radius:calc(3 * var(--u))"></div></div>
+<div class="b " style="top:calc(5019 * var(--u));right:calc(117 * var(--u));width:calc(260 * var(--u))"><p class="right eyebrow" style="font-size:calc(18 * var(--u))">Business name</p></div>
+<div class="b " style="top:calc(5049 * var(--u));right:calc(117 * var(--u));width:calc(342 * var(--u))"><h3 class="grad right" style="font-size:calc(60 * var(--u));line-height:.93">אתר / דף נחיתה</h3></div>
+<div class="b " style="top:calc(5185 * var(--u));right:calc(117 * var(--u));width:calc(349 * var(--u))"><p class="right" style="font-size:calc(16 * var(--u))"><span class="w700">עיצוב פרימיום שיגרום להם להגיד וואו</span><br>לא עוד תבנית גנרית שכולם מכירים. כל פרויקט מקבל שפה ויזואלית ייחודית, קומפוזיציה מדויקת ותשומת לב לכל פיקסל - כזה שגורם לגולשים להבין מיד שאתם בטופ.</p></div>
+<div class="b " style="top:calc(5314 * var(--u));right:calc(117 * var(--u));width:calc(280 * var(--u));height:calc(65 * var(--u))"><button class="btn-fill" style="font-size:calc(24 * var(--u))">למעבר לפרוייקט</button></div>
+<div class="b " style="top:calc(5724 * var(--u));left:calc(434 * var(--u));width:calc(861 * var(--u))"><h2 class="grad center" style="font-size:calc(80 * var(--u));line-height:.85"><span class="w400">למה אתם צריכים </span><span class="w600">את זה?</span></h2></div>
+<div class="b glass benefit" style="top:calc(5960.5 * var(--u));left:calc(80.30000000000001 * var(--u));width:calc(463 * var(--u));height:calc(635 * var(--u));transform:rotate(-3deg)"><img src="../public/assets/avatar-1.png" alt="" class="avatar" style="width:calc(215 * var(--u));height:calc(215 * var(--u));margin-top:calc(33 * var(--u))"><h3 class="card-title" style="top:calc(316.0 * var(--u));font-size:calc(60 * var(--u));line-height:.97">בולטות מול המתחרים</h3><p class="card-body" style="top:calc(450.0 * var(--u));font-size:calc(18 * var(--u))">רוב האתרים בשוק נראים אותו דבר ונשכחים שנייה אחרי שסוגרים את הלשונית. אתר דינמי עם שפה ויזואלית ייחודית מייצר אימפקט שאי אפשר להתעלם ממנו.</p></div>
+<div class="b glass benefit" style="top:calc(5923.0 * var(--u));left:calc(592.0 * var(--u));width:calc(545 * var(--u));height:calc(662 * var(--u))"><img src="../public/assets/avatar-2.png" alt="" class="avatar" style="width:calc(242 * var(--u));height:calc(242 * var(--u));margin-top:calc(33 * var(--u))"><h3 class="card-title" style="top:calc(302.5 * var(--u));font-size:calc(60 * var(--u));line-height:.97">אמון והמרה מהירה</h3><p class="card-body" style="top:calc(436.5 * var(--u));font-size:calc(18 * var(--u))">כשגולש נכנס לאתר חווייתי, זורם ומרשים, רמת האמון שלו מזנקת בשניות. הוא לא רק מסתכל, הוא מבין עם מי יש לו עסק ומשאיר פרטים בביטחון מלא.</p></div>
+<div class="b glass benefit" style="top:calc(5936.5 * var(--u));left:calc(1221.5 * var(--u));width:calc(455 * var(--u));height:calc(635 * var(--u));transform:rotate(3.5deg)"><img src="../public/assets/avatar-3.png" alt="" class="avatar" style="width:calc(230 * var(--u));height:calc(230 * var(--u));margin-top:calc(33 * var(--u))"><h3 class="card-title" style="top:calc(316.0 * var(--u));font-size:calc(60 * var(--u));line-height:.97">מיצוי הפוטנציאל והעלאת מחירים</h3><p class="card-body" style="top:calc(450.0 * var(--u));font-size:calc(18 * var(--u))">לקוחות משלמים יותר למותגים שנראים כמו הtop של התעשייה. אתר מעוצב בסטנדרט פרימיום מייצר אוטוריטה מיידית ומאפשר לכם לגבות את המחיר שבאמת מגיע לכם.</p></div>
+<div class="b galaxy-box" style="top:calc(6719 * var(--u));left:calc(-256 * var(--u));width:calc(2001 * var(--u));height:calc(1122 * var(--u))"><canvas id="galaxy"></canvas></div>
+<div class="b " style="top:calc(6790 * var(--u));left:calc(10 * var(--u));width:calc(990 * var(--u));height:calc(1010 * var(--u))"><img src="../public/assets/astronaut-float.png" alt="" class="fit-contain"></div>
+<div class="b " style="top:calc(6866 * var(--u));right:calc(155 * var(--u));width:calc(738 * var(--u))"><h2 class="grad right" style="font-size:calc(80 * var(--u));line-height:calc(77 * var(--u))">נעים להכיר,<br>רוני אליהו</h2></div>
+<div class="b " style="top:calc(7065 * var(--u));right:calc(156 * var(--u));width:calc(562 * var(--u))"><div class="right stack" style="font-size:calc(32 * var(--u))"><p class="w600">כשאנשים מגיעים לאתר שלכם, יש לכם בדיוק 3 שניות להוכיח להם שהם הגיעו למקום הנכון.</p><p>המטרה שלי היא לקחת עסקים מעולים ולהעניק להם נוכחות דיגיטלית בסטנדרט הגבוה ביותר. כל פרויקט אצלי נבנה מאפס מתוך שילוב של סטוריטלינג ויזואלי סוחף, אנימציות דינמיות ותשומת לב לכל פיקסל.</p><p>כשעיצוב חדשני פוגש חשיבה חדה, התוצאה היא אתר עוצמתי מעורר השראה, כזה שגורם לכל לקוח מתעניין להבין מיד שאתם הבחירה הנכונה.</p></div></div>
+<div class="b " style="top:calc(7926 * var(--u));right:calc(58 * var(--u));width:calc(738 * var(--u))"><h2 class="grad right" style="font-size:calc(80 * var(--u));line-height:calc(77 * var(--u))">מוכנים להמריא?</h2></div>
+<div class="b " style="top:calc(8040 * var(--u));right:calc(58 * var(--u));width:calc(700 * var(--u))"><div class="contact-row" style="font-size:calc(24 * var(--u))"><a href="mailto:ronieli770@gmail.com"><span dir="ltr">ronieli770@gmail.com</span><i style="width:calc(36 * var(--u));height:calc(36 * var(--u))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg></i></a><a href="tel:050-2463500"><span dir="ltr">050-2463500</span><i style="width:calc(36 * var(--u));height:calc(36 * var(--u))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.5-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.6 2.6.7a2 2 0 0 1 1.7 2Z"/></svg></i></a></div></div>
+<div class="b " style="top:calc(8189 * var(--u));left:calc(1150 * var(--u));width:calc(578 * var(--u));height:calc(769 * var(--u))"><img src="../public/assets/astronaut-moon.png" alt="" class="fit-contain"></div>
+<div class="b glass" style="top:calc(8189 * var(--u));left:calc(58 * var(--u));width:calc(816 * var(--u));height:calc(699 * var(--u))"></div>
+<div class="b " style="top:calc(8249 * var(--u));left:calc(139 * var(--u));width:calc(654 * var(--u))"><p class="grad center w500" style="font-size:calc(45 * var(--u));line-height:calc(52 * var(--u))">השאירו פרטים קצרים ונתחיל לבנות את האתר שישים אתכם בטופ.</p></div>
+<div class="b " style="top:calc(8402 * var(--u));left:calc(139 * var(--u));width:calc(319 * var(--u));height:calc(50 * var(--u))"><input class="field" placeholder="טלפון" style="font-size:calc(18 * var(--u))"></div>
+<div class="b " style="top:calc(8402 * var(--u));left:calc(474 * var(--u));width:calc(319 * var(--u));height:calc(50 * var(--u))"><input class="field" placeholder="שם מלא" style="font-size:calc(18 * var(--u))"></div>
+<div class="b " style="top:calc(8466 * var(--u));left:calc(139 * var(--u));width:calc(653 * var(--u));height:calc(50 * var(--u))"><input class="field" placeholder="שם העסק או לינק לאתר קיים (רשות)" style="font-size:calc(18 * var(--u))"></div>
+<div class="b " style="top:calc(8530 * var(--u));left:calc(139 * var(--u));width:calc(653 * var(--u));height:calc(155 * var(--u))"><textarea class="field" placeholder="מה תחום העסק שלכם?" style="font-size:calc(18 * var(--u));padding:calc(16 * var(--u)) calc(18 * var(--u))"></textarea></div>
+<div class="b " style="top:calc(8699 * var(--u));left:calc(139 * var(--u));width:calc(653 * var(--u));height:calc(50 * var(--u))"><input class="field" placeholder="מה היעד המרכזי של האתר?" style="font-size:calc(18 * var(--u))"></div>
+<div class="b " style="top:calc(8763 * var(--u));left:calc(139 * var(--u));width:calc(654 * var(--u));height:calc(65 * var(--u))"><button class="btn-fill" style="font-size:calc(24 * var(--u))">שגרו את הטופס 🚀</button></div>
+</div>
+
+<script>
+/* Galaxy — React Bits. Same fragment shader as src/components/Galaxy.jsx,
+   driven by plain WebGL here so the static preview needs no React or ogl. */
+(function () {
+  var cv = document.getElementById('galaxy');
+  var gl = cv.getContext('webgl', { alpha: true, premultipliedAlpha: false });
+  if (!gl) return;
+
+  var VERT = 'attribute vec2 position;varying vec2 vUv;' +
+    'void main(){vUv=position*0.5+0.5;gl_Position=vec4(position,0,1);}';
+
+  var FRAG = `precision highp float;
+uniform float uTime;uniform vec3 uResolution;uniform vec2 uFocal;uniform vec2 uRotation;
+uniform float uStarSpeed;uniform float uDensity;uniform float uHueShift;uniform float uSpeed;
+uniform vec2 uMouse;uniform float uGlowIntensity;uniform float uSaturation;uniform bool uMouseRepulsion;
+uniform float uTwinkleIntensity;uniform float uRotationSpeed;uniform float uRepulsionStrength;
+uniform float uMouseActiveFactor;uniform float uAutoCenterRepulsion;uniform bool uTransparent;
+varying vec2 vUv;
+#define NUM_LAYER 4.0
+#define STAR_COLOR_CUTOFF 0.2
+#define MAT45 mat2(0.7071,-0.7071,0.7071,0.7071)
+#define PERIOD 3.0
+float Hash21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+float tri(float x){return abs(fract(x)*2.0-1.0);}
+float tris(float x){float t=fract(x);return 1.0-smoothstep(0.0,1.0,abs(2.0*t-1.0));}
+float trisn(float x){float t=fract(x);return 2.0*(1.0-smoothstep(0.0,1.0,abs(2.0*t-1.0)))-1.0;}
+vec3 hsv2rgb(vec3 c){vec4 K=vec4(1.0,2.0/3.0,1.0/3.0,3.0);
+ vec3 p=abs(fract(c.xxx+K.xyz)*6.0-K.www);return c.z*mix(K.xxx,clamp(p-K.xxx,0.0,1.0),c.y);}
+float Star(vec2 uv,float flare){float d=length(uv);float m=(0.05*uGlowIntensity)/d;
+ float rays=smoothstep(0.0,1.0,1.0-abs(uv.x*uv.y*1000.0));m+=rays*flare*uGlowIntensity;uv*=MAT45;
+ rays=smoothstep(0.0,1.0,1.0-abs(uv.x*uv.y*1000.0));m+=rays*0.3*flare*uGlowIntensity;
+ m*=smoothstep(1.0,0.2,d);return m;}
+vec3 StarLayer(vec2 uv){vec3 col=vec3(0.0);vec2 gv=fract(uv)-0.5;vec2 id=floor(uv);
+ for(int y=-1;y<=1;y++){for(int x=-1;x<=1;x++){
+  vec2 offset=vec2(float(x),float(y));vec2 si=id+vec2(float(x),float(y));
+  float seed=Hash21(si);float size=fract(seed*345.32);
+  float glossLocal=tri(uStarSpeed/(PERIOD*seed+1.0));
+  float flareSize=smoothstep(0.9,1.0,size)*glossLocal;
+  float red=smoothstep(STAR_COLOR_CUTOFF,1.0,Hash21(si+1.0))+STAR_COLOR_CUTOFF;
+  float blu=smoothstep(STAR_COLOR_CUTOFF,1.0,Hash21(si+3.0))+STAR_COLOR_CUTOFF;
+  float grn=min(red,blu)*seed;vec3 base=vec3(red,grn,blu);
+  float hue=atan(base.g-base.r,base.b-base.r)/(2.0*3.14159)+0.5;
+  hue=fract(hue+uHueShift/360.0);
+  float sat=length(base-vec3(dot(base,vec3(0.299,0.587,0.114))))*uSaturation;
+  float val=max(max(base.r,base.g),base.b);base=hsv2rgb(vec3(hue,sat,val));
+  vec2 pad=vec2(tris(seed*34.0+uTime*uSpeed/10.0),tris(seed*38.0+uTime*uSpeed/30.0))-0.5;
+  float star=Star(gv-offset-pad,flareSize);vec3 color=base;
+  float twinkle=trisn(uTime*uSpeed+seed*6.2831)*0.5+1.0;
+  twinkle=mix(1.0,twinkle,uTwinkleIntensity);star*=twinkle;
+  col+=star*size*color;}}
+ return col;}
+void main(){vec2 focalPx=uFocal*uResolution.xy;vec2 uv=(vUv*uResolution.xy-focalPx)/uResolution.y;
+ vec2 mouseNorm=uMouse-vec2(0.5);
+ if(uAutoCenterRepulsion>0.0){vec2 c=vec2(0.0);float d=length(uv-c);
+  uv+=normalize(uv-c)*(uAutoCenterRepulsion/(d+0.1))*0.05;}
+ else if(uMouseRepulsion){vec2 mp=(uMouse*uResolution.xy-focalPx)/uResolution.y;
+  float d=length(uv-mp);uv+=normalize(uv-mp)*(uRepulsionStrength/(d+0.1))*0.05*uMouseActiveFactor;}
+ else{uv+=mouseNorm*0.1*uMouseActiveFactor;}
+ float a=uTime*uRotationSpeed;uv=mat2(cos(a),-sin(a),sin(a),cos(a))*uv;
+ uv=mat2(uRotation.x,-uRotation.y,uRotation.y,uRotation.x)*uv;
+ vec3 col=vec3(0.0);
+ for(float i=0.0;i<1.0;i+=1.0/NUM_LAYER){float depth=fract(i+uStarSpeed*uSpeed);
+  float scale=mix(20.0*uDensity,0.5*uDensity,depth);float fade=depth*smoothstep(1.0,0.9,depth);
+  col+=StarLayer(uv*scale+i*453.32)*fade;}
+ if(uTransparent){float al=min(smoothstep(0.0,0.3,length(col)),1.0);gl_FragColor=vec4(col,al);}
+ else{gl_FragColor=vec4(col,1.0);}}`;
+
+  function sh(type, src) {
+    var s = gl.createShader(type);
+    gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.error(gl.getShaderInfoLog(s)); return null; }
+    return s;
+  }
+  var prog = gl.createProgram();
+  gl.attachShader(prog, sh(gl.VERTEX_SHADER, VERT));
+  gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FRAG));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { console.error(gl.getProgramInfoLog(prog)); return; }
+  gl.useProgram(prog);
+
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+  var loc = gl.getAttribLocation(prog, 'position');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.clearColor(0, 0, 0, 0);
+
+  var U = {};
+  ['uTime','uResolution','uFocal','uRotation','uStarSpeed','uDensity','uHueShift','uSpeed',
+   'uMouse','uGlowIntensity','uSaturation','uMouseRepulsion','uTwinkleIntensity','uRotationSpeed',
+   'uRepulsionStrength','uMouseActiveFactor','uAutoCenterRepulsion','uTransparent']
+    .forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+
+  /* same prop values as <Galaxy /> in RoniPortfolio.tsx */
+  var P = { density: 1.1, hueShift: 220, saturation: 0.25, glowIntensity: 0.35,
+            twinkleIntensity: 0.35, starSpeed: 0.35, rotationSpeed: 0.04,
+            repulsionStrength: 1.6, speed: 1.0 };
+
+  gl.uniform2f(U.uFocal, 0.5, 0.5);
+  gl.uniform2f(U.uRotation, 1.0, 0.0);
+  gl.uniform1f(U.uDensity, P.density);
+  gl.uniform1f(U.uHueShift, P.hueShift);
+  gl.uniform1f(U.uSaturation, P.saturation);
+  gl.uniform1f(U.uGlowIntensity, P.glowIntensity);
+  gl.uniform1f(U.uTwinkleIntensity, P.twinkleIntensity);
+  gl.uniform1f(U.uRotationSpeed, P.rotationSpeed);
+  gl.uniform1f(U.uRepulsionStrength, P.repulsionStrength);
+  gl.uniform1f(U.uSpeed, P.speed);
+  gl.uniform1i(U.uMouseRepulsion, 1);
+  gl.uniform1f(U.uAutoCenterRepulsion, 0.0);
+  gl.uniform1i(U.uTransparent, 1);
+
+  function resize() {
+    var w = cv.clientWidth, h = cv.clientHeight;
+    if (!w || !h) return;
+    cv.width = w; cv.height = h;
+    gl.viewport(0, 0, w, h);
+    gl.uniform3f(U.uResolution, w, h, w / h);
+  }
+  addEventListener('resize', resize); resize();
+
+  var tgt = { x: 0.5, y: 0.5 }, cur = { x: 0.5, y: 0.5 }, tgtA = 0, curA = 0;
+  cv.addEventListener('mousemove', function (e) {
+    var r = cv.getBoundingClientRect();
+    tgt.x = (e.clientX - r.left) / r.width;
+    tgt.y = 1 - (e.clientY - r.top) / r.height;
+    tgtA = 1;
+  });
+  cv.addEventListener('mouseleave', function () { tgtA = 0; });
+
+  /* pause when scrolled away so the page stays cheap */
+  var visible = true;
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { visible = es[0].isIntersecting; },
+      { rootMargin: '200px' }).observe(cv);
+  }
+
+  function frame(t) {
+    requestAnimationFrame(frame);
+    if (!visible) return;
+    if (!cv.width || cv.width !== cv.clientWidth) resize();
+    cur.x += (tgt.x - cur.x) * 0.05;
+    cur.y += (tgt.y - cur.y) * 0.05;
+    curA += (tgtA - curA) * 0.05;
+    gl.uniform1f(U.uTime, t * 0.001);
+    gl.uniform1f(U.uStarSpeed, (t * 0.001 * P.starSpeed) / 10.0);
+    gl.uniform2f(U.uMouse, cur.x, cur.y);
+    gl.uniform1f(U.uMouseActiveFactor, curA);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

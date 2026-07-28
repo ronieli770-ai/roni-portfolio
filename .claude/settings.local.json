@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__1614e983-3640-4260-8583-5a904605b8f7__get_screenshot",
+      "mcp__1614e983-3640-4260-8583-5a904605b8f7__get_metadata",
+      "Bash(curl -sL -o full.png \"https://www.figma.com/api/mcp/asset/23191ccd-cad4-42d9-b301-9c1d7b48653c\")",
+      "mcp__1614e983-3640-4260-8583-5a904605b8f7__get_variable_defs",
+      "Bash(curl -sL -o hi.png \"https://www.figma.com/api/mcp/asset/156f8996-d909-494a-bb16-a2e7dca6e8ff\")",
+      "Bash(sips -g pixelWidth -g pixelHeight hi.png)",
+      "Bash(python3 -c ' *)",
+      "Bash(sips -c 1000 1728 --cropOffset 1 0 hi.png --out slice_0.png)",
+      "mcp__1614e983-3640-4260-8583-5a904605b8f7__read_skill_uri",
+      "Bash(sips -c 1000 1728 --cropOffset 7958 0 hi.png --out slice_last.png)",
+      "Bash(sips -c 700 1000 --cropOffset 6800 728 hi.png --out slice_about.png)",
+      "mcp__1614e983-3640-4260-8583-5a904605b8f7__get_design_context",
+      "mcp__1614e983-3640-4260-8583-5a904605b8f7__download_assets",
+      "Bash(curl -sL -o logo.png \"https://www.figma.com/api/mcp/asset/b10f6f1a-0385-497d-8425-fb8df078d413\")",
+      "Bash(curl -sL -o avatar2.png \"https://www.figma.com/api/mcp/asset/213e7976-27c7-42f6-9511-8ee90d189931\")",
+      "Bash(sips -g pixelWidth -g pixelHeight -g hasAlpha logo.png avatar2.png)",
+      "Bash(python3 -m pip install --user --quiet pillow)",
+      "Bash(python3 -c \"import PIL; print\\('PIL ok', PIL.__version__\\)\")",
+      "Bash(python3 -m pip install --user --quiet numpy)",
+      "Bash(python3 -c \"import numpy;print\\(numpy.__version__\\)\")",
+      "Bash(python3 extract.py)",
+      "Bash(python3 -)"
+    ]
+  }
+}
