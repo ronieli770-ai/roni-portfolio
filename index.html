@@ -55,6 +55,41 @@ h1,h2,h3{font-weight:400}
 .card-body{position:absolute;width:100%;padding:0 10%;text-align:center;color:#fff}
 
 .stack p+p{margin-top:1.4em}
+/* ---- motion (mirrors src/index.css) ---- */
+[data-reveal]{opacity:0;transition:opacity .85s cubic-bezier(.16,1,.3,1) var(--d,0ms),
+ transform .85s cubic-bezier(.16,1,.3,1) var(--d,0ms)}
+[data-reveal="up"]{transform:translateY(32px) rotate(var(--rot,0deg))}
+[data-reveal="fade"]{transform:rotate(var(--rot,0deg))}
+[data-reveal].is-in{opacity:1;transform:rotate(var(--rot,0deg))}
+[data-parallax]{will-change:transform;transform:translate3d(0,var(--py,0px),0)}
+@keyframes drift{0%,100%{transform:translateY(0)}50%{transform:translateY(calc(var(--drift,14) * -1px))}}
+.anim-drift{animation:drift var(--drift-dur,9s) ease-in-out infinite;animation-delay:var(--d,0ms)}
+@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.anim-shimmer{background-size:220% 100%;animation:shimmer 9s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,255,255,.5)}
+ 70%{transform:scale(1.14);box-shadow:0 0 0 16px rgba(255,255,255,0)}}
+.anim-dot{animation:pulseDot 2.8s ease-out infinite;animation-delay:var(--d,0ms)}
+@keyframes dashFlow{to{stroke-dashoffset:-40}}
+.anim-dash{animation:dashFlow 1.8s linear infinite}
+.hov-btn{position:relative;overflow:hidden;
+ transition:transform .35s cubic-bezier(.16,1,.3,1),filter .35s,box-shadow .35s}
+.hov-btn:hover{transform:translateY(-2px) scale(1.02);filter:brightness(1.08);
+ box-shadow:0 12px 34px -10px rgba(224,120,60,.7)}
+.hov-btn::after{content:"";position:absolute;inset:0;pointer-events:none;
+ background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.32) 50%,transparent 65%);
+ transform:translateX(-130%);transition:transform .75s cubic-bezier(.16,1,.3,1)}
+.hov-btn:hover::after{transform:translateX(130%)}
+.hov-card{transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s}
+.hov-card:hover{transform:translateY(-6px) rotate(var(--rot,0deg));
+ box-shadow:0 26px 64px -22px rgba(0,0,0,.75)}
+.field{transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s}
+.field:focus{transform:translateY(-2px);outline:none;box-shadow:0 0 0 3px rgba(250,145,84,.35)}
+@media (prefers-reduced-motion:reduce){
+ [data-reveal]{opacity:1!important;transform:rotate(var(--rot,0deg))!important;transition:none!important}
+ [data-parallax]{transform:none!important}
+ .anim-drift,.anim-shimmer,.anim-dot,.anim-dash{animation:none!important}
+ .hov-btn::after{display:none}}
+
 .galaxy-box{overflow:hidden;background:#000}
 #galaxy{width:100%;height:100%;display:block}
 .contact-row{display:flex;align-items:center;justify-content:flex-end;gap:3.2em}
@@ -296,6 +331,101 @@ void main(){vec2 focalPx=uFocal*uResolution.xy;vec2 uv=(vUv*uResolution.xy-focal
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
   requestAnimationFrame(frame);
+})();
+</script>
+
+
+<script>
+/* Motion. Mirrors the data-* contract in src/components/RoniPortfolio.tsx, but
+   assigns the attributes here by selector so the static preview stays in step
+   without duplicating every element's markup. */
+(function () {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var canvas = document.querySelector('.canvas');
+  if (!canvas) return;
+
+  var DRIFT = {
+    'rocket':          [10, '11s'],
+    'planet-saturn':   [12, '10s'],
+    'planet-teal':     [16, '13s'],
+    'planet-earth':    [18, '15s'],
+    'astronaut-float': [20, '12s'],
+    'astronaut-moon':  [14, '14s']
+  };
+  Object.keys(DRIFT).forEach(function (name) {
+    var img = canvas.querySelector('img[src*="' + name + '"]');
+    if (!img) return;
+    var box = img.parentElement;
+    box.classList.add('anim-drift');
+    box.setAttribute('data-reveal', 'fade');
+    box.style.setProperty('--drift', DRIFT[name][0]);
+    box.style.setProperty('--drift-dur', DRIFT[name][1]);
+  });
+
+  var dome = canvas.querySelector('img[src*="mars-dome"]');
+  if (dome) dome.parentElement.setAttribute('data-parallax', '0.05');
+  var galaxy = document.getElementById('galaxy');
+  if (galaxy) galaxy.parentElement.setAttribute('data-parallax', '0.04');
+
+  canvas.querySelectorAll('.grad').forEach(function (h) { h.classList.add('anim-shimmer'); });
+  canvas.querySelectorAll('.btn-fill,.btn-outline').forEach(function (b) { b.classList.add('hov-btn'); });
+  canvas.querySelectorAll('.glass').forEach(function (c) { c.classList.add('hov-card'); });
+  canvas.querySelectorAll('.lid').forEach(function (c) { c.classList.add('hov-card'); });
+  canvas.querySelectorAll('.dot').forEach(function (d) { d.classList.add('anim-dot'); });
+  canvas.querySelectorAll('svg path[stroke-dasharray]').forEach(function (pth) {
+    pth.classList.add('anim-dash');
+  });
+
+  /* Reveal every box that carries copy or is a glass panel. */
+  Array.prototype.forEach.call(canvas.children, function (el) {
+    if (!el.classList.contains('b')) return;
+    if (el.hasAttribute('data-reveal') || el.hasAttribute('data-parallax')) return;
+    if (/glow-|stars|deck|lid/.test(el.className)) return;
+    var hasCopy = el.querySelector('h1,h2,h3,p,button,.contact-row,.field') ||
+                  el.classList.contains('glass');
+    if (hasCopy) el.setAttribute('data-reveal', 'up');
+  });
+
+  /* Stagger: elements whose tops sit within ~220px of each other read as a
+     group and come in one after another. */
+  var reveals = Array.prototype.slice.call(canvas.querySelectorAll('[data-reveal]'));
+  reveals.sort(function (a, b) { return a.offsetTop - b.offsetTop; });
+  var groupTop = -1e9, n = 0;
+  reveals.forEach(function (el) {
+    if (el.offsetTop - groupTop > 220) { groupTop = el.offsetTop; n = 0; } else { n++; }
+    if (n) el.style.setProperty('--d', (n * 100) + 'ms');
+  });
+
+  /* Plain viewport test, not IntersectionObserver: the same scroll tick drives
+     reveals and parallax, so copy can never be stranded at opacity 0. */
+  var pending = reveals.slice();
+  function reveal() {
+    var vh = innerHeight;
+    pending = pending.filter(function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.top < vh * 0.9 && r.bottom > 0) { el.classList.add('is-in'); return false; }
+      return true;
+    });
+  }
+
+  var layers = Array.prototype.slice.call(canvas.querySelectorAll('[data-parallax]'));
+  var queued = false;
+  function apply() {
+    queued = false;
+    var vh = innerHeight;
+    layers.forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      var c = (r.top + r.height / 2 - vh / 2) / vh;
+      el.style.setProperty('--py', (c * parseFloat(el.dataset.parallax) * -100).toFixed(1) + 'px');
+    });
+  }
+  function onScroll() {
+    if (!queued) { queued = true; requestAnimationFrame(function () { apply(); reveal(); }); }
+  }
+  apply();
+  reveal();
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
 })();
 </script>
 </body>

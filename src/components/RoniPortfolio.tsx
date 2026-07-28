@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { Mail, Phone } from "lucide-react";
 import Galaxy from "./Galaxy";
@@ -30,26 +31,103 @@ type BoxProps = {
   rotate?: number;
   /** anchor the box by its right edge instead of its left (RTL text blocks) */
   fromRight?: boolean;
+  /** scroll-reveal style; the motion CSS composes this with `rotate` */
+  reveal?: "up" | "fade";
+  /** stagger, in ms */
+  delay?: number;
+  /** parallax factor, e.g. 0.05 — positive drifts against the scroll */
+  parallax?: number;
 };
 
 /** Absolutely positioned box in design-pixel coordinates. */
-function Box({ x, y, w, h, className, style, children, rotate, fromRight }: BoxProps) {
+function Box({
+  x, y, w, h, className, style, children, rotate, fromRight, reveal, delay, parallax,
+}: BoxProps) {
   return (
     <div
       className={className}
+      data-reveal={reveal}
+      data-parallax={parallax}
       style={{
         position: "absolute",
         top: u(y),
         ...(fromRight ? { right: u(CANVAS_W - x) } : { left: u(x) }),
         ...(w !== undefined ? { width: u(w) } : null),
         ...(h !== undefined ? { height: u(h) } : null),
-        ...(rotate ? { transform: `rotate(${rotate}deg)` } : null),
+        // exposed as a variable so reveal/hover transforms can re-apply it
+        ...(rotate ? ({ ["--rot" as string]: `${rotate}deg` } as CSSProperties) : null),
+        ...(rotate && !reveal ? { transform: `rotate(${rotate}deg)` } : null),
+        ...(delay ? ({ ["--d" as string]: `${delay}ms` } as CSSProperties) : null),
         ...style,
       }}
     >
       {children}
     </div>
   );
+}
+
+/**
+ * Drives the scroll reveals and the parallax layers.
+ *
+ * Reveals fire once and then stop being observed. Parallax is recomputed on
+ * scroll behind a rAF gate rather than every frame, so idle scrolling costs
+ * nothing. Both are inert under prefers-reduced-motion — the CSS neutralises
+ * the transforms, and this skips the work entirely.
+ */
+function useMotion() {
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+
+    // A plain viewport test rather than IntersectionObserver: one mechanism
+    // drives both reveals and parallax, and content can never get stranded
+    // invisible if the observer never delivers a callback.
+    let pending = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+    const reveal = () => {
+      const vh = window.innerHeight;
+      pending = pending.filter((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.top < vh * 0.9 && r.bottom > 0) {
+          el.classList.add("is-in");
+          return false;
+        }
+        return true;
+      });
+    };
+
+    const layers = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-parallax]"),
+    );
+    let queued = false;
+    const apply = () => {
+      queued = false;
+      const vh = window.innerHeight;
+      for (const el of layers) {
+        const r = el.getBoundingClientRect();
+        const centred = (r.top + r.height / 2 - vh / 2) / vh;
+        const factor = parseFloat(el.dataset.parallax || "0");
+        el.style.setProperty("--py", `${(centred * factor * -100).toFixed(1)}px`);
+      }
+    };
+    const onScroll = () => {
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(() => {
+          apply();
+          reveal();
+        });
+      }
+    };
+    apply();
+    reveal();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
 }
 
 /* ------------------------------------------------------------------ content */
@@ -135,7 +213,7 @@ function BrandButton({ label, className = "" }: { label: string; className?: str
   return (
     <button
       type="button"
-      className={`grid h-full w-full place-items-center rounded-[--btn-radius] bg-gradient-to-l from-brand to-brand-light font-semibold text-white transition-[filter] hover:brightness-110 ${className}`}
+      className={`hov-btn grid h-full w-full place-items-center rounded-[--btn-radius] bg-gradient-to-l from-brand to-brand-light font-semibold text-white ${className}`}
       style={{ fontSize: u(24) }}
     >
       {label}
@@ -166,7 +244,7 @@ function Laptop({ x, y, screen }: { x: number; y: number; screen: { x: number; y
       {/* lid */}
       <Box x={x + bezelX} y={y + bezelY} w={963} h={630} className="pointer-events-none">
         <div
-          className="h-full w-full bg-[#1b1c1e] shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
+          className="hov-card h-full w-full bg-[#1b1c1e] shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
           style={{ borderRadius: u(16) }}
         >
           <div
@@ -196,6 +274,7 @@ function Connector({
           stroke="rgba(255,255,255,0.65)"
           strokeWidth="3"
           strokeDasharray="10 10"
+          className="anim-dash"
         />
         <path
           d={`M${to[0]} ${to[1]} l${dir === "up" ? "-11 16" : dir === "up-left" ? "16 4" : "-16 4"} M${to[0]} ${to[1]} l${dir === "up" ? "11 16" : dir === "up-left" ? "4 16" : "-4 16"}`}
@@ -204,7 +283,7 @@ function Connector({
         />
       </svg>
       <div
-        className="absolute rounded-full border-2 border-white bg-white/85"
+        className="anim-dot absolute rounded-full border-2 border-white bg-white/85"
         style={{
           width: u(34), height: u(34),
           left: dir === "up" ? `calc(50% - ${u(17)})` : dir === "up-left" ? `calc(100% - ${u(34)})` : 0,
@@ -218,6 +297,8 @@ function Connector({
 /* ------------------------------------------------------------------- canvas */
 
 function DesktopCanvas() {
+  useMotion();
+
   return (
     <div
       className="relative mx-auto hidden w-full overflow-hidden bg-background lg:block"
@@ -261,8 +342,8 @@ function DesktopCanvas() {
       </header>
 
       {/* ============================================================= hero */}
-      <Box x={152} y={261} w={1424}>
-        <h1 className={`text-center ${displayGradient}`} style={{ fontSize: u(120), lineHeight: 0.85 }}>
+      <Box x={152} y={261} w={1424} reveal="up">
+        <h1 className={`anim-shimmer text-center ${displayGradient}`} style={{ fontSize: u(120), lineHeight: 0.85 }}>
           <span className="font-normal">אתרים שגורמים לעסק שלכם</span>{" "}
           <span className="font-bold">להיראות ראשון בתחום</span>
         </h1>
@@ -272,12 +353,13 @@ function DesktopCanvas() {
           1062×796 holding the 2124² source at 50%, so the plume was clipped at
           the frame bottom and the transparent margins were never visible.
           Baking that crop in cut the asset from 1896 KB to 171 KB. */}
-      <Box x={590} y={418} w={554} h={698} className="pointer-events-none">
+      <Box x={590} y={418} w={554} h={698} className="anim-drift pointer-events-none" reveal="fade"
+           style={{ ["--drift" as string]: 10, ["--drift-dur" as string]: "11s" } as CSSProperties}>
         <img src="/assets/rocket.webp" alt="" className="block h-full w-full" />
       </Box>
 
-      <Box x={1107} y={823} w={583} h={253} className={glass} />
-      <Box x={1131} y={860} w={527}>
+      <Box x={1107} y={823} w={583} h={253} className={`${glass} hov-card`} reveal="up" delay={120} />
+      <Box x={1131} y={860} w={527} reveal="up" delay={200}>
         <p className="text-right text-white" style={{ fontSize: u(28) }}>
           <span className="font-bold">אני הופכת אתרים גנריים לחוויות דיגיטליות בסטנדרט פרימיום.</span>
           <br />
@@ -285,28 +367,28 @@ function DesktopCanvas() {
         </p>
       </Box>
 
-      <Box x={38} y={1001} w={192} h={72}>
+      <Box x={38} y={1001} w={192} h={72} reveal="up" delay={280}>
         <button
           type="button"
-          className="grid h-full w-full place-items-center rounded-[--btn-radius] border border-brand font-semibold text-white transition-colors hover:bg-brand/15"
+          className="hov-btn grid h-full w-full place-items-center rounded-[--btn-radius] border border-brand font-semibold text-white hover:bg-brand/15"
           style={{ fontSize: u(24) }}
         >
           לתיק עבודות
         </button>
       </Box>
-      <Box x={247} y={1001} w={192} h={72}>
+      <Box x={247} y={1001} w={192} h={72} reveal="up" delay={360}>
         <BrandButton label="בואו נדבר" />
       </Box>
 
       {/* ======================================================== why me */}
-      <Box x={434} y={1276} w={861}>
-        <h2 className={`text-center ${displayGradient}`} style={{ fontSize: u(80), lineHeight: 0.85 }}>
+      <Box x={434} y={1276} w={861} reveal="up">
+        <h2 className={`anim-shimmer text-center ${displayGradient}`} style={{ fontSize: u(80), lineHeight: 0.85 }}>
           <span className="font-normal">למה לעבוד </span>
           <span className="font-semibold">דווקא איתי?</span>
         </h2>
       </Box>
 
-      <Box x={343} y={1657} w={1067} h={577} className="pointer-events-none overflow-hidden" style={{ borderRadius: `${u(533)} ${u(533)} 0 0` }}>
+      <Box x={343} y={1657} w={1067} h={577} parallax={0.05} className="pointer-events-none overflow-hidden" style={{ borderRadius: `${u(533)} ${u(533)} 0 0` }}>
         <img src="/assets/mars-dome.png" alt="" className="h-full w-full object-cover" />
       </Box>
 
@@ -314,10 +396,10 @@ function DesktopCanvas() {
       <Connector x={745} y={1747} w={238} h={248} dir="up" />
       <Connector x={554} y={1955} w={234} h={207} dir="up-left" />
 
-      {WHY_ME.map((card) => (
+      {WHY_ME.map((card, i) => (
         <div key={card.title}>
-          <Box {...card.box} className={glass} />
-          <Box x={card.text.x} y={card.text.y} w={card.text.w}>
+          <Box {...card.box} className={`${glass} hov-card`} reveal="up" delay={i * 130} />
+          <Box x={card.text.x} y={card.text.y} w={card.text.w} reveal="up" delay={i * 130 + 90}>
             <p className="text-right text-white" style={{ fontSize: u(18) }}>
               <span className="font-bold">{card.title}</span>
               <br />
@@ -328,52 +410,55 @@ function DesktopCanvas() {
       ))}
 
       {/* ===================================================== portfolio */}
-      <Box x={1376} y={4543} w={352} h={414} className="pointer-events-none">
+      <Box x={1376} y={4543} w={352} h={414} className="anim-drift pointer-events-none"
+           style={{ ["--drift" as string]: 16, ["--drift-dur" as string]: "13s" } as CSSProperties}>
         <img src="/assets/planet-teal.png" alt="" className="h-full w-full object-contain" />
       </Box>
       {/* Bleeds off the right frame edge — the canvas clip is the crop, as in Figma. */}
-      <Box x={1330} y={2323} w={398} h={698} className="pointer-events-none">
+      <Box x={1330} y={2323} w={398} h={698} className="anim-drift pointer-events-none"
+           style={{ ["--drift" as string]: 12, ["--drift-dur" as string]: "10s" } as CSSProperties}>
         <img src="/assets/planet-saturn.png" alt="" className="h-full w-full" />
       </Box>
-      <Box x={0} y={3420} w={326} h={440} className="pointer-events-none">
+      <Box x={0} y={3420} w={326} h={440} className="anim-drift pointer-events-none"
+           style={{ ["--drift" as string]: 18, ["--drift-dur" as string]: "15s" } as CSSProperties}>
         <img src="/assets/planet-earth.png" alt="" className="h-full w-full object-contain" />
       </Box>
 
       {PROJECTS.map((p, i) => (
         <div key={i}>
           <Laptop x={p.laptop.x} y={p.laptop.y} screen={p.screen} />
-          <Box x={p.edge} y={p.eyebrowY} w={260} fromRight>
+          <Box x={p.edge} y={p.eyebrowY} w={260} fromRight reveal="up">
             <p className="text-right font-normal text-brand-light" style={{ fontSize: u(18) }}>
               {PROJECT_COPY.eyebrow}
             </p>
           </Box>
-          <Box x={p.edge} y={p.titleY} w={342} fromRight>
+          <Box x={p.edge} y={p.titleY} w={342} fromRight reveal="up" delay={90}>
             <h3 className={`text-right ${displayGradient}`} style={{ fontSize: u(60), lineHeight: 0.93 }}>
               {PROJECT_COPY.title}
             </h3>
           </Box>
-          <Box x={p.edge} y={p.bodyY} w={349} fromRight>
+          <Box x={p.edge} y={p.bodyY} w={349} fromRight reveal="up" delay={180}>
             <p className="text-right text-white" style={{ fontSize: u(16) }}>
               <span className="font-bold">{PROJECT_COPY.headline}</span>
               <br />
               {PROJECT_COPY.body}
             </p>
           </Box>
-          <Box x={p.edge} y={p.ctaY} w={280} h={65} fromRight>
+          <Box x={p.edge} y={p.ctaY} w={280} h={65} fromRight reveal="up" delay={270}>
             <BrandButton label={PROJECT_COPY.cta} />
           </Box>
         </div>
       ))}
 
       {/* =============================================== why you need it */}
-      <Box x={434} y={5724} w={861}>
-        <h2 className={`text-center ${displayGradient}`} style={{ fontSize: u(80), lineHeight: 0.85 }}>
+      <Box x={434} y={5724} w={861} reveal="up">
+        <h2 className={`anim-shimmer text-center ${displayGradient}`} style={{ fontSize: u(80), lineHeight: 0.85 }}>
           <span className="font-normal">למה אתם צריכים </span>
           <span className="font-semibold">את זה?</span>
         </h2>
       </Box>
 
-      {BENEFITS.map((b) => (
+      {BENEFITS.map((b, i) => (
         <Box
           key={b.title}
           x={b.cx - b.w / 2}
@@ -381,7 +466,9 @@ function DesktopCanvas() {
           w={b.w}
           h={b.h}
           rotate={b.rotate}
-          className={glass}
+          className={`${glass} hov-card`}
+          reveal="fade"
+          delay={i * 140}
         >
           <div className="flex h-full flex-col items-center" style={{ paddingTop: u(33) }}>
             <img
@@ -407,7 +494,7 @@ function DesktopCanvas() {
       ))}
 
       {/* ============================================================ about */}
-      <Box x={-256} y={6719} w={2001} h={1122} className="overflow-hidden bg-black">
+      <Box x={-256} y={6719} w={2001} h={1122} parallax={0.04} className="overflow-hidden bg-black">
         <Galaxy
           density={1.1}
           hueShift={220}
@@ -419,17 +506,18 @@ function DesktopCanvas() {
           repulsionStrength={1.6}
         />
       </Box>
-      <Box x={10} y={6790} w={990} h={1010} className="pointer-events-none">
+      <Box x={10} y={6790} w={990} h={1010} className="anim-drift pointer-events-none" reveal="fade"
+           style={{ ["--drift" as string]: 20, ["--drift-dur" as string]: "12s" } as CSSProperties}>
         <img src="/assets/astronaut-float.png" alt="" className="h-full w-full object-contain" />
       </Box>
-      <Box x={1573} y={6866} w={738} fromRight>
-        <h2 className={`text-right ${displayGradient}`} style={{ fontSize: u(80), lineHeight: u(77) }}>
+      <Box x={1573} y={6866} w={738} fromRight reveal="up">
+        <h2 className={`anim-shimmer text-right ${displayGradient}`} style={{ fontSize: u(80), lineHeight: u(77) }}>
           נעים להכיר,
           <br />
           רוני אליהו
         </h2>
       </Box>
-      <Box x={1572} y={7065} w={562} fromRight>
+      <Box x={1572} y={7065} w={562} fromRight reveal="up" delay={120}>
         <div className="space-y-[1.4em] text-right text-white" style={{ fontSize: u(32) }}>
           <p className="font-semibold">
             כשאנשים מגיעים לאתר שלכם, יש לכם בדיוק 3 שניות להוכיח להם שהם הגיעו למקום הנכון.
@@ -447,13 +535,13 @@ function DesktopCanvas() {
       </Box>
 
       {/* ========================================================== contact */}
-      <Box x={1670} y={7926} w={738} fromRight>
-        <h2 className={`text-right ${displayGradient}`} style={{ fontSize: u(80), lineHeight: u(77) }}>
+      <Box x={1670} y={7926} w={738} fromRight reveal="up">
+        <h2 className={`anim-shimmer text-right ${displayGradient}`} style={{ fontSize: u(80), lineHeight: u(77) }}>
           מוכנים להמריא?
         </h2>
       </Box>
 
-      <Box x={1670} y={8040} w={700} fromRight>
+      <Box x={1670} y={8040} w={700} fromRight reveal="up" delay={110}>
         <div className="flex items-center justify-end gap-[3.2em] text-white" style={{ fontSize: u(24) }}>
           <a href={`mailto:${CONTACT.email}`} className="flex items-center gap-[0.7em] font-semibold hover:text-brand-light">
             <span dir="ltr">{CONTACT.email}</span>
@@ -466,13 +554,14 @@ function DesktopCanvas() {
         </div>
       </Box>
 
-      <Box x={1150} y={8189} w={578} h={769} className="pointer-events-none">
+      <Box x={1150} y={8189} w={578} h={769} className="anim-drift pointer-events-none" reveal="fade"
+           style={{ ["--drift" as string]: 14, ["--drift-dur" as string]: "14s" } as CSSProperties}>
         <img src="/assets/astronaut-moon.png" alt="" className="h-full w-full object-contain" />
       </Box>
 
-      <Box x={58} y={8189} w={816} h={699} className={glass} />
-      <Box x={139} y={8249} w={654}>
-        <p className={`text-center font-medium ${displayGradient}`} style={{ fontSize: u(45), lineHeight: u(52) }}>
+      <Box x={58} y={8189} w={816} h={699} className={`${glass} hov-card`} reveal="up" />
+      <Box x={139} y={8249} w={654} reveal="up" delay={100}>
+        <p className={`anim-shimmer text-center font-medium ${displayGradient}`} style={{ fontSize: u(45), lineHeight: u(52) }}>
           השאירו פרטים קצרים ונתחיל לבנות את האתר שישים אתכם בטופ.
         </p>
       </Box>
@@ -485,7 +574,7 @@ function DesktopCanvas() {
                 name={f.name}
                 placeholder={f.placeholder}
                 aria-label={f.placeholder}
-                className="h-full w-full resize-none rounded-[--field-radius] border border-white bg-glass px-[1em] py-[0.9em] text-center text-white backdrop-blur-glass placeholder:text-white focus:outline-none focus:ring-2 focus:ring-brand-light"
+                className="hov-field h-full w-full resize-none rounded-[--field-radius] border border-white bg-glass px-[1em] py-[0.9em] text-center text-white backdrop-blur-glass placeholder:text-white focus:outline-none"
                 style={{ fontSize: u(18) }}
               />
             </Box>
@@ -495,7 +584,7 @@ function DesktopCanvas() {
                 name={f.name}
                 placeholder={f.placeholder}
                 aria-label={f.placeholder}
-                className="h-full w-full rounded-[--field-radius] border border-white bg-glass px-[1em] text-center text-white backdrop-blur-glass placeholder:text-white focus:outline-none focus:ring-2 focus:ring-brand-light"
+                className="hov-field h-full w-full rounded-[--field-radius] border border-white bg-glass px-[1em] text-center text-white backdrop-blur-glass placeholder:text-white focus:outline-none"
                 style={{ fontSize: u(18) }}
               />
             </Box>

@@ -47,6 +47,167 @@
   }
 }
 
+/* =====================================================================
+   Motion. Scroll reveals, ambient drift, parallax and hover feedback.
+   Everything here is opt-in per element via data-* attributes or a class,
+   and the whole system switches off under prefers-reduced-motion.
+   ===================================================================== */
+
+[data-reveal] {
+  opacity: 0;
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms);
+}
+[data-reveal="up"] {
+  transform: translateY(32px) rotate(var(--rot, 0deg));
+}
+[data-reveal="fade"] {
+  transform: rotate(var(--rot, 0deg));
+}
+[data-reveal].is-in {
+  opacity: 1;
+  transform: rotate(var(--rot, 0deg));
+}
+
+[data-parallax] {
+  will-change: transform;
+  transform: translate3d(0, var(--py, 0px), 0);
+}
+
+@layer utilities {
+  /* slow vertical drift for the space art */
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(calc(var(--drift, 14) * -1px));
+    }
+  }
+  .anim-drift {
+    animation: drift var(--drift-dur, 9s) ease-in-out infinite;
+    animation-delay: var(--d, 0ms);
+  }
+
+  /* the heading gradient breathes across the text */
+  @keyframes shimmer {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+  .anim-shimmer {
+    background-size: 220% 100%;
+    animation: shimmer 9s ease-in-out infinite;
+  }
+
+  /* hotspots on the planet */
+  @keyframes pulseDot {
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgb(255 255 255 / 0.5);
+    }
+    70% {
+      transform: scale(1.14);
+      box-shadow: 0 0 0 16px rgb(255 255 255 / 0);
+    }
+  }
+  .anim-dot {
+    animation: pulseDot 2.8s ease-out infinite;
+    animation-delay: var(--d, 0ms);
+  }
+
+  /* dashes crawl along the connectors */
+  @keyframes dashFlow {
+    to {
+      stroke-dashoffset: -40;
+    }
+  }
+  .anim-dash {
+    animation: dashFlow 1.8s linear infinite;
+  }
+
+  /* buttons: lift, warm glow, and a light sweep across the face */
+  .hov-btn {
+    position: relative;
+    overflow: hidden;
+    transition:
+      transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      filter 0.35s,
+      box-shadow 0.35s;
+  }
+  .hov-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    filter: brightness(1.08);
+    box-shadow: 0 12px 34px -10px hsl(var(--brand) / 0.7);
+  }
+  .hov-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 35%,
+      rgb(255 255 255 / 0.32) 50%,
+      transparent 65%
+    );
+    transform: translateX(-130%);
+    transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .hov-btn:hover::after {
+    transform: translateX(130%);
+  }
+
+  /* glass panels rise slightly and deepen their shadow */
+  .hov-card {
+    transition:
+      transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.5s;
+  }
+  .hov-card:hover {
+    transform: translateY(-6px) rotate(var(--rot, 0deg));
+    box-shadow: 0 26px 64px -22px rgb(0 0 0 / 0.75);
+  }
+
+  .hov-field {
+    transition:
+      transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.3s,
+      box-shadow 0.3s;
+  }
+  .hov-field:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 3px hsl(var(--brand-light) / 0.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: rotate(var(--rot, 0deg)) !important;
+    transition: none !important;
+  }
+  [data-parallax] {
+    transform: none !important;
+  }
+  .anim-drift,
+  .anim-shimmer,
+  .anim-dot,
+  .anim-dash {
+    animation: none !important;
+  }
+  .hov-btn::after {
+    display: none;
+  }
+}
+
 @layer utilities {
   /* The comp's glass panels: a 237° white sheen over a heavy blur. */
   /* Safari needs an explicit transparent text fill for background-clip:text. */
