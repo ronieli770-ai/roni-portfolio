@@ -53,6 +53,21 @@
    and the whole system switches off under prefers-reduced-motion.
    ===================================================================== */
 
+/* Section-by-section scrolling. Desktop only — the mobile layout is a normal
+   flow document and snapping it would fight the reading order. */
+@media (min-width: 1024px) {
+  html {
+    scroll-snap-type: y mandatory;
+    /* stop the scroll chaining past the first/last section */
+    overscroll-behavior-y: none;
+  }
+  .snap-section {
+    scroll-snap-align: start;
+    /* a fast trackpad flick must not skip a section */
+    scroll-snap-stop: always;
+  }
+}
+
 [data-reveal] {
   opacity: 0;
   transition:
@@ -106,6 +121,67 @@
     animation: shimmer 9s ease-in-out infinite;
   }
 
+  /* stutter glitch with lingering glow */
+  @keyframes glitchMain {
+    0%, 58%, 100% { transform: none; filter: none; }
+    60% { transform: translate(2px, 0); filter: drop-shadow(0 0 8px rgba(141, 168, 203, 0.4)); }
+    61% { transform: translate(-2px, 0); }
+    62% { transform: translate(3px, 0); filter: drop-shadow(0 0 14px rgba(141, 168, 203, 0.7)); }
+    63% { transform: translate(-1px, 0); }
+    64% { transform: translate(2px, 0); }
+    65% { transform: none; filter: drop-shadow(0 0 20px rgba(141, 168, 203, 0.9)); }
+    67% { filter: drop-shadow(0 0 24px rgba(141, 168, 203, 1)); }
+    72% { filter: drop-shadow(0 0 14px rgba(141, 168, 203, 0.5)); }
+    78% { filter: drop-shadow(0 0 4px rgba(141, 168, 203, 0.1)); }
+    82% { filter: none; }
+  }
+  @keyframes glitchTop {
+    0%, 58%, 100% { opacity: 0; transform: none; }
+    60% { opacity: 1; transform: translate(4px, 0); }
+    61% { opacity: 1; transform: translate(-3px, 0); }
+    62% { opacity: 1; transform: translate(5px, 0); }
+    63% { opacity: 1; transform: translate(-4px, 0); }
+    64% { opacity: 1; transform: translate(3px, 0); }
+    65% { opacity: 0.6; transform: translate(-1px, 0); }
+    67% { opacity: 0.3; transform: none; }
+    72% { opacity: 0; }
+  }
+  @keyframes glitchBot {
+    0%, 58%, 100% { opacity: 0; transform: none; }
+    60% { opacity: 1; transform: translate(-5px, 0); }
+    61% { opacity: 1; transform: translate(4px, 0); }
+    62% { opacity: 1; transform: translate(-3px, 0); }
+    63% { opacity: 1; transform: translate(5px, 0); }
+    64% { opacity: 1; transform: translate(-2px, 0); }
+    65% { opacity: 0.6; transform: translate(1px, 0); }
+    67% { opacity: 0.3; transform: none; }
+    72% { opacity: 0; }
+  }
+  .anim-glitch {
+    position: relative;
+    animation: glitchMain 3.5s infinite;
+  }
+  .anim-glitch::before,
+  .anim-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    background: inherit;
+    background-size: inherit;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+  }
+  .anim-glitch::before {
+    clip-path: inset(0 0 50% 0);
+    animation: glitchTop 3.5s infinite;
+  }
+  .anim-glitch::after {
+    clip-path: inset(50% 0 0 0);
+    animation: glitchBot 3.5s infinite;
+  }
+
   /* hotspots on the planet */
   @keyframes pulseDot {
     0%,
@@ -131,6 +207,45 @@
   }
   .anim-dash {
     animation: dashFlow 1.8s linear infinite;
+  }
+
+  .step-connector {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .step-connector.is-active {
+    opacity: 1;
+  }
+  .step-connector .connector-line {
+    transition: stroke-dashoffset 0.8s ease-out;
+  }
+  .step-connector .connector-arrow {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.65s;
+  }
+  .step-connector.is-active .connector-arrow {
+    opacity: 1;
+  }
+  .step-card {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease-out 0.5s, transform 0.6s ease-out 0.5s;
+  }
+  .step-card.is-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .step-dot {
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .step-dot.is-active {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .planet-3d {
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* buttons: lift, warm glow, and a light sweep across the face */
@@ -199,9 +314,15 @@
   }
   .anim-drift,
   .anim-shimmer,
+  .anim-glitch,
   .anim-dot,
   .anim-dash {
     animation: none !important;
+  }
+  .anim-glitch::before,
+  .anim-glitch::after {
+    animation: none !important;
+    opacity: 0 !important;
   }
   .hov-btn::after {
     display: none;

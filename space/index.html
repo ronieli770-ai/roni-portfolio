@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>סטודיו רוני · אתרים שגורמים לעסק שלכם להיראות ראשון בתחום</title>
+<meta name="description" content="סטודיו רוני — עיצוב גרפי, מיתוג ובניית אתרים לעסקים שרוצים להיראות ראשונים בתחום.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --orange:#e0783c;
+    --orange-lt:#fa9154;
+    --steel:#8da8cb;
+    --glow:#3c5f95;
+    --ink:#ffffff;
+    --dim:rgba(226,235,248,.66);
+    --btn-grad:linear-gradient(270deg,#e0783c 0%,#fa9154 100%);
+    --title-grad:linear-gradient(90deg,#8da8cb 0%,#ffffff 100%);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+  body{
+    background:#000;color:var(--ink);
+    font-family:'IBM Plex Sans Hebrew',system-ui,-apple-system,sans-serif;
+    font-weight:400;-webkit-font-smoothing:antialiased;touch-action:none;
+  }
+
+  /* ---------- background glows (figma: #3C5F95, blur 250) ---------- */
+  #bg{
+    position:fixed;inset:0;z-index:0;background:#000;
+    background-image:
+      radial-gradient(46% 46% at 6% 50%,  rgba(60,95,149,.85) 0%, rgba(60,95,149,.30) 45%, transparent 72%),
+      radial-gradient(46% 46% at 87% 20%, rgba(60,95,149,.85) 0%, rgba(60,95,149,.30) 45%, transparent 72%);
+  }
+
+  /* ---------- video canvas ---------- */
+  #stage{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .7s ease}
+  #stage.on{opacity:1}
+  #stage canvas{width:100%;height:100%;display:block}
+  #veil{
+    position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .7s ease;
+    background:linear-gradient(to bottom, rgba(0,0,0,.62), rgba(0,0,0,.15) 38%, rgba(0,0,0,.25) 62%, rgba(0,0,0,.78));
+  }
+  #veil.on{opacity:1}
+
+  /* ---------- chrome ---------- */
+  .logo{position:fixed;top:3.9vh;left:2.2vw;width:min(170px,11vw);z-index:8}
+  .logo img{width:100%;display:block}
+  .menu{position:fixed;top:3.9vh;right:2.2vw;z-index:8;width:min(78px,5.2vw);aspect-ratio:78/76;cursor:pointer}
+  .menu i{position:absolute;display:block;background:#fff;width:44.3%;height:9.7%}
+  .menu i:nth-child(1){left:0;top:0}
+  .menu i:nth-child(2){left:0;top:19.4%}
+  .menu i:nth-child(3){left:0;top:38.8%}
+  .menu i:nth-child(4){left:53.2%;top:9.7%}
+  .menu i:nth-child(5){left:53.2%;top:29.1%}
+  .menu i:nth-child(6){left:53.2%;top:48.5%}
+
+  .rail{
+    position:fixed;top:50%;right:2.6vw;transform:translateY(-50%);z-index:8;
+    display:flex;flex-direction:column;gap:14px;
+  }
+  .rail b{display:block;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.22);transition:.45s cubic-bezier(.2,.8,.2,1);cursor:pointer}
+  .rail b.on{background:var(--orange-lt);box-shadow:0 0 14px rgba(250,145,84,.9);transform:scale(1.6)}
+
+  .hint{
+    position:fixed;bottom:3vh;left:50%;transform:translateX(-50%);z-index:8;
+    font-size:11px;letter-spacing:.4em;color:rgba(226,235,248,.5);
+    display:flex;flex-direction:column;align-items:center;gap:9px;transition:opacity .6s;
+  }
+  .hint i{display:block;width:1px;height:34px;background:linear-gradient(var(--orange-lt),transparent);animation:drop 2.2s infinite}
+  @keyframes drop{0%{transform:scaleY(.2);transform-origin:top;opacity:0}40%{opacity:1}100%{transform:scaleY(1);transform-origin:top;opacity:0}}
+
+  /* ---------- hero ---------- */
+  #hero{
+    position:fixed;inset:0;z-index:5;overflow:hidden;
+    transition:opacity .7s ease, transform 1.1s cubic-bezier(.16,.84,.24,1);
+  }
+  #hero.off{opacity:0;transform:scale(1.06);pointer-events:none}
+  #hero .hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%;z-index:0}
+  #hero .title{
+    position:absolute;top:14%;left:50%;transform:translateX(-50%);
+    width:min(1200px,84vw);text-align:center;
+    font-size:clamp(34px,5.8vw,96px);line-height:.95;
+    background:var(--title-grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+    z-index:2;overflow:visible;
+  }
+  #hero .title .l1{font-weight:400}
+  #hero .title .l2{font-weight:700}
+  #hero .rocket-over{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%;
+    z-index:3;pointer-events:none;
+    clip-path:polygon(49.9% 22%, 50% 20%, 50.1% 22%, 50.2% 28%, 50.4% 34%, 50.6% 40%, 51% 46%, 51.5% 52%, 52.2% 58%, 53% 63%, 54.5% 68%, 56% 73%, 57.5% 77%, 58.5% 81%, 58.5% 85%, 57% 89%, 54.5% 92%, 52% 94%, 50% 95%, 48% 94%, 45.5% 92%, 43% 89%, 41.5% 85%, 41.5% 81%, 42.5% 77%, 44% 73%, 45.5% 68%, 47% 63%, 47.8% 58%, 48.5% 52%, 49% 46%, 49.4% 40%, 49.6% 34%, 49.8% 28%);
+  }
+  #hero .btns{position:absolute;left:clamp(20px,3vw,44px);bottom:clamp(24px,4vh,50px);display:flex;flex-direction:row;gap:14px;z-index:4}
+
+  .status-box{
+    position:absolute;right:clamp(24px,4vw,60px);bottom:clamp(24px,4vh,50px);z-index:4;
+    width:auto;min-width:242px;height:auto;padding:18px 28px;border-radius:20px;white-space:nowrap;
+    background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,0));
+    backdrop-filter:blur(42.3px);-webkit-backdrop-filter:blur(42.3px);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Courier New',Courier,monospace;font-size:16px;font-weight:400;
+    line-height:1.22;color:#FA9154;text-align:right;direction:rtl;
+  }
+  .status-box::before{
+    content:'';position:absolute;inset:0;border-radius:20px;padding:1px;
+    background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.30));
+    -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;
+  }
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:160px;height:58px;border-radius:10px;
+    font-size:20px;font-weight:600;text-decoration:none;
+    transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s, filter .3s;
+  }
+  .btn.solid{background:var(--btn-grad);color:#fff;box-shadow:0 10px 34px rgba(224,120,60,.28)}
+  .btn.solid:hover{transform:translateY(-2px);box-shadow:0 16px 44px rgba(224,120,60,.44)}
+  .btn.line{border:1px solid var(--orange);color:var(--orange-lt);background:transparent}
+  .btn.line:hover{background:rgba(224,120,60,.12);transform:translateY(-2px)}
+
+  /* ---------- chapters ---------- */
+  #deck{position:fixed;inset:0;z-index:6;pointer-events:none}
+  .pane{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    padding:clamp(24px,5vw,90px);pointer-events:none;
+  }
+  .pane.active{pointer-events:auto}
+  .copy{max-width:min(900px,90vw);text-align:center}
+  .copy > *{
+    opacity:0;transform:translateY(30px);filter:blur(7px);
+    transition:opacity .8s ease, transform .9s cubic-bezier(.16,.84,.24,1), filter .8s ease;
+  }
+  .pane.show .copy > *{opacity:1;transform:none;filter:none}
+  .pane .status-box{opacity:0;transform:translateY(16px);transition:opacity .8s ease, transform .9s cubic-bezier(.16,.84,.24,1)}
+  .landing-copy{text-align:right;position:absolute;top:14%;right:clamp(40px,6vw,100px);max-width:none;background:var(--title-grad);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transition:opacity .8s ease,transform .9s cubic-bezier(.16,.84,.24,1)}
+  .pane.show .landing-copy{opacity:1}
+  .pane.show .hint{opacity:1!important}
+  .pane.show .status-box{opacity:1;transform:none}
+  .pane.show .copy > *:nth-child(1){transition-delay:.05s}
+  .pane.show .copy > *:nth-child(2){transition-delay:.18s}
+  .pane.show .copy > *:nth-child(3){transition-delay:.34s}
+  .pane.show .copy > *:nth-child(4){transition-delay:.48s}
+
+  .eyebrow{font-size:clamp(11px,1vw,13px);letter-spacing:.42em;color:var(--orange-lt);font-weight:500;margin-bottom:26px}
+  h2{
+    font-size:clamp(34px,5.6vw,88px);line-height:.9;font-weight:400;
+    background:var(--title-grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  h2 b{font-weight:700}
+  .lead{
+    margin-top:clamp(20px,2.6vw,34px);font-size:clamp(16px,1.5vw,22px);line-height:1.8;
+    color:var(--dim);font-weight:300;max-width:58ch;margin-inline:auto;
+  }
+  .steps{display:grid;gap:15px;margin-top:38px;text-align:right;max-width:560px;margin-inline:auto}
+  .steps li{
+    list-style:none;display:flex;gap:18px;align-items:baseline;
+    border-top:1px solid rgba(141,168,203,.28);padding-top:15px;
+    font-size:clamp(15px,1.5vw,19px);color:rgba(226,235,248,.86);font-weight:300;
+  }
+  .steps li em{font-style:normal;color:var(--orange-lt);font-weight:600;font-size:13px;letter-spacing:.18em;min-width:36px}
+  .actions{display:flex;flex-direction:row-reverse;gap:17px;justify-content:center;margin-top:40px;flex-wrap:wrap}
+  .mail{margin-top:24px;font-size:15px;color:var(--dim)}
+  .mail a{color:var(--orange-lt);text-decoration:none;border-bottom:1px solid rgba(250,145,84,.4);padding-bottom:2px}
+
+  /* ---------- loader ---------- */
+  #loader{
+    position:fixed;inset:0;z-index:99;background:#000;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
+    transition:opacity .8s ease;
+  }
+  #loader.gone{opacity:0;pointer-events:none}
+  .lbar{width:min(220px,50vw);height:2px;background:rgba(141,168,203,.2);overflow:hidden;border-radius:2px}
+  .lbar i{display:block;height:100%;width:0;background:var(--btn-grad);transition:width .3s ease}
+  #loader p{font-size:12px;letter-spacing:.42em;color:rgba(226,235,248,.55);font-weight:300}
+
+  @keyframes glitchMain{0%{transform:translateX(-50%);filter:none}5%{transform:translateX(-50%) translate(2px,0);filter:drop-shadow(0 0 8px rgba(141,168,203,.4))}10%{transform:translateX(-50%) translate(-2px,0)}15%{transform:translateX(-50%) translate(3px,0);filter:drop-shadow(0 0 14px rgba(141,168,203,.7))}20%{transform:translateX(-50%) translate(-1px,0)}25%{transform:translateX(-50%) translate(2px,0)}30%{transform:translateX(-50%);filter:drop-shadow(0 0 20px rgba(141,168,203,.9))}40%{filter:drop-shadow(0 0 24px rgba(141,168,203,1))}55%{filter:drop-shadow(0 0 14px rgba(141,168,203,.5))}70%{filter:drop-shadow(0 0 4px rgba(141,168,203,.1))}85%,100%{transform:translateX(-50%);filter:none}}
+  @keyframes glitchTop{0%{opacity:0;transform:none}5%{opacity:1;transform:translate(4px,0)}10%{opacity:1;transform:translate(-3px,0)}15%{opacity:1;transform:translate(5px,0)}20%{opacity:1;transform:translate(-4px,0)}25%{opacity:1;transform:translate(3px,0)}30%{opacity:.6;transform:translate(-1px,0)}40%{opacity:.3;transform:none}55%,100%{opacity:0}}
+  @keyframes glitchBot{0%{opacity:0;transform:none}5%{opacity:1;transform:translate(-5px,0)}10%{opacity:1;transform:translate(4px,0)}15%{opacity:1;transform:translate(-3px,0)}20%{opacity:1;transform:translate(5px,0)}25%{opacity:1;transform:translate(-2px,0)}30%{opacity:.6;transform:translate(1px,0)}40%{opacity:.3;transform:none}55%,100%{opacity:0}}
+  @keyframes glitchMainR{0%,58%,100%{transform:none;filter:none}60%{transform:translate(2px,0);filter:drop-shadow(0 0 8px rgba(141,168,203,.4))}61%{transform:translate(-2px,0)}62%{transform:translate(3px,0);filter:drop-shadow(0 0 14px rgba(141,168,203,.7))}63%{transform:translate(-1px,0)}64%{transform:translate(2px,0)}65%{transform:none;filter:drop-shadow(0 0 20px rgba(141,168,203,.9))}67%{filter:drop-shadow(0 0 24px rgba(141,168,203,1))}72%{filter:drop-shadow(0 0 14px rgba(141,168,203,.5))}78%{filter:drop-shadow(0 0 4px rgba(141,168,203,.1))}82%{filter:none}}
+  .anim-glitch-r{position:relative;animation:glitchMainR 3.5s infinite}
+  .anim-glitch-r::before,.anim-glitch-r::after{content:attr(data-text);position:absolute;inset:0;background:inherit;background-size:inherit;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;pointer-events:none}
+  .anim-glitch-r::before{clip-path:inset(0 0 50% 0);animation:glitchTop 3.5s infinite}
+  .anim-glitch-r::after{clip-path:inset(50% 0 0 0);animation:glitchBot 3.5s infinite}
+  .anim-glitch{position:relative}
+  .anim-glitch::before,.anim-glitch::after{content:attr(data-text);position:absolute;inset:0;background:inherit;background-size:inherit;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;pointer-events:none;opacity:0}
+  .anim-glitch.glitch-fire{animation:glitchMain 1.2s 1}
+  .anim-glitch.glitch-fire::before{clip-path:inset(0 0 50% 0);animation:glitchTop 1.2s 1}
+  .anim-glitch.glitch-fire::after{clip-path:inset(50% 0 0 0);animation:glitchBot 1.2s 1}
+
+  @media (max-width:720px){
+    .btn{width:150px;height:58px;font-size:18px}
+    .rail{right:14px}
+  }
+</style>
+</head>
+<body>
+
+<div id="loader"><p>טוען את המסע</p><div class="lbar"><i id="lfill"></i></div></div>
+
+<div id="bg"></div>
+<div id="stage"><canvas id="c"></canvas></div>
+<div id="veil"></div>
+
+<a class="logo" href="#"><img src="assets/logo.png" alt="סטודיו רוני"></a>
+<div class="menu"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<div class="rail" id="rail"></div>
+<div class="hint" id="hint"><span>גללו</span><i></i></div>
+
+<section id="hero">
+  <video class="hero-bg" autoplay loop muted playsinline><source src="0.mp4" type="video/mp4"></video>
+  <h1 class="title anim-glitch" data-text="אתרים שגורמים לעסק שלכם להיראות ראשון בתחום"><span class="l1">אתרים שגורמים לעסק שלכם</span> <span class="l2">להיראות ראשון בתחום</span></h1>
+  <div class="btns">
+    <a class="btn solid" href="https://wa.me/972000000000" target="_blank" rel="noopener">בואו נדבר</a>
+    <a class="btn line" href="#">לתיק עבודות</a>
+  </div>
+  <div class="status-box">
+    סטטוס: מוכן לשיגור<br>
+    גובה: 0 מ'<br>
+    מהירות: 0 קמ״ש<br>
+    מרחק מהמתחרים: 0 ק״מ
+  </div>
+</section>
+
+<div id="deck">
+  <section class="pane"></section>
+
+  <section class="pane">
+    <div class="status-box">סטטוס: בהמראה<br>גובה: 118,400 מ׳<br>מהירות: 27,600 קמ״ש<br>מרחק מהמתחרים: 118 ק״מ</div>
+  </section>
+
+  <section class="pane">
+    <div class="status-box">סטטוס: שיוט<br>גובה: מחוץ לטווח<br>מהירות: 39,600 קמ״ש<br>מרחק מהמתחרים: 384,400 ק״מ</div>
+  </section>
+
+  <section class="pane">
+    <div class="status-box">סטטוס: נחיתה<br>גובה: 0<br>מהירות: 0 קמ״ש<br>מרחק מהמתחרים: ∞</div>
+    <div class="copy landing-copy">
+      <p class="anim-glitch-r" data-text="נעים להכיר" style="font-size:80px;font-weight:300;line-height:.88;margin:0">נעים להכיר</p>
+      <p class="anim-glitch-r" data-text="רוני אליהו" style="font-size:120px;font-weight:700;line-height:.88;margin:0">רוני אליהו</p>
+      <p class="anim-glitch-r" data-text="אני הטייסת שלכם להיום" style="font-size:45px;font-weight:300;line-height:1;margin-top:12px">אני הטייסת שלכם להיום</p>
+    </div>
+    <div class="hint" style="position:absolute;bottom:3vh;left:50%;transform:translateX(-50%);opacity:0;transition:opacity .6s">
+      <span>גללו</span><i></i>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const N = 60, FPS = 30, LOOP_FPS = 24;
+  /* chapter = one clip that plays through, then a clip that loops until the next nudge */
+  const CH = [
+    { play:null,        loop:null        },   // hero — the figma composition
+    { play:'frames/s1', loop:'frames/s2' },
+    { play:'frames/s3', loop:'frames/s4' },
+    { play:'frames/s5', loop:'frames/s6' },
+  ];
+  const LAST = CH.length - 1;
+
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d', { alpha:false });
+  const stage = document.getElementById('stage');
+  const veil = document.getElementById('veil');
+  const hero = document.getElementById('hero');
+  const panes = [...document.querySelectorAll('.pane')];
+  const rail = document.getElementById('rail');
+  const hint = document.getElementById('hint');
+  const loader = document.getElementById('loader');
+  const lfill = document.getElementById('lfill');
+
+  panes.forEach(() => rail.insertAdjacentHTML('beforeend', '<b></b>'));
+  const dots = [...rail.children];
+
+  /* ---------- sequences ---------- */
+  const seqs = {};                                  // dir -> { imgs, done }
+  function seq(dir){
+    if (!seqs[dir]) seqs[dir] = { imgs:new Array(N).fill(null), done:0, started:false };
+    return seqs[dir];
+  }
+  function loadSeq(dir, cb){
+    const s = seq(dir);
+    if (s.started) { if (s.done >= N && cb) cb(); return; }
+    s.started = true;
+    for (let i = 0; i < N; i++){
+      const img = new Image();
+      img.decoding = 'async';
+      const fin = ok => { if (ok) s.imgs[i] = img; if (++s.done >= N && cb) cb(); };
+      img.onload = () => fin(true);
+      img.onerror = () => fin(false);
+      img.src = dir + '/' + String(i).padStart(3, '0') + '.jpg';
+    }
+  }
+  const full = dir => seq(dir).done >= N;
+  function pick(dir, i){
+    const a = seq(dir).imgs;
+    if (a[i]) return a[i];
+    for (let d = 1; d < N; d++){ if (a[i-d]) return a[i-d]; if (a[i+d]) return a[i+d]; }
+    return null;
+  }
+
+  /* ---------- canvas ---------- */
+  let lastImg = null;
+  function size(){
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.width  = Math.max(1, Math.round(innerWidth  * dpr));
+    canvas.height = Math.max(1, Math.round(innerHeight * dpr));
+    if (lastImg) paint(lastImg);
+  }
+  function paint(img){
+    if (!img) return;
+    lastImg = img;
+    const cw = canvas.width, ch = canvas.height;
+    const r = Math.max(cw / img.width, ch / img.height);
+    const w = img.width * r, h = img.height * r;
+    ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+  }
+
+  /* ---------- state ---------- */
+  let idx = 0;         // current chapter
+  let mode = 'still';  // 'still' | 'play' | 'loop'
+  let dir = null;      // sequence currently on screen
+  let f = 0, acc = 0, prev = 0;
+  let busy = false;    // true while a play-through is running — input is ignored
+
+  function marks(){
+    panes.forEach((p, k) => {
+      p.classList.toggle('active', k === idx);
+      dots[k].classList.toggle('on', k === idx);
+    });
+    hint.style.opacity = idx === LAST ? 0 : (idx === 0 ? 1 : .4);
+  }
+  const showCopy = k => panes[k].classList.add('show');
+  const hideCopy = k => panes[k].classList.remove('show');
+
+  function startLoop(){
+    mode = 'loop';
+    dir = CH[idx].loop;
+    f = 0; acc = 0;
+    busy = false;
+    showCopy(idx);
+    loadSeq(CH[idx].loop);
+  }
+
+  function enter(n){
+    idx = n;
+    marks();
+    if (n === 0){                      // back to the hero
+      hero.classList.remove('off');
+      stage.classList.remove('on');
+      veil.classList.remove('on');
+      mode = 'still'; dir = null; busy = false;
+      return;
+    }
+    hero.classList.add('off');
+    stage.classList.add('on');
+    veil.classList.add('on');
+    mode = 'play';
+    dir = CH[n].play;
+    f = 0; acc = 0;
+    paint(pick(dir, 0));
+    loadSeq(CH[n].loop);               // have the loop ready before the clip ends
+  }
+
+  function go(n){
+    n = Math.max(0, Math.min(LAST, n));
+    if (n === idx || busy) return;
+    busy = true;
+    hideCopy(idx);
+
+    if (n === 0){ setTimeout(() => enter(0), 300); return; }
+
+    const begin = () => setTimeout(() => enter(n), 300);
+    if (full(CH[n].play)) begin();
+    else {
+      loadSeq(CH[n].play, begin);      // never start a clip that would stutter
+      setTimeout(() => { if (idx !== n) begin(); }, 6000);
+    }
+  }
+
+  /* ---------- render loop ---------- */
+  function tick(t){
+    requestAnimationFrame(tick);
+    const dt = prev ? Math.min(t - prev, 100) : 0;
+    prev = t;
+    if (!dir) return;
+
+    if (mode === 'play'){
+      acc += dt;
+      const step = 1000 / FPS;
+      while (acc >= step){
+        acc -= step;
+        if (++f >= N){ f = N - 1; paint(pick(dir, f)); startLoop(); return; }
+      }
+      paint(pick(dir, f));
+    } else if (mode === 'loop'){
+      acc += dt;
+      const step = 1000 / LOOP_FPS;
+      if (acc >= step){ acc -= step; f = (f + 1) % N; paint(pick(dir, f)); }
+    }
+  }
+
+  /* ---------- input ---------- */
+  let cooling = false;
+  const heroTitle = document.querySelector('#hero .title');
+  function nudge(d){
+    if (busy || cooling) return;
+    cooling = true;
+    setTimeout(() => { cooling = false; }, 300);
+    if (idx === 0 && d > 0){
+      busy = true;
+      heroTitle.classList.add('glitch-fire');
+      heroTitle.addEventListener('animationend', function once(){
+        heroTitle.removeEventListener('animationend', once);
+        heroTitle.classList.remove('glitch-fire');
+        busy = false;
+        go(1);
+      });
+      return;
+    }
+    go(idx + d);
+  }
+  addEventListener('wheel', e => {
+    e.preventDefault();
+    if (Math.abs(e.deltaY) < 4) return;
+    nudge(e.deltaY > 0 ? 1 : -1);
+  }, { passive:false });
+  addEventListener('keydown', e => {
+    if (['ArrowDown','PageDown',' '].includes(e.key)){ e.preventDefault(); nudge(1); }
+    if (['ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); nudge(-1); }
+  });
+  let ty = null;
+  addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive:true });
+  addEventListener('touchmove', e => {
+    if (ty === null) return;
+    const d = ty - e.touches[0].clientY;
+    if (Math.abs(d) > 40){ ty = null; nudge(d > 0 ? 1 : -1); }
+  }, { passive:true });
+  addEventListener('touchend', () => { ty = null; });
+  dots.forEach((b, k) => b.addEventListener('click', () => go(k)));
+  addEventListener('resize', size);
+
+  /* ---------- boot ---------- */
+  size();
+  marks();
+  requestAnimationFrame(tick);
+
+  let ready = 0;
+  const bump = () => {
+    lfill.style.width = Math.min(100, ++ready / 2 * 100) + '%';
+    if (ready >= 2){
+      loader.classList.add('gone');
+      setTimeout(() => loader.remove(), 900);
+      loadSeq('frames/s3', () => loadSeq('frames/s4', () => loadSeq('frames/s5', () => loadSeq('frames/s6'))));
+    }
+  };
+  const art = new Image();
+  art.onload = art.onerror = bump;
+  art.src = 'assets/rocket.png';
+  loadSeq('frames/s1', bump);
+  setTimeout(() => loader.classList.add('gone'), 12000);
+})();
+</script>
+</body>
+</html>
