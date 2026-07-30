@@ -187,9 +187,9 @@
   .anim-glitch-r::after{clip-path:inset(50% 0 0 0);animation:glitchBot 3.5s infinite}
   .anim-glitch{position:relative}
   .anim-glitch::before,.anim-glitch::after{content:attr(data-text);position:absolute;inset:0;background:inherit;background-size:inherit;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;pointer-events:none;opacity:0}
-  .anim-glitch.glitch-fire{animation:glitchMain 1.2s 1}
-  .anim-glitch.glitch-fire::before{clip-path:inset(0 0 50% 0);animation:glitchTop 1.2s 1}
-  .anim-glitch.glitch-fire::after{clip-path:inset(50% 0 0 0);animation:glitchBot 1.2s 1}
+  .anim-glitch.glitch-fire{animation:glitchMain .5s 1 forwards}
+  .anim-glitch.glitch-fire::before{clip-path:inset(0 0 50% 0);animation:glitchTop .5s 1 forwards}
+  .anim-glitch.glitch-fire::after{clip-path:inset(50% 0 0 0);animation:glitchBot .5s 1 forwards}
 
   @media (max-width:720px){
     .btn{width:150px;height:58px;font-size:18px}
@@ -411,15 +411,8 @@
     cooling = true;
     setTimeout(() => { cooling = false; }, 300);
     if (idx === 0 && d > 0){
-      busy = true;
       heroTitle.classList.add('glitch-fire');
-      heroTitle.addEventListener('animationend', function once(){
-        heroTitle.removeEventListener('animationend', once);
-        heroTitle.classList.remove('glitch-fire');
-        busy = false;
-        go(1);
-      });
-      return;
+      setTimeout(() => heroTitle.classList.remove('glitch-fire'), 500);
     }
     go(idx + d);
   }
