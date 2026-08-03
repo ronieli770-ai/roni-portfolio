@@ -24,7 +24,7 @@
       this._holder = document.createElement('div');
       this._holder.style.cssText = 'position:absolute;inset:0;';
       this.appendChild(this._holder);
-      this._spin = 0;
+      this._spin = Math.PI;
       this._cur = null;
       this._last = performance.now();
       this._modelRadius = 1;

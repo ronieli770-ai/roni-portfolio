@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>עיצוב גרפי · סטודיו רוני</title>
+<meta name="description" content="עיצוב גרפי ומיתוג — סטודיו רוני אליהו.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:#000;color:#fff;
+    font-family:'IBM Plex Sans Hebrew',system-ui,-apple-system,sans-serif;
+    font-weight:400;-webkit-font-smoothing:antialiased;
+  }
+
+  /* static background watermark — stays put while the page scrolls */
+  .bg-mark{
+    position:fixed;z-index:0;pointer-events:none;overflow:hidden;opacity:.07;
+    width:51.56vw;height:132.59vh;
+    left:96.73vw;top:50vh;transform:translate(-50%,-50%);
+  }
+  .bg-mark img{position:absolute;left:-415.58%;top:-35.94%;width:588.91%;height:170.31%;max-width:none;display:block}
+
+  /* every section is exactly one screen tall, page scrolls normally */
+  .gd-sec{position:relative;z-index:1;width:100%;height:100vh;height:100svh;overflow:hidden;background:transparent}
+
+  /* ---------- section 1 — מיתוג ---------- */
+  .gd-mark{
+    position:absolute;left:calc(50% + 5.874vw);top:calc(50% + 0.045%);
+    transform:translate(-50%,-50%);
+    width:min(71px,4.109vw);aspect-ratio:71/118;overflow:hidden;pointer-events:none;
+  }
+  .gd-mark img{
+    position:absolute;left:-415.58%;top:-35.94%;
+    width:588.91%;height:170.31%;max-width:none;display:block;
+  }
+  .gd-word{
+    position:absolute;top:46.55%;left:calc(50% - 2.922vw);transform:translateX(-50%);
+    width:min(181px,10.47vw);text-align:center;white-space:nowrap;
+    font-size:min(80px,4.63vw);font-weight:400;line-height:.85;color:#fff;
+  }
+
+  /* ---------- section 5 — מודעות גרפיות ---------- */
+  .ga-mark{
+    position:absolute;left:64.67%;top:calc(50% + 0.045%);
+    transform:translate(-50%,-50%);
+    width:min(71px,4.109vw);aspect-ratio:71/118;overflow:hidden;pointer-events:none;
+  }
+  .ga-mark img{
+    position:absolute;left:-415.58%;top:-35.94%;
+    width:588.91%;height:170.31%;max-width:none;display:block;
+  }
+  .ga-word{
+    position:absolute;top:46.46%;right:39.18%;
+    width:min(475px,27.49vw);text-align:right;white-space:nowrap;
+    font-size:min(80px,4.63vw);font-weight:400;line-height:.85;color:#fff;
+  }
+
+  /* ---------- section 6 — dome gallery ---------- */
+  .sphere-root{
+    position:relative;width:100%;height:100%;
+    --radius:520px;--viewer-pad:72px;
+    --circ:calc(var(--radius) * 3.14);
+    --rot-y:calc((360deg / var(--segments-x)) / 2);
+    --rot-x:calc((360deg / var(--segments-y)) / 2);
+    --item-width:calc(var(--circ) / var(--segments-x));
+    --item-height:calc(var(--circ) / var(--segments-y));
+  }
+  .sphere-root *{box-sizing:border-box}
+  .sphere,.item,.item__image{transform-style:preserve-3d}
+  main.sphere-main{
+    position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;
+    touch-action:none;user-select:none;-webkit-user-select:none;background:transparent;cursor:grab;
+  }
+  main.sphere-main:active{cursor:grabbing}
+  .stage{width:100%;height:100%;display:grid;place-items:center;perspective:calc(var(--radius) * 2);perspective-origin:50% 50%;contain:layout paint size}
+  .sphere{transform:translateZ(calc(var(--radius) * -1));will-change:transform}
+  .overlay,.overlay--blur{position:absolute;inset:0;margin:auto;z-index:3;pointer-events:none}
+  .overlay{background-image:radial-gradient(rgba(235,235,235,0) 65%,var(--overlay-blur-color,#000) 100%)}
+  .overlay--blur{
+    -webkit-mask-image:radial-gradient(rgba(235,235,235,0) 70%,var(--overlay-blur-color,#000) 90%);
+    mask-image:radial-gradient(rgba(235,235,235,0) 70%,var(--overlay-blur-color,#000) 90%);
+    backdrop-filter:blur(3px);
+  }
+  .item{
+    width:calc(var(--item-width) * var(--item-size-x));
+    height:calc(var(--item-height) * var(--item-size-y));
+    position:absolute;top:-999px;bottom:-999px;left:-999px;right:-999px;margin:auto;
+    transform-origin:50% 50%;backface-visibility:hidden;transition:transform 300ms;
+    transform:rotateY(calc(var(--rot-y) * (var(--offset-x) + ((var(--item-size-x) - 1) / 2)) + var(--rot-y-delta,0deg)))
+      rotateX(calc(var(--rot-x) * (var(--offset-y) - ((var(--item-size-y) - 1) / 2)) + var(--rot-x-delta,0deg)))
+      translateZ(var(--radius));
+  }
+  .item__image{
+    position:absolute;display:block;inset:10px;border-radius:var(--tile-radius,12px);
+    background:transparent;overflow:hidden;backface-visibility:hidden;transition:transform 300ms;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;pointer-events:auto;transform:translateZ(0);
+  }
+  .item__image:focus{outline:none}
+  .item__image:hover{transform:translateZ(0) scale(1.25);z-index:6}
+  .item__image img{width:100%;height:100%;object-fit:cover;pointer-events:none;backface-visibility:hidden;filter:var(--image-filter,none)}
+  .viewer{position:absolute;inset:0;z-index:20;pointer-events:none;display:flex;align-items:center;justify-content:center;padding:var(--viewer-pad)}
+  .viewer .frame{height:100%;aspect-ratio:1;border-radius:var(--enlarge-radius,32px);display:flex}
+  @media (max-aspect-ratio:1/1){.viewer .frame{height:auto;width:100%}}
+  .viewer .scrim{position:absolute;inset:0;z-index:10;background:rgba(0,0,0,.72);pointer-events:none;opacity:0;transition:opacity .5s ease;backdrop-filter:blur(8px)}
+  .sphere-root[data-enlarging='true'] .viewer .scrim{opacity:1;pointer-events:all}
+  .viewer .enlarge{position:absolute;z-index:30;border-radius:var(--enlarge-radius,32px);overflow:hidden;transform-origin:top left;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .viewer .enlarge img{width:100%;height:100%;object-fit:contain;filter:var(--image-filter,none)}
+  .sphere-root .enlarge-closing img{filter:var(--image-filter,none)}
+  .edge-fade{position:absolute;left:0;right:0;height:120px;z-index:5;pointer-events:none;background:linear-gradient(to bottom,transparent,var(--overlay-blur-color,#000))}
+  .edge-fade--top{top:0;transform:rotate(180deg)}
+  .edge-fade--bottom{bottom:0}
+  .gd-sec[data-gd="6"] dome-gallery{position:absolute;inset:0}
+
+  /* ---------- section 8 — גרפיקה לדפוס ---------- */
+  .gd-sec[data-gd="8"]{display:flex;align-items:center;justify-content:center}
+  .pr-rollup{position:absolute;left:10.36%;top:20.59%;width:24.36%;height:73.14%;border-radius:min(30px,1.74vw);overflow:hidden}
+  .pr-rollup img{position:absolute;left:-38.6%;top:.04%;width:194.06%;height:100%;max-width:none;display:block}
+  .pr-flyer{position:absolute;left:37.04%;top:20.32%;width:33.33%;height:36.08%;border-radius:min(30px,1.74vw);overflow:hidden}
+  .pr-flyer img{width:100%;height:100%;object-fit:cover;display:block}
+  .pr-billboard{position:absolute;left:37.04%;top:60.07%;width:39.87%;height:33.66%;border-radius:min(30px,1.74vw);overflow:hidden}
+  .pr-billboard img{width:100%;height:100%;object-fit:cover;display:block}
+  .pr-invite{position:absolute;left:63.77%;top:20.32%;width:41.03%;height:81.20%;pointer-events:none;z-index:3}
+  .pr-invite img{width:100%;height:100%;object-fit:contain;display:block}
+
+  #menu-overlay{
+    position:fixed;inset:0;z-index:11;
+    background:
+      radial-gradient(ellipse 80% 70% at 85% 40%,rgba(60,95,149,.55) 0%,transparent 70%),
+      radial-gradient(ellipse 90% 80% at 20% 90%,rgba(20,35,60,.9) 0%,transparent 60%),
+      #060a14;
+    opacity:0;visibility:hidden;
+    transition:opacity .5s ease,visibility .5s ease;
+    overflow:hidden;
+  }
+  #menu-overlay.open{opacity:1;visibility:visible}
+  #menu-overlay.open ~ .rail{display:none}
+  #menu-overlay .mo-portraits{
+    position:absolute;left:0;top:0;width:55%;height:100%;z-index:2;
+  }
+  #menu-overlay .mo-dark{
+    position:absolute;left:8.5%;top:9.5%;width:min(826px,87%);height:auto;
+    transition:opacity .5s ease;
+  }
+  #menu-overlay .mo-light{
+    position:absolute;left:calc(4.7% - 30px);top:5.1%;width:min(920px,96.7%);height:auto;
+    opacity:0;transition:opacity .5s ease;
+  }
+  #menu-overlay .mo-portraits:hover .mo-light{opacity:1;}
+  #menu-overlay .mo-portraits:hover .mo-dark{opacity:0;}
+  #menu-overlay .mo-earth{
+    position:absolute;left:52%;top:65%;transform:translateX(-50%) rotate(90deg);width:min(2142px,124vw);height:auto;z-index:3;pointer-events:none;
+  }
+  #menu-overlay .mo-nav{
+    position:absolute;left:71%;top:41%;transform:translate(-50%,-50%);
+    display:flex;flex-direction:column;align-items:center;gap:14px;z-index:4;
+  }
+  #menu-overlay .mo-nav a{
+    font-size:clamp(34px,5.8vw,96px);font-weight:400;
+    background:linear-gradient(to left,#8da8cb,#ffffff);-webkit-background-clip:text;background-clip:text;color:transparent;
+    text-decoration:none;letter-spacing:.02em;transition:opacity .3s ease;
+    direction:rtl;line-height:1.18;white-space:nowrap;
+  }
+  .glitch{
+    --glitch-bg:transparent; /* בלי רקע — תזוזה בלבד */
+    --glitch-dur:.7s;        /* אורך הפרץ */
+    --glitch-shift:3px;      /* עוצמת ההזזה לצדדים */
+
+    position:relative;
+    display:inline-block;
+    color:inherit;
+    border:0;
+    padding:0;
+    margin:0;
+    cursor:pointer;
+    text-decoration:none;
+    -webkit-font-smoothing:antialiased;
+  }
+  .glitch::before,
+  .glitch::after{
+    content:attr(data-text);
+    position:absolute;
+    inset:0;
+    color:inherit;                 /* בלי צבעים, אותו צבע כמו הטקסט */
+    background:var(--glitch-bg);
+    opacity:0;
+    pointer-events:none;
+  }
+  /* הכפתורים בתפריט צבועים בגרדיאנט — הרצועות יורשות אותו בדיוק */
+  #menu-overlay .mo-nav a.glitch::before,
+  #menu-overlay .mo-nav a.glitch::after{
+    background:linear-gradient(to left,#8da8cb,#ffffff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    white-space:nowrap;direction:rtl;
+  }
+
+  /* המחלקה מתווספת ומוסרת ב-JS, ולכן הפרץ קורה פעם אחת */
+  .glitch.is-glitching::before{
+    opacity:1;
+    clip-path:inset(14% 0 56% 0);
+    animation:glitch-a var(--glitch-dur) steps(2,end) 1 both;
+  }
+  .glitch.is-glitching::after{
+    opacity:1;
+    clip-path:inset(60% 0 14% 0);
+    animation:glitch-b var(--glitch-dur) steps(2,end) 1 both;
+  }
+
+  /* הרצועות מתפרקות חזק בהתחלה ונרגעות לאפס בסוף */
+  @keyframes glitch-a{
+    0%  {transform:translateX(calc(var(--glitch-shift) * -1))}
+    15% {transform:translateX(calc(var(--glitch-shift) * .7))}
+    30% {transform:translateX(calc(var(--glitch-shift) * -.8))}
+    45% {transform:translateX(calc(var(--glitch-shift) * .45))}
+    60% {transform:translateX(calc(var(--glitch-shift) * -.3))}
+    78% {transform:translateX(calc(var(--glitch-shift) * .15))}
+    100%{transform:translateX(0)}
+  }
+  @keyframes glitch-b{
+    0%  {transform:translateX(var(--glitch-shift))}
+    15% {transform:translateX(calc(var(--glitch-shift) * -.7))}
+    30% {transform:translateX(calc(var(--glitch-shift) * .8))}
+    45% {transform:translateX(calc(var(--glitch-shift) * -.45))}
+    60% {transform:translateX(calc(var(--glitch-shift) * .3))}
+    78% {transform:translateX(calc(var(--glitch-shift) * -.15))}
+    100%{transform:translateX(0)}
+  }
+
+  .glitch:focus-visible{
+    outline:2px solid currentColor;
+    outline-offset:6px;
+    border-radius:3px;
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .glitch::before,.glitch::after{display:none}
+    .glitch.is-glitching{opacity:.75;transition:opacity .2s}
+  }
+  #menu-overlay .mo-dots{
+    display:flex;gap:40px;margin-top:28px;justify-content:center;direction:ltr;
+  }
+  #menu-overlay .mo-dots a{
+    width:min(78px,5.4vw);height:min(78px,5.4vw);border-radius:50%;background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .3s ease,opacity .3s ease;
+  }
+  #menu-overlay .mo-dots a:hover{transform:translateY(-4px);opacity:.85}
+  #menu-overlay .mo-dots a img{width:44%;height:44%;display:block}
+
+
+  /* ---------- section 9 — צרו קשר ---------- */
+  .gd-sec[data-gd="9"]{display:flex;align-items:center;justify-content:center}
+  .ct-panel{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:82.18%;height:59.36%;border-radius:min(30px,1.74vw);
+    border:1px solid #2e2e2e;overflow:hidden;
+  }
+  .ct-panel img{width:100%;height:100%;object-fit:cover;display:block}
+  .ct-kicker{
+    position:absolute;left:50%;top:40.02%;transform:translate(-50%,-50%);
+    width:23.26%;text-align:center;white-space:nowrap;
+    font-size:min(35px,2.03vw);font-weight:400;line-height:.85;color:#fa9154;
+  }
+  .ct-title{
+    position:absolute;left:50%;top:44.14%;transform:translateX(-50%);
+    width:53.24%;text-align:center;white-space:nowrap;
+    font-size:min(100px,5.79vw);font-weight:700;line-height:.77;
+    background:linear-gradient(to right,#8da8cb,#ffffff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+  }
+  .ct-cta{
+    position:absolute;left:43.87%;top:55.60%;width:12.27%;height:5.82%;
+    border-radius:min(10px,.58vw);background:linear-gradient(to left,#e0783c,#fa9154);
+    display:flex;align-items:center;justify-content:center;gap:.55em;
+    text-decoration:none;color:#fff;font-weight:600;font-size:min(24px,1.39vw);
+    transition:filter .3s ease,transform .3s ease;
+  }
+  .ct-cta:hover{filter:brightness(1.08);transform:translateY(-2px)}
+  .ct-cta img{width:1.1em;height:1.1em;display:block}
+  .ct-saturn{
+    position:absolute;left:8.33%;top:16.47%;width:23.85%;aspect-ratio:1;
+    display:flex;align-items:center;justify-content:center;pointer-events:none;
+  }
+  .ct-saturn div{width:86.17%;height:86.17%;transform:rotate(10.14deg)}
+  .ct-earth{
+    position:absolute;left:70.25%;top:47.72%;width:20.09%;aspect-ratio:1;
+    display:flex;align-items:center;justify-content:center;pointer-events:none;
+  }
+  .ct-earth div{width:71.25%;height:71.25%;transform:rotate(127.94deg)}
+  .ct-saturn img,.ct-earth img{width:100%;height:100%;object-fit:contain;display:block}
+
+  /* ---------- sticky site header ---------- */
+  .logo{position:fixed;top:clamp(16px,2.8vh,32px);left:2.2vw;width:min(170px,11vw);z-index:20}
+  .logo img{width:100%;display:block}
+  .menu{position:fixed;top:clamp(16px,2.8vh,32px);right:2.2vw;z-index:20;width:min(78px,5.2vw);aspect-ratio:78/76;cursor:pointer}
+  .menu i{position:absolute;display:block;background:#fff;width:44.3%;height:9.7%}
+  .menu i:nth-child(1){left:0;top:0}
+  .menu i:nth-child(2){left:0;top:19.4%}
+  .menu i:nth-child(3){left:0;top:38.8%}
+  .menu i:nth-child(4){left:53.2%;top:9.7%}
+  .menu i:nth-child(5){left:53.2%;top:29.1%}
+  .menu i:nth-child(6){left:53.2%;top:48.5%}
+
+  /* ---------- section 2 — מדריכים ב+ ---------- */
+  /* the whole composition keeps the figma aspect ratio, so nothing stretches
+     and no image inside a container gets cropped — it just letterboxes */
+  .gd-sec[data-gd="2"],.gd-sec[data-gd="3"]{display:flex;align-items:center;justify-content:center}
+  .gd-stage{
+    position:relative;overflow:hidden;
+    aspect-ratio:1728/1117;
+    width:min(100%,calc(100vh * 1728 / 1117));
+    width:min(100%,calc(100svh * 1728 / 1117));
+  }
+  .gp-card{position:absolute;left:79.21%;top:74.93%;width:11.86%;height:18.26%;border-radius:min(20px,1.16vw);background:#fff}
+  .gp-mark{position:absolute;left:5.37%;top:0;width:88.78%;height:99.02%;object-fit:contain;display:block}
+  .gp-board{position:absolute;left:7.685%;top:16.38%;width:30.73%;height:65.17%;border-radius:min(20px,1.16vw);overflow:hidden}
+  .gp-board img{position:absolute;left:0;top:-8.34%;width:100%;height:109.54%;max-width:none;display:block}
+  .gp-bottle{position:absolute;left:-5.486%;top:28.75%;width:40.02%;height:76.97%;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:3}
+  .gp-bottle div{width:85.32%;height:91.51%;transform:rotate(-7.82deg)}
+  .gp-bottle img{width:100%;height:100%;object-fit:contain;display:block}
+  .gp-grid{position:absolute;left:40.56%;top:16.38%;width:50.52%;height:55.24%;border-radius:min(20px,1.16vw);overflow:hidden}
+  .gp-grid img{width:100%;height:100%;object-fit:contain;display:block}
+  .gp-swatches{position:absolute;left:40.56%;top:74.93%;width:36.92%;height:18.08%;border-radius:min(20px,1.16vw);overflow:hidden;display:flex;direction:ltr}
+  .gp-swatches div{flex:1}
+  .gp-sw1{background:#027f40}
+  .gp-sw2{background:#01e673}
+  .gp-sw3{background:#00c05f}
+  .gp-sw4{background:#03ff7f}
+
+  /* ---------- magic bento — spotlight + border glow + tilt + magnetism ---------- */
+  .mb-card{
+    --glow-x:50%;--glow-y:50%;--glow-intensity:0;--glow-radius:390px;
+    transition:transform .18s ease-out,box-shadow .3s ease;
+    transform-style:preserve-3d;
+  }
+  .mb-card{z-index:2}
+  /* glow lives behind the card and bleeds outwards only — nothing inside */
+  .mb-glow{
+    position:absolute;pointer-events:none;z-index:1;
+    border-radius:min(28px,1.6vw);
+    filter:blur(16px);
+    opacity:0;transition:opacity .3s ease;
+  }
+  /* ---------- section 3 — Xplore ---------- */
+  .xp-login{position:absolute;left:8.808%;top:17.10%;width:35.94%;height:33.66%;border-radius:min(20px,1.16vw);overflow:hidden;background:#fff}
+  .xp-login img{width:100%;height:100%;object-fit:contain;display:block}
+  .xp-home{position:absolute;left:8.808%;top:54.07%;width:35.94%;height:36.62%;border-radius:min(20px,1.16vw);overflow:hidden;background:#fff}
+  .xp-home img{width:100%;height:100%;object-fit:contain;display:block}
+  .xp-logocard{position:absolute;left:46.87%;top:17.10%;width:44.32%;height:33.63%;border-radius:min(20px,1.16vw);overflow:hidden;background:#fff}
+  .xp-logocard img{position:absolute;left:13.95%;top:21.93%;width:72.08%;height:56.16%;object-fit:contain}
+  .xp-halves{position:absolute;left:46.87%;top:53.98%;width:18.375%;height:36.63%;border-radius:min(20px,1.16vw);overflow:hidden;display:flex;flex-direction:column}
+  .xp-h1{flex:1;background:#eff8cf}
+  .xp-h2{flex:1;background:#95d65e}
+  .xp-markcard{position:absolute;left:67.35%;top:54.05%;width:23.68%;height:36.63%;border-radius:min(20px,1.16vw);overflow:hidden}
+  .xp-markcard img{width:100%;height:100%;display:block}
+
+  /* ---------- section 4 — Drive-In ---------- */
+  .gd-sec[data-gd="4"]{display:flex;align-items:center;justify-content:center}
+  .di-devices{position:absolute;left:5.96%;top:14.5%;width:47.28%;height:40.55%;pointer-events:none;z-index:3}
+  .di-devices img{width:100%;height:100%;object-fit:contain;display:block}
+  .di-grid{position:absolute;left:55.21%;top:15.58%;width:36.05%;height:55.77%;border-radius:min(20px,1.16vw);overflow:hidden}
+  .di-grid img{width:100%;height:100%;object-fit:contain;display:block}
+  .di-stationery{position:absolute;left:10.36%;top:54.34%;width:39.53%;height:40.73%;border-radius:min(20px,1.16vw);overflow:hidden;background:#fff}
+  .di-stationery img{width:100%;height:100%;object-fit:contain;display:block}
+  .di-colors{position:absolute;left:55.21%;top:74.75%;width:36.05%;height:18.26%;border-radius:min(20px,1.16vw);overflow:hidden;display:flex;direction:ltr}
+  .di-c1{flex:0 0 49.76%;background:#000b1f}
+  .di-c2{flex:1;background:#0044ff}
+
+  /* ---------- nav rail (matches the main site) ---------- */
+  .rail{
+    position:fixed;top:50%;right:2.6vw;transform:translateY(-50%);z-index:30;
+    display:flex;flex-direction:column;gap:14px;
+  }
+  .rail b{position:relative;display:block;width:7px;height:7px;cursor:pointer}
+  .rail b::before{content:'';position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,.22);transition:.45s cubic-bezier(.2,.8,.2,1)}
+  .rail b.on::before{background:#fa9154;box-shadow:0 0 14px rgba(250,145,84,.9);transform:scale(1.6)}
+  .rail b .tip{
+    position:absolute;top:50%;right:calc(100% + 14px);transform:translateY(-50%);
+    display:flex;align-items:center;direction:rtl;
+    height:36px;max-width:0;padding:0;overflow:hidden;border-radius:999px;
+    background:linear-gradient(90deg,#E0783C 0%,#FA9154 100%);
+    box-shadow:0 6px 24px rgba(224,120,60,.35);
+    color:#fff;font-family:'IBM Plex Sans Hebrew',sans-serif;font-size:13px;font-weight:500;letter-spacing:.02em;line-height:1;white-space:nowrap;
+    opacity:0;pointer-events:none;
+    transition:max-width .5s cubic-bezier(.2,.8,.2,1),padding .5s cubic-bezier(.2,.8,.2,1),opacity .25s ease;
+  }
+  .rail b:hover .tip{max-width:280px;padding:0 18px;opacity:1}
+
+  .mb-spotlight{
+    position:fixed;width:800px;height:800px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,
+      rgba(255,255,255,.10) 0%,
+      rgba(255,255,255,.055) 15%,
+      rgba(255,255,255,.03) 25%,
+      rgba(255,255,255,.015) 40%,
+      rgba(255,255,255,.008) 65%,
+      transparent 70%);
+    z-index:200;opacity:0;transform:translate(-50%,-50%);
+    mix-blend-mode:screen;will-change:transform,opacity;
+    transition:opacity .25s ease-out;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-mark"><img src="assets/logo.png" alt=""></div>
+
+<a class="logo" href="index.html"><img src="assets/logo.png" alt="סטודיו רוני"></a>
+<div class="menu"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+<div id="menu-overlay">
+  <div class="mo-portraits">
+    <img class="mo-dark" src="roni-portrait.png" alt="">
+    <img class="mo-light" src="roni-portrait-light.png" alt="">
+  </div>
+  <img class="mo-earth" src="earth-globe.png" alt="">
+  <nav class="mo-nav">
+    <a class="glitch" href="#" data-text="פרויקטים">פרויקטים</a>
+    <a class="glitch" href="graphic-design.html" data-text="עיצוב גרפי">עיצוב גרפי</a>
+    <a class="glitch" href="#" data-text="צרו קשר">צרו קשר</a>
+    <div class="mo-dots">
+      <a href="mailto:ronieli770@gmail.com" aria-label="אימייל"><img src="menu-icon-mail.svg" alt=""></a>
+      <a href="https://wa.me/972502463500" target="_blank" rel="noopener" aria-label="וואטסאפ"><img src="menu-icon-whatsapp.svg" alt=""></a>
+      <a href="tel:0502463500" aria-label="טלפון"><img src="menu-icon-phone.svg" alt=""></a>
+    </div>
+  </nav>
+</div>
+
+<div class="rail" id="rail"></div>
+
+<section class="gd-sec" id="g-mitug" data-gd="1">
+  <div class="gd-mark"><img src="assets/logo.png" alt=""></div>
+  <p class="gd-word">מיתוג</p>
+</section>
+
+<section class="gd-sec" id="s2" data-gd="2">
+  <div class="gd-stage">
+    <div class="gp-board mb-card"><img src="assets/gp-board.png" alt=""></div>
+    <div class="gp-bottle"><div><img src="assets/gp-bottle.png" alt=""></div></div>
+    <div class="gp-grid mb-card"><img src="assets/gp-grid.jpg" alt=""></div>
+    <div class="gp-swatches mb-card">
+      <div class="gp-sw1"></div>
+      <div class="gp-sw2"></div>
+      <div class="gp-sw3"></div>
+      <div class="gp-sw4"></div>
+    </div>
+    <div class="gp-card mb-card"><img class="gp-mark" src="assets/gp-mark.png" alt=""></div>
+  </div>
+</section>
+
+<section class="gd-sec" id="s3" data-gd="3">
+  <div class="gd-stage">
+    <div class="xp-login mb-card"><img src="assets/xp-login.png" alt=""></div>
+    <div class="xp-logocard mb-card"><img src="assets/xp-logo.png" alt=""></div>
+    <div class="xp-home mb-card"><img src="assets/xp-home.png" alt=""></div>
+    <div class="xp-halves mb-card">
+      <div class="xp-h1"></div>
+      <div class="xp-h2"></div>
+    </div>
+    <div class="xp-markcard mb-card"><img src="assets/xp-mark.svg" alt=""></div>
+  </div>
+</section>
+
+<section class="gd-sec" id="s4" data-gd="4">
+  <div class="gd-stage">
+    <div class="di-grid mb-card"><img src="assets/di-grid.png" alt=""></div>
+    <div class="di-stationery mb-card"><img src="assets/di-stationery.png" alt=""></div>
+    <div class="di-colors mb-card">
+      <div class="di-c1"></div>
+      <div class="di-c2"></div>
+    </div>
+    <div class="di-devices"><img src="assets/di-devices.png" alt=""></div>
+  </div>
+</section>
+
+<section class="gd-sec" id="g-ads" data-gd="5">
+  <div class="ga-mark"><img src="assets/logo.png" alt=""></div>
+  <p class="ga-word">מודעות גרפיות</p>
+</section>
+
+
+<section class="gd-sec" data-gd="6">
+  <dome-gallery images="assets/ads/ad-01.jpg,assets/ads/ad-02.jpg,assets/ads/ad-03.jpg,assets/ads/ad-04.jpg,assets/ads/ad-05.jpg,assets/ads/ad-06.jpg,assets/ads/ad-07.jpg,assets/ads/ad-08.jpg,assets/ads/ad-09.jpg,assets/ads/ad-10.jpg,assets/ads/ad-11.jpg,assets/ads/ad-12.jpg,assets/ads/ad-13.jpg,assets/ads/ad-14.jpg,assets/ads/ad-15.jpg,assets/ads/ad-16.jpg,assets/ads/ad-17.jpg,assets/ads/ad-18.jpg,assets/ads/ad-19.jpg,assets/ads/ad-20.jpg,assets/ads/ad-21.jpg,assets/ads/ad-22.jpg,assets/ads/ad-23.jpg,assets/ads/ad-24.jpg,assets/ads/ad-25.jpg,assets/ads/ad-26.jpg,assets/ads/ad-27.jpg,assets/ads/ad-28.jpg,assets/ads/ad-29.jpg,assets/ads/ad-30.jpg,assets/ads/ad-31.jpg,assets/ads/ad-32.jpg,assets/ads/ad-33.jpg,assets/ads/ad-34.jpg,assets/ads/ad-35.jpg,assets/ads/ad-36.jpg,assets/ads/ad-37.jpg,assets/ads/ad-38.jpg,assets/ads/ad-39.jpg,assets/ads/ad-40.jpg,assets/ads/ad-41.jpg,assets/ads/ad-42.jpg,assets/ads/ad-43.jpg,assets/ads/ad-44.jpg,assets/ads/ad-45.jpg,assets/ads/ad-46.jpg,assets/ads/ad-47.jpg,assets/ads/ad-48.jpg,assets/ads/ad-49.jpg,assets/ads/ad-50.jpg,assets/ads/ad-51.jpg,assets/ads/ad-52.jpg,assets/ads/ad-53.jpg,assets/ads/ad-54.jpg,assets/ads/ad-55.jpg,assets/ads/ad-56.jpg,assets/ads/ad-57.jpg,assets/ads/ad-58.jpg,assets/ads/ad-59.jpg,assets/ads/ad-60.jpg,assets/ads/ad-61.jpg,assets/ads/ad-62.jpg"
+    min-radius="450" max-vertical-rotation-deg="6" segments="22"
+    drag-dampening="1" grayscale="false" overlay-blur-color="#000000"
+    opened-image-width="auto" opened-image-height="50vh"></dome-gallery>
+</section>
+
+<section class="gd-sec" id="g-print" data-gd="7">
+  <div class="ga-mark"><img src="assets/logo.png" alt=""></div>
+  <p class="ga-word">גרפיקה לדפוס</p>
+</section>
+
+<section class="gd-sec" data-gd="8">
+  <div class="gd-stage">
+    <div class="pr-rollup mb-card"><img src="assets/pr-rollup.png" alt=""></div>
+    <div class="pr-flyer mb-card"><img src="assets/pr-flyer.png" alt=""></div>
+    <div class="pr-billboard mb-card"><img src="assets/pr-billboard.png" alt=""></div>
+    <div class="pr-invite"><img src="assets/pr-invite.png" alt=""></div>
+  </div>
+</section>
+
+<section class="gd-sec" id="g-contact" data-gd="9">
+  <div class="gd-stage">
+    <div class="ct-panel"><img src="assets/ct-panel.png" alt=""></div>
+    <div class="ct-saturn"><div><img src="assets/ct-saturn.png" alt=""></div></div>
+    <div class="ct-earth"><div><img src="assets/ct-earth.png" alt=""></div></div>
+    <p class="ct-kicker">יש לכם פרוייקט בראש?</p>
+    <p class="ct-title">בואו נעבוד על זה!</p>
+    <a class="ct-cta" href="https://wa.me/972502463500" target="_blank" rel="noopener"><img src="assets/ct-wa.svg" alt="">דברו איתי</a>
+  </div>
+</section>
+
+<script>
+(() => {
+  const GROUPS = [
+    { label: 'מיתוג', anchor: '#g-mitug' },
+    { label: 'מודעות גרפיות', anchor: '#g-ads' },
+    { label: 'גרפיקה לדפוס', anchor: '#g-print' },
+    { label: 'צרו קשר', anchor: '#g-contact' }
+  ];
+  const rail = document.getElementById('rail');
+  GROUPS.forEach(g => rail.insertAdjacentHTML('beforeend', '<b><span class="tip">' + g.label + '</span></b>'));
+  const dots = [...rail.children];
+  const setActive = n => dots.forEach((b, i) => b.classList.toggle('on', i === n));
+  dots.forEach((b, i) => b.addEventListener('click', () => {
+    const el = document.querySelector(GROUPS[i].anchor);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }));
+  const onScroll = () => {
+    let active = 0;
+    GROUPS.forEach((g, i) => {
+      const el = document.querySelector(g.anchor);
+      if (el && el.getBoundingClientRect().top <= innerHeight * 0.5) active = i;
+    });
+    setActive(active);
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+
+<script>
+(() => {
+  const RADIUS = 390;
+  const stages = [...document.querySelectorAll('.gd-stage')];
+  if (!stages.length) return;
+  if (window.innerWidth <= 768 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const spot = document.createElement('div');
+  spot.className = 'mb-spotlight';
+  document.body.appendChild(spot);
+
+  /* one glow layer per card, sitting behind it inside its own stage */
+  const PAD = 18;
+  const units = [];
+  stages.forEach(stage => {
+    [...stage.querySelectorAll('.mb-card')].forEach(card => {
+      const glow = document.createElement('div');
+      glow.className = 'mb-glow';
+      stage.appendChild(glow);
+      units.push({ stage, card, glow });
+    });
+  });
+  const cards = units.map(u => u.card);
+  const placeGlows = () => {
+    units.forEach(u => {
+      const s = u.stage.getBoundingClientRect();
+      const r = u.card.getBoundingClientRect();
+      u.glow.style.left = (r.left - s.left - PAD) + 'px';
+      u.glow.style.top = (r.top - s.top - PAD) + 'px';
+      u.glow.style.width = (r.width + PAD * 2) + 'px';
+      u.glow.style.height = (r.height + PAD * 2) + 'px';
+    });
+  };
+  placeGlows();
+  addEventListener('resize', placeGlows);
+  addEventListener('load', placeGlows);
+
+  const proximity = RADIUS * 0.5;
+  const fade = RADIUS * 0.75;
+
+  addEventListener('mousemove', e => {
+    let minD = Infinity;
+    units.forEach(u => {
+      const s = u.stage.getBoundingClientRect();
+      const inside = e.clientX >= s.left && e.clientX <= s.right && e.clientY >= s.top && e.clientY <= s.bottom;
+      if (!inside){
+        u.glow.style.opacity = '0';
+        return;
+      }
+      const r = u.card.getBoundingClientRect();
+      const cx = r.left + r.width/2, cy = r.top + r.height/2;
+      const d = Math.max(0, Math.hypot(e.clientX-cx, e.clientY-cy) - Math.max(r.width, r.height)/2);
+      minD = Math.min(minD, d);
+      let g = 0;
+      if (d <= proximity) g = 1;
+      else if (d <= fade) g = (fade - d) / (fade - proximity);
+      u.glow.style.opacity = String(g);
+      if (g > 0){
+        const gx = e.clientX - r.left + PAD;
+        const gy = e.clientY - r.top + PAD;
+        u.glow.style.background = `radial-gradient(${RADIUS}px circle at ${gx}px ${gy}px,`
+          + `rgba(255,255,255,.95) 0%,rgba(255,255,255,.5) 30%,transparent 62%)`;
+      }
+    });
+    spot.style.left = e.clientX + 'px';
+    spot.style.top = e.clientY + 'px';
+    spot.style.opacity = String(
+      minD <= proximity ? 0.8 :
+      minD <= fade ? ((fade - minD) / (fade - proximity)) * 0.8 : 0
+    );
+  }, { passive:true });
+
+  /* tilt + magnetism */
+  cards.forEach(c => {
+    c.addEventListener('mousemove', e => {
+      const r = c.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      const cx = r.width/2, cy = r.height/2;
+      const rx = ((y - cy) / cy) * -10;
+      const ry = ((x - cx) / cx) * 10;
+      const mx = (x - cx) * 0.05, my = (y - cy) * 0.05;
+      c.style.transform = `perspective(1000px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translate3d(${mx.toFixed(1)}px,${my.toFixed(1)}px,0)`;
+    }, { passive:true });
+    c.addEventListener('mouseleave', () => { c.style.transform = ''; });
+  });
+})();
+</script>
+
+<script src="dome-gallery.js"></script>
+
+<script>
+(() => {
+  const btn = document.querySelector('.menu');
+  const ov = document.getElementById('menu-overlay');
+  if (!btn || !ov) return;
+  btn.addEventListener('click', () => ov.classList.toggle('open'));
+  addEventListener('keydown', e => { if (e.key === 'Escape') ov.classList.remove('open'); });
+  /* one-shot glitch burst on hover */
+  document.querySelectorAll('.glitch').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      el.classList.remove('is-glitching');
+      void el.offsetWidth;
+      el.classList.add('is-glitching');
+    });
+    el.addEventListener('animationend', e => {
+      if (e.target === el) el.classList.remove('is-glitching');
+    });
+  });
+})();
+</script>
+</body>
+</html>

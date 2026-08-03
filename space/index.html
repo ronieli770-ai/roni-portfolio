@@ -88,21 +88,99 @@
   }
   #menu-overlay .mo-nav{
     position:absolute;left:71%;top:41%;transform:translate(-50%,-50%);
-    display:flex;flex-direction:column;align-items:center;gap:24px;z-index:4;
+    display:flex;flex-direction:column;align-items:center;gap:14px;z-index:4;
   }
   #menu-overlay .mo-nav a{
-    font-size:min(120px,7vw);font-weight:400;
+    font-size:clamp(34px,5.8vw,96px);font-weight:400;
     background:linear-gradient(to left,#8da8cb,#ffffff);-webkit-background-clip:text;background-clip:text;color:transparent;
     text-decoration:none;letter-spacing:.02em;transition:opacity .3s ease;
-    direction:rtl;line-height:1.38;
+    direction:rtl;line-height:1.18;white-space:nowrap;
   }
-  #menu-overlay .mo-nav a:hover{opacity:.7}
+  .glitch{
+    --glitch-bg:transparent; /* בלי רקע — תזוזה בלבד */
+    --glitch-dur:.7s;        /* אורך הפרץ */
+    --glitch-shift:3px;      /* עוצמת ההזזה לצדדים */
+
+    position:relative;
+    display:inline-block;
+    color:inherit;
+    border:0;
+    padding:0;
+    margin:0;
+    cursor:pointer;
+    text-decoration:none;
+    -webkit-font-smoothing:antialiased;
+  }
+  .glitch::before,
+  .glitch::after{
+    content:attr(data-text);
+    position:absolute;
+    inset:0;
+    color:inherit;                 /* בלי צבעים, אותו צבע כמו הטקסט */
+    background:var(--glitch-bg);
+    opacity:0;
+    pointer-events:none;
+  }
+  /* הכפתורים בתפריט צבועים בגרדיאנט — הרצועות יורשות אותו בדיוק */
+  #menu-overlay .mo-nav a.glitch::before,
+  #menu-overlay .mo-nav a.glitch::after{
+    background:linear-gradient(to left,#8da8cb,#ffffff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    white-space:nowrap;direction:rtl;
+  }
+
+  /* המחלקה מתווספת ומוסרת ב-JS, ולכן הפרץ קורה פעם אחת */
+  .glitch.is-glitching::before{
+    opacity:1;
+    clip-path:inset(14% 0 56% 0);
+    animation:glitch-a var(--glitch-dur) steps(2,end) 1 both;
+  }
+  .glitch.is-glitching::after{
+    opacity:1;
+    clip-path:inset(60% 0 14% 0);
+    animation:glitch-b var(--glitch-dur) steps(2,end) 1 both;
+  }
+
+  /* הרצועות מתפרקות חזק בהתחלה ונרגעות לאפס בסוף */
+  @keyframes glitch-a{
+    0%  {transform:translateX(calc(var(--glitch-shift) * -1))}
+    15% {transform:translateX(calc(var(--glitch-shift) * .7))}
+    30% {transform:translateX(calc(var(--glitch-shift) * -.8))}
+    45% {transform:translateX(calc(var(--glitch-shift) * .45))}
+    60% {transform:translateX(calc(var(--glitch-shift) * -.3))}
+    78% {transform:translateX(calc(var(--glitch-shift) * .15))}
+    100%{transform:translateX(0)}
+  }
+  @keyframes glitch-b{
+    0%  {transform:translateX(var(--glitch-shift))}
+    15% {transform:translateX(calc(var(--glitch-shift) * -.7))}
+    30% {transform:translateX(calc(var(--glitch-shift) * .8))}
+    45% {transform:translateX(calc(var(--glitch-shift) * -.45))}
+    60% {transform:translateX(calc(var(--glitch-shift) * .3))}
+    78% {transform:translateX(calc(var(--glitch-shift) * -.15))}
+    100%{transform:translateX(0)}
+  }
+
+  .glitch:focus-visible{
+    outline:2px solid currentColor;
+    outline-offset:6px;
+    border-radius:3px;
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .glitch::before,.glitch::after{display:none}
+    .glitch.is-glitching{opacity:.75;transition:opacity .2s}
+  }
   #menu-overlay .mo-dots{
-    display:flex;gap:40px;margin-top:40px;justify-content:center;
+    display:flex;gap:40px;margin-top:28px;justify-content:center;direction:ltr;
   }
-  #menu-overlay .mo-dots span{
+  #menu-overlay .mo-dots a{
     width:min(78px,5.4vw);height:min(78px,5.4vw);border-radius:50%;background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .3s ease,opacity .3s ease;
   }
+  #menu-overlay .mo-dots a:hover{transform:translateY(-4px);opacity:.85}
+  #menu-overlay .mo-dots a img{width:44%;height:44%;display:block}
 
   .rail{
     position:fixed;top:50%;right:2.6vw;transform:translateY(-50%);z-index:30;
@@ -385,9 +463,14 @@
   </div>
   <img class="mo-earth" src="earth-globe.png" alt="">
   <nav class="mo-nav">
-    <a href="#">פרויקטים</a>
-    <a href="#">צרו קשר</a>
-    <div class="mo-dots"><span></span><span></span><span></span></div>
+    <a class="glitch" href="#" data-text="פרויקטים">פרויקטים</a>
+    <a class="glitch" href="graphic-design.html" data-text="עיצוב גרפי">עיצוב גרפי</a>
+    <a class="glitch" href="#" data-text="צרו קשר">צרו קשר</a>
+    <div class="mo-dots">
+      <a href="mailto:ronieli770@gmail.com" aria-label="אימייל"><img src="menu-icon-mail.svg" alt=""></a>
+      <a href="https://wa.me/972502463500" target="_blank" rel="noopener" aria-label="וואטסאפ"><img src="menu-icon-whatsapp.svg" alt=""></a>
+      <a href="tel:0502463500" aria-label="טלפון"><img src="menu-icon-phone.svg" alt=""></a>
+    </div>
   </nav>
 </div>
 <div class="rail" id="rail"></div>
@@ -440,7 +523,7 @@
       <div data-mars-bg style="position:absolute;inset:0;background:#000;transition:opacity .6s ease;pointer-events:none;"></div>
 
 
-      <mars-globe idle="0.045" ease="0.06" zoom="1" offx="0.42" offy="-0.42" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:auto;cursor:grab;"></mars-globe>
+      <mars-globe idle="0.045" ease="0.06" zoom="1.20" offx="0" offy="0" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:auto;cursor:grab;"></mars-globe>
 
       <div data-scrim style="position:absolute;inset:0;background:radial-gradient(75% 70% at 82% 78%,rgba(4,3,2,0.72) 0%,rgba(4,3,2,0.42) 42%,rgba(4,3,2,0) 74%);opacity:0;pointer-events:none;"></div>
 
@@ -579,13 +662,13 @@
 
     <h2 style="position:absolute;right:3.82%;top:14.77%;margin:0;text-align:right;font-weight:400;font-size:min(80px,4.63vw);line-height:.9625;background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent">מוכנים להמריא?</h2>
 
-    <a href="tel:0502463500" style="position:absolute;right:3.88%;top:25.51%;width:2.2%"><img src="icon-phone.svg" alt="" style="display:block;width:100%"></a>
+    <a href="tel:0502463500" style="position:absolute;right:3.88%;top:24.9%;width:2.6%;aspect-ratio:1;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center"><img src="menu-icon-phone.svg" alt="" style="display:block;width:48%"></a>
     <a href="tel:0502463500" style="position:absolute;right:7.06%;top:25.87%;margin:0;color:#fff;font-weight:600;font-size:min(30px,1.74vw);line-height:normal;text-decoration:none">050-2463500</a>
-    <a href="mailto:ronieli770@gmail.com" style="position:absolute;left:75.93%;top:26.23%;width:2.08%"><img src="icon-mail.svg" alt="" style="display:block;width:100%"></a>
+    <a href="mailto:ronieli770@gmail.com" style="position:absolute;left:75.93%;top:24.9%;width:2.6%;aspect-ratio:1;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center"><img src="menu-icon-mail.svg" alt="" style="display:block;width:48%"></a>
     <a href="mailto:ronieli770@gmail.com" style="position:absolute;right:25.17%;top:25.51%;margin:0;color:#fff;font-weight:600;font-size:min(30px,1.74vw);line-height:normal;direction:ltr;text-decoration:none">ronieli770@gmail.com</a>
 
     <div style="position:absolute;left:6.66%;top:36.65%;width:43.34%;height:57.44%;border-radius:20px;border:1px solid transparent;background:linear-gradient(252.1deg,rgba(255,255,255,0) 12.5%,rgba(255,255,255,.2) 87.5%) padding-box,linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.4) 100%) border-box;backdrop-filter:blur(42.3px);-webkit-backdrop-filter:blur(42.3px)">
-      <h3 style="position:absolute;left:50%;transform:translateX(-50%);top:8.51%;width:91.7%;margin:0;text-align:center;font-weight:500;font-size:min(45px,2.6vw);line-height:1.156;background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent">השאירו פרטים קצרים ונתחיל לבנות את האתר שישים אתכם בטופ.</h3>
+      <h3 style="position:absolute;left:50%;transform:translateX(-50%);top:7%;width:91.7%;margin:0;text-align:center;font-weight:500;font-size:min(35px,2.03vw);line-height:1.156;background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent">השאירו פרטים קצרים ונתחיל לבנות את האתר שישים אתכם בטופ.</h3>
       <input class="form-input" type="text" placeholder="שם מלא" style="left:50.97%;top:30.47%;width:39.09%;height:7.15%">
       <input class="form-input" type="tel" placeholder="טלפון" style="left:9.92%;top:30.47%;width:39.09%;height:7.15%">
       <input class="form-input" type="text" placeholder="שם העסק או לינק לאתר קיים (רשות)" style="left:9.92%;top:39.63%;width:80.02%;height:7.15%">
@@ -1120,6 +1203,46 @@
     setTimeout(() => { if (marsMode) projWrap.classList.remove('on'); }, 1000);
   }
 
+  /* ---------- contact form ---------- */
+  const formSec = projSections[5];
+  if (formSec){
+    const formBtn = formSec.querySelector('button');
+    const fInputs = [...formSec.querySelectorAll('.form-input')];
+    const btnHome = formBtn.textContent;
+    const v = i => fInputs[i].value.trim();
+    formBtn.addEventListener('click', async () => {
+      if (!v(0) || !v(1)){
+        formBtn.textContent = 'מלאו שם וטלפון כדי שנוכל לחזור אליכם';
+        setTimeout(() => { formBtn.textContent = btnHome; }, 2600);
+        return;
+      }
+      formBtn.disabled = true;
+      formBtn.textContent = 'שולח...';
+      try {
+        const r = await fetch('https://formsubmit.co/ajax/ronieli770@gmail.com', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            _subject: 'ליד חדש מהאתר — ' + v(0),
+            _template: 'table',
+            'שם מלא': v(0),
+            'טלפון': v(1),
+            'שם העסק או אתר קיים': v(2),
+            'תחום העסק': v(3),
+            'יעד האתר': v(4)
+          })
+        });
+        if (!r.ok) throw new Error();
+        formBtn.textContent = 'הטופס שוגר! נדבר בקרוב 🚀';
+        fInputs.forEach(i => { i.value = ''; });
+      } catch (err) {
+        formBtn.disabled = false;
+        formBtn.textContent = 'משהו השתבש — נסו שוב';
+        setTimeout(() => { formBtn.textContent = btnHome; }, 3000);
+      }
+    });
+  }
+
   function goSection(n){
     if (transPlaying) return;
     if (n <= LAST){
@@ -1205,6 +1328,18 @@
   const menuOv = document.getElementById('menu-overlay');
   menuBtn.addEventListener('click', () => {
     menuOv.classList.toggle('open');
+  });
+
+  /* one-shot glitch burst on hover */
+  document.querySelectorAll('.glitch').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      el.classList.remove('is-glitching');
+      void el.offsetWidth;
+      el.classList.add('is-glitching');
+    });
+    el.addEventListener('animationend', e => {
+      if (e.target === el) el.classList.remove('is-glitching');
+    });
   });
 })();
 </script>
