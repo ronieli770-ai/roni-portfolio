@@ -70,6 +70,7 @@
   }
   #menu-overlay.open{opacity:1;visibility:visible}
   #menu-overlay.open ~ #rail{display:none}
+  #menu-overlay.open ~ .wa-fab{display:none}
   #menu-overlay .mo-portraits{
     position:absolute;left:0;top:0;width:55%;height:100%;z-index:2;
   }
@@ -233,7 +234,7 @@
   #hero .btns{position:absolute;left:clamp(20px,3vw,44px);bottom:clamp(24px,4vh,50px);display:flex;flex-direction:row;gap:14px;z-index:4}
 
   .status-box{
-    position:absolute;right:clamp(24px,4vw,60px);bottom:clamp(24px,4vh,50px);z-index:4;
+    position:absolute;right:calc(clamp(24px,4vw,60px) + 96px);bottom:clamp(24px,4vh,50px);z-index:4;
     width:auto;min-width:242px;height:auto;padding:18px 28px;border-radius:20px;white-space:nowrap;
     background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,0));
     backdrop-filter:blur(42.3px);-webkit-backdrop-filter:blur(42.3px);
@@ -440,8 +441,36 @@
   @keyframes ring-float-s{0%,100%{transform:translate(0,0)}25%{transform:translate(-2px,-13px)}50%{transform:translate(1px,-22px)}75%{transform:translate(2px,-11px)}}
 
   @media (max-width:720px){
-    .btn{width:150px;height:58px;font-size:18px}
+    .btn{width:136px;height:56px;font-size:17px}
     .rail{right:14px}
+    /* no room to move the card left on a phone — it clears the button upwards */
+    .status-box{right:clamp(24px,4vw,60px);bottom:107px}
+    /* the scroll hint clears the row of buttons instead of sitting on it */
+    .hint{bottom:116px}
+  }
+
+  /* ---------- floating whatsapp button ---------- */
+  /* the artwork is a 151x151 box whose circle sits at r=39 — the offsets below
+     back the glow out, so the visible circle lands 35px above the bottom and its
+     right edge sits flush with the orange rail dots above it */
+  .wa-fab{
+    --wa:124px;
+    position:fixed;z-index:40;display:block;
+    width:var(--wa);height:var(--wa);
+    right:calc(2.6vw - .242 * var(--wa));
+    bottom:calc(35px - .269 * var(--wa));
+    transition:transform .3s cubic-bezier(.2,.8,.2,1);
+  }
+  .wa-fab:hover{transform:translateY(-3px)}
+  .wa-fab img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;
+    transition:opacity .25s ease;
+  }
+  .wa-fab .wa-on{opacity:0}
+  .wa-fab:hover .wa-on{opacity:1}
+  .wa-fab:hover .wa-off{opacity:0}
+  @media (max-width:768px){
+    .wa-fab{--wa:108px;right:calc(14px - .242 * var(--wa))}
   }
 </style>
 </head>
@@ -465,7 +494,7 @@
   <nav class="mo-nav">
     <a class="glitch" href="#" data-text="פרויקטים">פרויקטים</a>
     <a class="glitch" href="graphic-design.html" data-text="עיצוב גרפי">עיצוב גרפי</a>
-    <a class="glitch" href="#" data-text="צרו קשר">צרו קשר</a>
+    <a class="glitch" href="#contact" data-nav="10" data-text="צרו קשר">צרו קשר</a>
     <div class="mo-dots">
       <a href="mailto:ronieli770@gmail.com" aria-label="אימייל"><img src="menu-icon-mail.svg" alt=""></a>
       <a href="https://wa.me/972502463500" target="_blank" rel="noopener" aria-label="וואטסאפ"><img src="menu-icon-whatsapp.svg" alt=""></a>
@@ -474,6 +503,10 @@
   </nav>
 </div>
 <div class="rail" id="rail"></div>
+<a class="wa-fab" href="https://wa.me/972502463500" target="_blank" rel="noopener" aria-label="דברו איתי בוואטסאפ">
+  <img class="wa-off" src="assets/wa-btn.svg" alt="">
+  <img class="wa-on" src="assets/wa-btn-hover.svg" alt="">
+</a>
 <div class="hint" id="hint"><span>גללו</span><i></i></div>
 
 <section id="hero">
@@ -820,6 +853,9 @@
     const dt = prev ? Math.min(t - prev, 100) : 0;
     prev = t;
     if (!dir) return;
+    /* the hero canvas is covered while the moon or the portfolio is on screen —
+       repainting a full-screen frame every tick there is pure waste */
+    if (marsMode || projMode) return;
 
     if (mode === 'play'){
       acc += dt;
@@ -860,7 +896,12 @@
   const MARS_STOPS = [[0.30,0.458],[0.518,0.668],[0.718,0.800]];
   const MARS_STATIONS = [0, 0.37, 0.59, 0.79, 1];
 
+  let marsForceP = null;
+  let projPrepped = false;
+  let projWarmed = false;
+
   function marsProgress(){
+    if (marsForceP !== null) return marsForceP;
     const r = marsRoot.getBoundingClientRect();
     const vh = window.innerHeight || 800;
     return Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - vh)));
@@ -887,16 +928,19 @@
     const k = marsSample(p);
     const globe = marsRoot.querySelector('mars-globe');
     if (globe){
-      globe.setAttribute('zoom', k.zoom.toFixed(3));
-      globe.setAttribute('offx', k.offx.toFixed(3));
-      globe.setAttribute('offy', k.offy.toFixed(3));
-      globe.setAttribute('yaw', k.yaw.toFixed(3));
-      globe.setAttribute('idle', k.idle.toFixed(4));
-      globe.setAttribute('exp', k.exp.toFixed(3));
-      globe.setAttribute('haze', k.haze.toFixed(3));
-      globe.setAttribute('tilt', k.tilt.toFixed(4));
-      globe.setAttribute('rim', (k.rim||0).toFixed(3));
-      globe.setAttribute('ease', p > 0.80 ? '0.42' : '0.06');
+      /* only touch an attribute when its value actually moved */
+      const set = (name, val) => { if (globe.getAttribute(name) !== val) globe.setAttribute(name, val); };
+      set('zoom', k.zoom.toFixed(3));
+      set('offx', k.offx.toFixed(3));
+      set('offy', k.offy.toFixed(3));
+      set('yaw', k.yaw.toFixed(3));
+      set('idle', k.idle.toFixed(4));
+      set('exp', k.exp.toFixed(3));
+      set('haze', k.haze.toFixed(3));
+      set('tilt', k.tilt.toFixed(4));
+      set('rim', (k.rim||0).toFixed(3));
+      const ez = 0.06 + 0.36 * Math.min(1, Math.max(0, (p - 0.74) / 0.10));
+      set('ease', ez.toFixed(3));
       const m = globe.metrics && globe.metrics();
       if (m){
         const place = (el, mult, alpha) => {
@@ -913,9 +957,15 @@
     const intro = marsRoot.querySelector('[data-intro]');
     if (intro){ const f2 = Math.min(1, Math.max(0, (p-0.04)/0.11)); intro.style.opacity = String(1-f2); }
     const scrim = marsRoot.querySelector('[data-scrim]');
-    if (scrim){ scrim.style.opacity = (p > 0.2 && p < 0.885) ? '1' : '0'; scrim.style.transition = 'opacity .6s ease'; }
+    if (scrim){
+      if (!scrim.style.transition) scrim.style.transition = 'opacity .6s ease';
+      const so = (p > 0.2 && p < 0.885) ? '1' : '0';
+      if (scrim.style.opacity !== so) scrim.style.opacity = so;
+    }
     const mbg = marsRoot.querySelector('[data-mars-bg]');
     if (mbg) mbg.style.opacity = p > 0.87 ? '0' : '1';
+    if (p > 0.45 && !projWarmed){ projWarmed = true; projWarm(); }
+    if (p > 0.84 && !projPrepped){ projPrepped = true; projPrepBehind(); }
     let stop = 0;
     for (let i = 0; i < MARS_STOPS.length; i++){
       if (p >= MARS_STOPS[i][0] && p < MARS_STOPS[i][1]) stop = i+1;
@@ -934,26 +984,32 @@
 
   function marsTweenTo(target){
     const vh = window.innerHeight || 800;
-    const scrollH = marsRoot.getBoundingClientRect().height - vh;
-    const to = target * Math.max(1, scrollH);
+    const scrollH = Math.max(1, marsRoot.getBoundingClientRect().height - vh);
+    const to = target * scrollH;
     const from = marsWrap.scrollTop;
     if (Math.abs(to-from) < 2) return;
     const finale = target >= 0.99;
     const dur = finale ? 2270 : 900;
     const easeInOut = t => (t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2);
-    const shape = finale ? t => t : easeInOut;
+    /* the descent runs on a gentler quadratic so it starts and lands softly */
+    const easeSoft = t => (t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2);
+    const shape = finale ? easeSoft : easeInOut;
     const t0 = performance.now();
+    const fromP = from / scrollH, toP = to / scrollH;
     marsAnim = { from, to, t0, dur, shape, finale };
-    if (finale) projPrepBehind();
     const step = () => {
       if (!marsAnim) return;
       const u = Math.min(1, (performance.now() - marsAnim.t0) / marsAnim.dur);
       const e2 = marsAnim.shape(u);
-      marsWrap.scrollTop = marsAnim.from + (marsAnim.to - marsAnim.from) * e2;
+      /* drive progress as a float — scrollTop only snaps to whole pixels and
+         that rounding is what made the moon step instead of glide */
+      marsForceP = fromP + (toP - fromP) * e2;
       if (u < 1) requestAnimationFrame(step);
       else {
         const fin = marsAnim.finale;
-        marsAnim = null; marsLastWheelTs = performance.now();
+        marsAnim = null; marsForceP = null;
+        marsWrap.scrollTop = to;
+        marsLastWheelTs = performance.now();
         if (fin) enterProjects();
       }
     };
@@ -985,7 +1041,7 @@
     if (marsAnim){
       if (marsAnim.finale && dir > 0 && gap > 160){
         marsWrap.scrollTop = marsAnim.to;
-        marsAnim = null;
+        marsAnim = null; marsForceP = null;
         marsLastWheelTs = performance.now();
         enterProjects();
       }
@@ -1013,7 +1069,7 @@
   function exitMars(){
     marsMode = false;
     marsWrap.classList.remove('on');
-    marsAnim = null;
+    marsAnim = null; marsForceP = null; projPrepped = false;
     document.getElementById('bg').style.display = '';
     rail.style.display = '';
     hint.style.display = '';
@@ -1165,6 +1221,9 @@
     projSections.forEach((s, i) => {
       s.classList.toggle('active', i === n);
       s.classList.remove('enter');
+      s.querySelectorAll('video').forEach(v => {
+        if (i === n) v.play().catch(() => {}); else v.pause();
+      });
     });
     const sec = projSections[n];
     void sec.offsetWidth;
@@ -1172,24 +1231,32 @@
     railSet(5 + n);
   }
 
+  function projWarm(){
+    /* decode the first frames while nothing is moving, then hold */
+    projSections.forEach(s => {
+      s.querySelectorAll('video').forEach(v => {
+        v.muted = true;
+        v.play().then(() => v.pause()).catch(() => {});
+      });
+    });
+  }
+
   function projPrepBehind(){
     projWrap.classList.add('on');
     projShow(0);
-    projSections.forEach(s => {
-      s.querySelectorAll('video').forEach(v => { v.muted = true; v.play().catch(() => {}); });
-    });
   }
 
   function enterProjects(){
     projMode = true;
     marsMode = false;
     marsWrap.classList.remove('on');
-    marsAnim = null;
+    marsAnim = null; marsForceP = null;
     if (!projWrap.classList.contains('on')) projPrepBehind();
   }
 
   function exitProjects(){
     projMode = false;
+    projPrepped = false;
     marsMode = true;
     marsWrap.classList.add('on');
     const vh = window.innerHeight || 800;
@@ -1247,7 +1314,7 @@
     if (transPlaying) return;
     if (n <= LAST){
       if (projMode){ projMode = false; projWrap.classList.remove('on'); }
-      if (marsMode){ marsMode = false; marsWrap.classList.remove('on'); marsAnim = null; }
+      if (marsMode){ marsMode = false; marsWrap.classList.remove('on'); marsAnim = null; marsForceP = null; }
       document.getElementById('bg').style.display = '';
       hint.style.display = '';
       if (idx === n){ enter(n); showCopy(n); }
@@ -1265,7 +1332,7 @@
     if (marsMode){
       marsMode = false;
       marsWrap.classList.remove('on');
-      marsAnim = null;
+      marsAnim = null; marsForceP = null;
     } else {
       hideCopy(idx);
       hero.classList.add('off');
@@ -1328,6 +1395,15 @@
   const menuOv = document.getElementById('menu-overlay');
   menuBtn.addEventListener('click', () => {
     menuOv.classList.toggle('open');
+  });
+
+  /* menu links that point at a section close the overlay and fly there */
+  menuOv.querySelectorAll('[data-nav]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      menuOv.classList.remove('open');
+      goSection(+a.dataset.nav);
+    });
   });
 
   /* one-shot glitch burst on hover */

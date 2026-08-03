@@ -139,6 +139,7 @@
   }
   #menu-overlay.open{opacity:1;visibility:visible}
   #menu-overlay.open ~ .rail{display:none}
+  #menu-overlay.open ~ .wa-fab{display:none}
   #menu-overlay .mo-portraits{
     position:absolute;left:0;top:0;width:55%;height:100%;z-index:2;
   }
@@ -249,7 +250,8 @@
     transition:transform .3s ease,opacity .3s ease;
   }
   #menu-overlay .mo-dots a:hover{transform:translateY(-4px);opacity:.85}
-  #menu-overlay .mo-dots a img{width:44%;height:44%;display:block}
+  /* height:auto — the mail glyph is 30x24 and must not be forced into a square */
+  #menu-overlay .mo-dots a img{width:44%;height:auto;display:block}
 
 
   /* ---------- section 9 — צרו קשר ---------- */
@@ -403,6 +405,178 @@
     mix-blend-mode:screen;will-change:transform,opacity;
     transition:opacity .25s ease-out;
   }
+  /* ================= MOBILE ================= */
+  @media (max-width:768px){
+    /* header — a touch larger than standard, optically aligned to each other */
+    .logo{top:16px;left:14px;width:128px}
+    .menu{top:29px;right:14px;width:36px}
+
+    /* title cards — mark sits beside the 35px heading */
+    .gd-sec[data-gd="1"],.gd-sec[data-gd="5"],.gd-sec[data-gd="7"]{
+      display:flex;align-items:center;justify-content:center;gap:12px;
+    }
+    .gd-mark,.ga-mark{position:relative;left:auto;top:auto;transform:none;width:25px;aspect-ratio:71/118}
+    .gd-word,.ga-word{
+      position:relative;left:auto;top:auto;right:auto;transform:none;width:auto;
+      font-size:35px;line-height:1;text-align:center;
+    }
+
+    /* sections 2, 3, 8 — the mobile grid comes straight from the Figma
+       iPhone frames (402x874), every rect converted to a percentage */
+    .gd-sec[data-gd="2"] .gd-stage,
+    .gd-sec[data-gd="3"] .gd-stage,
+    .gd-sec[data-gd="8"] .gd-stage{
+      /* the Figma frame itself, inset from the rail on both sides */
+      aspect-ratio:402/874;width:calc(100% - 68px);height:auto;
+      max-height:calc(100% - 16px);overflow:visible;
+    }
+
+    /* Guides+ — logo grid, palette + icon, folder with the bottle on its left */
+    .gd-sec[data-gd="2"] .gd-stage .gp-grid{
+      left:3.98%;top:12.93%;width:92.04%;height:29.98%;border-radius:20px;
+    }
+    .gd-sec[data-gd="2"] .gd-stage .gp-grid img{object-fit:cover}
+    .gd-sec[data-gd="2"] .gd-stage .gp-swatches{
+      left:3.98%;top:44.72%;width:67.38%;height:9.84%;border-radius:20px;
+    }
+    .gd-sec[data-gd="2"] .gd-stage .gp-card{
+      left:74.38%;top:44.74%;width:21.64%;height:9.95%;border-radius:20px;
+    }
+    /* the folder keeps its own 1200x1800 proportion — height follows the width */
+    .gd-sec[data-gd="2"] .gd-stage .gp-board{
+      left:38.47%;top:56.41%;width:57.46%;height:39.65%;border-radius:20px;
+    }
+    .gd-sec[data-gd="2"] .gd-stage .gp-board img{
+      position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain;
+    }
+    .gd-sec[data-gd="2"] .gd-stage .gp-bottle{
+      left:-8.21%;top:56.29%;width:74.83%;height:42.78%;
+    }
+
+    /* Xplore — login, home, logo card + mark, colour strip */
+    .gd-sec[data-gd="3"] .gd-stage .xp-login{
+      left:3.73%;top:7.44%;width:92.29%;height:25.63%;border-radius:20px;
+    }
+    .gd-sec[data-gd="3"] .gd-stage .xp-home{
+      left:3.73%;top:34.90%;width:92.29%;height:27.92%;border-radius:20px;
+    }
+    /* every gap in the column is the same 16px of the Figma frame */
+    .gd-sec[data-gd="3"] .gd-stage .xp-logocard{
+      left:3.73%;top:64.65%;width:59.17%;height:13.35%;border-radius:20px;
+    }
+    .gd-sec[data-gd="3"] .gd-stage .xp-markcard{
+      left:67.00%;top:64.65%;width:29.27%;height:13.35%;border-radius:20px;
+    }
+    .gd-sec[data-gd="3"] .gd-stage .xp-halves{
+      left:3.73%;top:79.83%;width:92.29%;height:13.76%;
+      border-radius:20px;flex-direction:row;direction:ltr;
+    }
+    .gd-sec[data-gd="3"] .gd-stage .xp-h1{background:#95d65e}
+    .gd-sec[data-gd="3"] .gd-stage .xp-h2{background:#eff8cf}
+
+    /* print — flyer, billboard, roll-up with the invite laid over it */
+    .gd-sec[data-gd="8"] .gd-stage .pr-flyer{
+      left:3.73%;top:9.38%;width:59.70%;height:19.11%;border-radius:30px;
+    }
+    .gd-sec[data-gd="8"] .gd-stage .pr-billboard{
+      left:3.73%;top:30.32%;width:92.54%;height:23.23%;border-radius:30px;
+    }
+    .gd-sec[data-gd="8"] .gd-stage .pr-rollup{
+      left:3.73%;top:55.38%;width:43.53%;height:38.90%;border-radius:30px;
+    }
+    .gd-sec[data-gd="8"] .gd-stage .pr-invite{
+      left:35.07%;top:53.55%;width:78.86%;height:46.45%;
+    }
+
+    /* Drive-In — no mobile frame in Figma, so it keeps the bento grid */
+    .gd-sec[data-gd="4"] .gd-stage{
+      aspect-ratio:auto;width:100%;height:100%;
+      display:grid;gap:12px;padding:74px 32px 16px 14px;overflow:visible;
+      direction:ltr;align-content:center;
+      grid-template-columns:1fr 1fr;
+    }
+    .gd-sec[data-gd="4"] .gd-stage > *{
+      position:relative;left:auto;top:auto;right:auto;bottom:auto;
+      width:auto;height:auto;transform:none;
+    }
+    .di-grid,.di-stationery{background:#fff;padding:10px}
+    .di-grid img,.di-stationery img,.di-devices img{
+      position:relative;left:auto;top:auto;
+      width:100%;height:100%;object-fit:contain;display:block;
+    }
+    .gd-sec[data-gd="4"] .gd-stage .di-devices{grid-area:1/1/2/3;aspect-ratio:2776/1538;background:none;padding:0}
+    /* the source photo carries its own white margin — trim it, keep the ratio */
+    .gd-sec[data-gd="4"] .gd-stage .di-stationery{grid-area:2/1/3/3;aspect-ratio:1264/690}
+    .gd-sec[data-gd="4"] .gd-stage .di-stationery img{object-fit:cover}
+    .gd-sec[data-gd="4"] .gd-stage .di-grid{grid-area:3/1/4/2;aspect-ratio:1}
+    .gd-sec[data-gd="4"] .gd-stage .di-colors{grid-area:3/2/4/3;background:#fff;padding:10px}
+
+    /* המבורגר — nav centred on top, portrait under it, earth over the portrait */
+    #menu-overlay{height:100vh;height:100svh;overflow:hidden}
+    #menu-overlay .mo-portraits{
+      /* she runs to the bottom edge — the globe band hides where she ends */
+      left:50%;top:auto;bottom:0;transform:translateX(-50%);
+      width:74%;height:auto;z-index:2;
+    }
+    #menu-overlay .mo-dark{position:relative;left:auto;top:auto;width:100%}
+    #menu-overlay .mo-light{display:none}
+    #menu-overlay .mo-earth{
+      left:50%;top:auto;bottom:-221vw;width:260vw;z-index:3;
+    }
+    #menu-overlay .mo-nav{
+      left:50%;top:27%;transform:translate(-50%,-50%);gap:10px;z-index:6;
+    }
+    #menu-overlay .mo-nav a{font-size:45px;line-height:1.3}
+    #menu-overlay .mo-dots{gap:30px;margin-top:26px}
+    #menu-overlay .mo-dots a{width:66px;height:66px}
+
+    /* rail — bigger dots inside a 44px tap target */
+    .rail{right:12px;gap:20px}
+    .rail b{width:10px;height:10px}
+    .rail b::after{content:'';position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%)}
+
+    /* contact — panel clears the sticky header by 20px */
+    .gd-sec[data-gd="9"] .gd-stage{aspect-ratio:auto;width:100%;height:100%}
+    .ct-panel{
+      left:30px;right:30px;top:98px;bottom:30px;
+      width:auto;height:auto;transform:none;border-radius:20px;
+    }
+    /* planets hug the panel corners and are clipped by it */
+    .ct-saturn{left:30px;top:98px;width:62%;height:auto;aspect-ratio:1;overflow:hidden}
+    /* nudged left and up so the whatsapp button never lands on the planet */
+    .ct-earth{left:auto;right:84px;top:auto;bottom:44px;width:60%;height:auto;aspect-ratio:1;overflow:hidden}
+    .ct-saturn div,.ct-earth div{width:122%;height:122%}
+    .ct-kicker{top:45.5%;width:80%;font-size:16px}
+    .ct-title{top:48.6%;width:86%;font-size:35px;line-height:1.15;white-space:normal}
+    .ct-cta{
+      left:50%;transform:translateX(-50%);top:55.4%;
+      width:170px;height:48px;font-size:17px;border-radius:10px;
+    }
+  }
+
+  /* ---------- floating whatsapp button ---------- */
+  /* the artwork is a 151x151 box whose circle sits at r=39 — the offsets below
+     back the glow out, so the visible circle lands 35px above the bottom and its
+     right edge sits flush with the orange rail dots above it */
+  .wa-fab{
+    --wa:124px;
+    position:fixed;z-index:40;display:block;
+    width:var(--wa);height:var(--wa);
+    right:calc(2.6vw - .242 * var(--wa));
+    bottom:calc(35px - .269 * var(--wa));
+    transition:transform .3s cubic-bezier(.2,.8,.2,1);
+  }
+  .wa-fab:hover{transform:translateY(-3px)}
+  .wa-fab img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;
+    transition:opacity .25s ease;
+  }
+  .wa-fab .wa-on{opacity:0}
+  .wa-fab:hover .wa-on{opacity:1}
+  .wa-fab:hover .wa-off{opacity:0}
+  @media (max-width:768px){
+    .wa-fab{--wa:108px;right:calc(12px - .242 * var(--wa))}
+  }
 </style>
 </head>
 <body>
@@ -431,6 +605,10 @@
 </div>
 
 <div class="rail" id="rail"></div>
+<a class="wa-fab" href="https://wa.me/972502463500" target="_blank" rel="noopener" aria-label="דברו איתי בוואטסאפ">
+  <img class="wa-off" src="assets/wa-btn.svg" alt="">
+  <img class="wa-on" src="assets/wa-btn-hover.svg" alt="">
+</a>
 
 <section class="gd-sec" id="g-mitug" data-gd="1">
   <div class="gd-mark"><img src="assets/logo.png" alt=""></div>

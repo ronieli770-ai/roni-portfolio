@@ -112,7 +112,10 @@
     _resize() {
       if (!this._renderer) return;
       const w = this.clientWidth || 1, h = this.clientHeight || 1;
-      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      /* 1.5x is indistinguishable on a smooth lit sphere and costs ~45% fewer
+         pixels per frame than 2x — this is what made the descent drop frames */
+      const cap = parseFloat(this.getAttribute('dprcap')) || 1.5;
+      const dpr = Math.min(cap, window.devicePixelRatio || 1);
       this._renderer.setPixelRatio(Math.min(dpr, 2400 / Math.max(w, h)));
       this._renderer.setSize(w, h, false);
       this._camera.aspect = w / h;
