@@ -514,7 +514,9 @@
   @media (max-width:768px){
     /* header — matches the graphic-design page */
     .logo{top:16px;left:14px;width:128px}
-    .menu{top:21px;right:14px;width:54px}
+    /* the logo png carries transparent padding — these offsets line the
+       burger's bars up with the wordmark's ink, not with its box */
+    .menu{top:32px;right:28px;width:54px}
 
     /* hero */
     /* the first line has to hold "אתרים שגורמים לעסק שלכם" on one line — it
