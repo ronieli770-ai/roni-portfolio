@@ -514,12 +514,13 @@
   @media (max-width:768px){
     /* header — matches the graphic-design page */
     .logo{top:16px;left:14px;width:128px}
-    .menu{top:29px;right:14px;width:36px}
+    .menu{top:21px;right:14px;width:54px}
 
     /* hero */
     /* the first line has to hold "אתרים שגורמים לעסק שלכם" on one line — it
        only fits at 34px from about 466px of screen up, so it scales below that */
-    #hero .title{top:118px;left:14px;right:44px;width:auto;transform:none;font-size:clamp(28px,7.3vw,34px)}
+    /* symmetric box, so the centred text reads centred on the screen */
+    #hero .title{top:118px;left:14px;right:14px;width:auto;transform:none;font-size:clamp(28px,7.3vw,34px)}
     /* the bold line matches the hamburger buttons, and "בתחום" drops a line */
     #hero .title .l2{font-size:45px;line-height:.95}
     #hero .title .l3{display:block}
