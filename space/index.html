@@ -503,7 +503,9 @@
   .wa-fab .wa-on{opacity:0}
   .wa-fab:hover .wa-on{opacity:1}
   .wa-fab:hover .wa-off{opacity:0}
-  @media (max-width:768px){
+  /* a phone in "request desktop site" reports ~980px — match on the
+     pointer too so the mobile layout still applies there */
+  @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px){
     .wa-fab{--wa:108px;right:calc(14px - .242 * var(--wa))}
   }
 
@@ -761,7 +763,7 @@
 <div id="menu-overlay">
   <div class="mo-portraits">
     <img class="mo-dark" src="roni-portrait.png" alt="">
-    <img class="mo-light" src="roni-portrait-light.png" alt="">
+    <img class="mo-light" data-src="roni-portrait-light.png" alt="">
   </div>
   <img class="mo-earth" src="earth-globe.png" alt="">
   <nav class="mo-nav">
@@ -821,7 +823,7 @@
   </section>
 </div>
 
-<div id="trans-video-wrap"><video id="trans-video" src="transition.mp4" muted playsinline></video></div>
+<div id="trans-video-wrap"><video id="trans-video" src="transition.mp4" preload="none" muted playsinline></video></div>
 
 <div id="mars-wrap">
   <div id="mars-root" data-mars-section dir="rtl" style="position:relative;height:760vh;background:transparent;font-family:'IBM Plex Sans Hebrew',sans-serif;">
@@ -862,7 +864,7 @@
 <div id="projects-wrap">
   <section class="proj-section active" data-proj="0">
     <div style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1.6px 1.6px at 12% 22%,#fff,transparent),radial-gradient(1.2px 1.2px at 78% 12%,#fff,transparent),radial-gradient(1.8px 1.8px at 62% 38%,#fff,transparent),radial-gradient(1.2px 1.2px at 88% 62%,#fff,transparent),radial-gradient(1.4px 1.4px at 42% 8%,#fff,transparent),radial-gradient(1.1px 1.1px at 92% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 20% 68%,#fff,transparent),radial-gradient(1.2px 1.2px at 70% 78%,#fff,transparent);opacity:.5"></div>
-    <video class="proj-video" src="space-bg.mp4" autoplay muted loop playsinline></video>
+    <video class="proj-video" src="space-bg.mp4" preload="none" muted loop playsinline></video>
     <div class="proj-grain"></div>
     <img class="proj-bplanet" src="planet-bottom.png" alt="">
     <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 30%,rgba(5,5,10,.5) 56%,rgba(5,5,10,.85) 76%,rgba(5,5,10,.94) 100%)"></div>
@@ -881,7 +883,7 @@
   </section>
 
   <section class="proj-section" data-proj="1">
-    <video class="proj-video" src="space-bg.mp4" autoplay muted loop playsinline style="transform:scaleX(-1)"></video>
+    <video class="proj-video" src="space-bg.mp4" preload="none" muted loop playsinline style="transform:scaleX(-1)"></video>
     <div class="proj-grain"></div>
     <img class="proj-bplanet" src="planet-bottom.png" alt="">
     <div class="proj-scrim" style="background:linear-gradient(to left,rgba(5,5,10,0) 30%,rgba(5,5,10,.5) 56%,rgba(5,5,10,.85) 76%,rgba(5,5,10,.94) 100%)"></div>
@@ -901,7 +903,7 @@
 
   <section class="proj-section" data-proj="2">
     <div style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1.6px 1.6px at 12% 22%,#fff,transparent),radial-gradient(1.2px 1.2px at 78% 12%,#fff,transparent),radial-gradient(1.8px 1.8px at 62% 38%,#fff,transparent),radial-gradient(1.2px 1.2px at 88% 62%,#fff,transparent),radial-gradient(1.4px 1.4px at 42% 8%,#fff,transparent),radial-gradient(1.1px 1.1px at 92% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 20% 68%,#fff,transparent),radial-gradient(1.2px 1.2px at 70% 78%,#fff,transparent);opacity:.5"></div>
-    <video class="proj-video" src="space-bg.mp4" autoplay muted loop playsinline></video>
+    <video class="proj-video" src="space-bg.mp4" preload="none" muted loop playsinline></video>
     <div class="proj-grain"></div>
     <img class="proj-bplanet" src="planet-bottom.png" alt="">
     <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 38%,rgba(5,5,10,.38) 62%,rgba(5,5,10,.62) 80%,rgba(5,5,10,.72) 100%)"></div>
@@ -1090,6 +1092,10 @@
     busy = false;
     showCopy(idx);
     loadSeq(CH[idx].loop);
+    /* 60 frames per sequence — fetch the next chapter only once this one is
+       playing, instead of pulling all 44MB at boot */
+    const nx = CH[idx + 1];
+    if (nx && nx.play){ loadSeq(nx.play, () => loadSeq(nx.loop)); }
   }
 
   function enter(n){
@@ -1467,7 +1473,7 @@
     if (ready >= 2){
       loader.classList.add('gone');
       setTimeout(() => loader.remove(), 900);
-      loadSeq('frames/s3', () => loadSeq('frames/s4', () => loadSeq('frames/s5', () => loadSeq('frames/s6'))));
+      loadSeq('frames/s2');          /* the first loop only — the rest arrive per chapter */
     }
   };
   const art = new Image();
@@ -1540,12 +1546,13 @@
   }
 
   function projWarm(){
-    /* decode the first frames while nothing is moving, then hold */
-    projSections.forEach(s => {
-      s.querySelectorAll('video').forEach(v => {
-        v.muted = true;
-        v.play().then(() => v.pause()).catch(() => {});
-      });
+    /* decode the first frames of the section we are about to land on — the
+       others fetch themselves when their turn comes */
+    const first = projSections[0];
+    if (!first) return;
+    first.querySelectorAll('video').forEach(v => {
+      v.muted = true;
+      v.play().then(() => v.pause()).catch(() => {});
     });
   }
 
@@ -1702,6 +1709,9 @@
   const menuBtn = document.querySelector('.menu');
   const menuOv = document.getElementById('menu-overlay');
   menuBtn.addEventListener('click', () => {
+    /* 19MB of hover artwork — fetch it the first time the menu is opened */
+    const lazy = menuOv.querySelector('img[data-src]');
+    if (lazy){ lazy.src = lazy.dataset.src; lazy.removeAttribute('data-src'); }
     menuOv.classList.toggle('open');
   });
 

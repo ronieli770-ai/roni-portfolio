@@ -406,7 +406,9 @@
     transition:opacity .25s ease-out;
   }
   /* ================= MOBILE ================= */
-  @media (max-width:768px){
+  /* a phone in "request desktop site" reports ~980px — match on the
+     pointer too so the mobile layout still applies there */
+  @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px){
     /* header — a touch larger than standard, optically aligned to each other */
     .logo{top:16px;left:14px;width:128px}
     .menu{top:29px;right:14px;width:36px}
@@ -590,7 +592,7 @@
 <div id="menu-overlay">
   <div class="mo-portraits">
     <img class="mo-dark" src="roni-portrait.png" alt="">
-    <img class="mo-light" src="roni-portrait-light.png" alt="">
+    <img class="mo-light" data-src="roni-portrait-light.png" alt="">
   </div>
   <img class="mo-earth" src="earth-globe.png" alt="">
   <nav class="mo-nav">

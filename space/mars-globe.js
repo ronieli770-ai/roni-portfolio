@@ -40,7 +40,18 @@
       addEventListener('touchmove', onMove, { passive: false });
       addEventListener('mouseup', onUp);
       addEventListener('touchend', onUp);
-      loadThree().then(([THREE, GLTF]) => { this.THREE = THREE; this.GLTFLoader = GLTF.GLTFLoader; this._start(); });
+      /* three.js plus the 21MB moon are only worth fetching once this section
+         is actually on screen — until then the element has no size */
+      const boot = () => loadThree().then(([THREE, GLTF]) => {
+        this.THREE = THREE; this.GLTFLoader = GLTF.GLTFLoader; this._start();
+      });
+      if (this.clientWidth > 0 && this.clientHeight > 0) boot();
+      else {
+        const ro = new ResizeObserver(() => {
+          if (this.clientWidth > 0 && this.clientHeight > 0){ ro.disconnect(); boot(); }
+        });
+        ro.observe(this);
+      }
     }
 
     disconnectedCallback() {
