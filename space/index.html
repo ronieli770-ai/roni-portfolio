@@ -941,10 +941,10 @@
       <img src="astronaut.png" alt="" style="display:block;width:100%;transform:scaleX(-1);filter:brightness(.8) contrast(1.04) saturate(.9);image-rendering:auto">
     </div>
     <h2 style="position:absolute;right:11.57%;top:32.05%;margin:0;text-align:right;font-weight:400;font-size:min(80px,4.63vw);line-height:.9625;background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent">נעים להכיר,<br><span class="ab-name">רוני אליהו</span></h2>
-    <div style="position:absolute;right:11.63%;top:49.87%;width:min(562px,32.52%);text-align:right;color:#fff;font-size:18px;line-height:normal">
+    <div style="position:absolute;right:11.63%;top:49.87%;width:min(562px,32.52%);text-align:right;color:#fff;font-size:24px;line-height:normal">
       <p style="margin:0 0 23px;font-weight:600">כשאנשים מגיעים לאתר שלכם, יש לכם בדיוק 3 שניות להוכיח להם שהם הגיעו למקום הנכון.</p>
-      <p style="margin:0 0 23px;font-weight:400">המטרה שלי היא לקחת עסקים מעולים ולהעניק להם נוכחות דיגיטלית בסטנדרט הגבוה ביותר. כל פרויקט אצלי נבנה מאפס מתוך שילוב של סטוריטלינג ויזואלי סוחף, אנימציות דינמיות ותשומת לב לכל פיקסל.</p>
-      <p style="margin:0;font-weight:400">כשעיצוב חדשני פוגש חשיבה חדה, התוצאה היא אתר עוצמתי מעורר השראה, כזה שגורם לכל לקוח מתעניין להבין מיד שאתם הבחירה הנכונה.</p>
+      <p style="margin:0 0 23px;font-weight:400">המטרה שלי היא לקחת עסקים מעולים ולהעניק להם נוכחות דיגיטלית <b>בסטנדרט הגבוה ביותר.</b> כל פרויקט אצלי נבנה מאפס מתוך שילוב של סטוריטלינג ויזואלי סוחף, אנימציות דינמיות ותשומת לב לכל פיקסל.</p>
+      <p style="margin:0;font-weight:400">כשעיצוב חדשני פוגש חשיבה חדה, התוצאה היא אתר עוצמתי מעורר השראה, כזה שגורם לכל לקוח מתעניין <b>להבין מיד שאתם הבחירה הנכונה.</b></p>
     </div>
   </section>
 
@@ -1699,15 +1699,24 @@
     box.classList.add('wordfx');
     const spans = [];
     box.querySelectorAll('p').forEach(par => {
-      const parts = par.textContent.split(/(\s+)/);
-      par.textContent = '';
-      parts.forEach(tok => {
-        if (!tok.trim()){ par.appendChild(document.createTextNode(tok)); return; }
-        const w = document.createElement('span');
-        w.className = 'w';
-        w.textContent = tok;
-        par.appendChild(w);
-        spans.push(w);
+      /* wrap words in place, one text node at a time, so <b> and any other
+         inline markup inside the paragraph stays where the author put it */
+      const walker = document.createTreeWalker(par, NodeFilter.SHOW_TEXT);
+      const texts = [];
+      while (walker.nextNode()) texts.push(walker.currentNode);
+      texts.forEach(node => {
+        if (!node.textContent.trim()) return;
+        const frag = document.createDocumentFragment();
+        node.textContent.split(/(\s+)/).forEach(tok => {
+          if (!tok) return;
+          if (!tok.trim()){ frag.appendChild(document.createTextNode(tok)); return; }
+          const w = document.createElement('span');
+          w.className = 'w';
+          w.textContent = tok;
+          frag.appendChild(w);
+          spans.push(w);
+        });
+        node.parentNode.replaceChild(frag, node);
       });
     });
     const last = 4 - 0.45;                    /* the final word finishes at 4s */
