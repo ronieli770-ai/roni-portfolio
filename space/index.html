@@ -475,7 +475,7 @@
 
   @media (max-width:720px){
     .btn{width:136px;height:56px;font-size:17px}
-    #hero .btns{left:44px}
+    #hero .btns{left:14px}
     .rail{right:14px}
     /* no room to move the card left on a phone — it clears the button upwards */
     .status-box{right:clamp(24px,4vw,60px);bottom:107px}
@@ -484,29 +484,28 @@
   }
 
   /* ---------- floating whatsapp button ---------- */
-  /* the artwork is a 151x151 box whose circle sits at r=39 — the offsets below
-     back the glow out, so the visible circle lands 35px above the bottom and its
-     right edge sits flush with the orange rail dots above it */
+  /* drawn in css instead of from the two svg exports: their drop-shadow filter
+     rasterises at css resolution on phones, which is what made the button look
+     blurry there. Circle, glyph mask and glow are all resolution independent. */
   .wa-fab{
-    --wa:124px;
+    --wa:64px;
     position:fixed;z-index:40;display:block;
-    width:var(--wa);height:var(--wa);
-    right:calc(2.6vw - .242 * var(--wa));
-    bottom:calc(35px - .269 * var(--wa));
-    transition:transform .3s cubic-bezier(.2,.8,.2,1);
+    width:var(--wa);height:var(--wa);border-radius:50%;
+    right:2.6vw;bottom:35px;
+    background:#FA9154;
+    box-shadow:0 4px 34px rgba(250,145,84,.7);
+    transition:transform .3s cubic-bezier(.2,.8,.2,1),background .25s ease;
   }
-  .wa-fab:hover{transform:translateY(-3px)}
-  .wa-fab img{
-    position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;
-    transition:opacity .25s ease;
+  .wa-fab::before{
+    content:'';position:absolute;inset:27%;
+    background:#fff;transition:background .25s ease;
+    -webkit-mask:url(assets/wa-glyph.svg) center/contain no-repeat;
+    mask:url(assets/wa-glyph.svg) center/contain no-repeat;
   }
-  .wa-fab .wa-on{opacity:0}
-  .wa-fab:hover .wa-on{opacity:1}
-  .wa-fab:hover .wa-off{opacity:0}
-  /* a phone in "request desktop site" reports ~980px — match on the
-     pointer too so the mobile layout still applies there */
+  .wa-fab:hover{transform:translateY(-3px);background:#fff}
+  .wa-fab:hover::before{background:#FA9154}
   @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px){
-    .wa-fab{--wa:108px;right:calc(14px - .242 * var(--wa))}
+    .wa-fab{--wa:56px;right:14px}
   }
 
   /* ================= MOBILE ================= */
@@ -518,14 +517,16 @@
     .menu{top:29px;right:14px;width:36px}
 
     /* hero */
-    #hero .title{top:118px;left:44px;right:44px;width:auto;transform:none;font-size:34px}
+    /* the first line has to hold "אתרים שגורמים לעסק שלכם" on one line — it
+       only fits at 34px from about 466px of screen up, so it scales below that */
+    #hero .title{top:118px;left:14px;right:44px;width:auto;transform:none;font-size:clamp(28px,7.3vw,34px)}
     /* the bold line matches the hamburger buttons, and "בתחום" drops a line */
     #hero .title .l2{font-size:45px;line-height:.95}
     #hero .title .l3{display:block}
     /* the glitch copies are one flat string — they would wrap differently */
     #hero .title.anim-glitch::before,#hero .title.anim-glitch::after{display:none}
     .status-box{
-      left:44px;right:auto;
+      left:14px;right:auto;
       min-width:0;padding:14px 18px;border-radius:16px;font-size:13px;
     }
     /* the panes have no buttons, so their card takes the spot "לתיק עבודות"
@@ -536,7 +537,7 @@
     .hint{display:none}
 
     /* pane 4 — נעים להכיר */
-    .landing-copy{top:118px;right:44px;left:44px}
+    .landing-copy{top:118px;right:44px;left:14px}
     .landing-copy p:nth-of-type(1){font-size:40px!important}
     .landing-copy p:nth-of-type(2){font-size:58px!important}
     .landing-copy p:nth-of-type(3){font-size:22px!important;margin-top:10px!important}
@@ -546,7 +547,7 @@
     /* the copy sits at the top of the screen, 20px clear of the nav dots and
        the same distance from the left edge so the block reads as centred */
     [data-mars-section] [data-stop]{
-      right:44px!important;left:44px!important;width:auto!important;
+      right:44px!important;left:14px!important;width:auto!important;
       top:170px!important;bottom:auto!important;max-height:44vh!important;
     }
     [data-mars-section] [data-stop] span{width:78px!important;margin-bottom:14px!important}
@@ -583,7 +584,7 @@
     /* saturn is rotated 50deg, so its rings push the box ~32px past every side */
     .proj-section[data-proj="0"] .proj-planet-wrap{left:calc(14% - 30px)!important;top:100px!important}
     .proj-section .proj-text{
-      left:44px!important;right:44px!important;width:auto!important;
+      left:14px!important;right:44px!important;width:auto!important;
       top:242px!important;bottom:auto!important;
     }
     .proj-section .proj-text-inner{gap:0;align-items:flex-start;text-align:right}
@@ -611,7 +612,7 @@
     }
 
     /* למה אתם צריכים את זה — the deck stacks into a column */
-    .proj-section[data-proj="3"]{gap:28px!important;padding:118px 44px 100px 44px!important}
+    .proj-section[data-proj="3"]{gap:28px!important;padding:118px 44px 100px 14px!important}
     .why-title{font-size:27px!important}
     .proj-section[data-proj="3"] > div:last-child{flex-direction:column;gap:8px!important;flex:1 1 auto;min-height:0}
     .why-card-a,.why-card-b,.why-card-c{
@@ -665,7 +666,7 @@
     /* נעים להכיר, רוני אליהו */
     .proj-section[data-proj="4"]{
       display:flex!important;flex-direction:column;justify-content:center;
-      padding:118px 44px 96px 44px;gap:10px;
+      padding:118px 44px 96px 14px;gap:10px;
     }
     .proj-section[data-proj="4"] > div{
       position:relative!important;left:auto!important;right:auto!important;
@@ -688,7 +689,7 @@
        keeping the site's own 118px header offset and 44px side padding */
     .proj-section[data-proj="5"]{
       display:flex!important;flex-direction:column;justify-content:flex-start;
-      padding:118px 44px 0 44px;gap:0;
+      padding:118px 44px 0 14px;gap:0;
     }
     .proj-section[data-proj="5"] > img:last-of-type{
       position:relative!important;left:auto!important;right:auto!important;
@@ -779,8 +780,6 @@
 </div>
 <div class="rail" id="rail"></div>
 <a class="wa-fab" href="https://wa.me/972502463500" target="_blank" rel="noopener" aria-label="דברו איתי בוואטסאפ">
-  <img class="wa-off" src="assets/wa-btn.svg" alt="">
-  <img class="wa-on" src="assets/wa-btn-hover.svg" alt="">
 </a>
 <div class="hint" id="hint"><span>גללו</span><i></i></div>
 

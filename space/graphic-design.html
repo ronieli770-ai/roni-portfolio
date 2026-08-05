@@ -558,27 +558,28 @@
   }
 
   /* ---------- floating whatsapp button ---------- */
-  /* the artwork is a 151x151 box whose circle sits at r=39 — the offsets below
-     back the glow out, so the visible circle lands 35px above the bottom and its
-     right edge sits flush with the orange rail dots above it */
+  /* drawn in css instead of from the two svg exports: their drop-shadow filter
+     rasterises at css resolution on phones, which is what made the button look
+     blurry there. Circle, glyph mask and glow are all resolution independent. */
   .wa-fab{
-    --wa:124px;
+    --wa:64px;
     position:fixed;z-index:40;display:block;
-    width:var(--wa);height:var(--wa);
-    right:calc(2.6vw - .242 * var(--wa));
-    bottom:calc(35px - .269 * var(--wa));
-    transition:transform .3s cubic-bezier(.2,.8,.2,1);
+    width:var(--wa);height:var(--wa);border-radius:50%;
+    right:2.6vw;bottom:35px;
+    background:#FA9154;
+    box-shadow:0 4px 34px rgba(250,145,84,.7);
+    transition:transform .3s cubic-bezier(.2,.8,.2,1),background .25s ease;
   }
-  .wa-fab:hover{transform:translateY(-3px)}
-  .wa-fab img{
-    position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;
-    transition:opacity .25s ease;
+  .wa-fab::before{
+    content:'';position:absolute;inset:27%;
+    background:#fff;transition:background .25s ease;
+    -webkit-mask:url(assets/wa-glyph.svg) center/contain no-repeat;
+    mask:url(assets/wa-glyph.svg) center/contain no-repeat;
   }
-  .wa-fab .wa-on{opacity:0}
-  .wa-fab:hover .wa-on{opacity:1}
-  .wa-fab:hover .wa-off{opacity:0}
-  @media (max-width:768px){
-    .wa-fab{--wa:108px;right:calc(12px - .242 * var(--wa))}
+  .wa-fab:hover{transform:translateY(-3px);background:#fff}
+  .wa-fab:hover::before{background:#FA9154}
+  @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px){
+    .wa-fab{--wa:56px;right:14px}
   }
 </style>
 </head>
@@ -609,8 +610,6 @@
 
 <div class="rail" id="rail"></div>
 <a class="wa-fab" href="https://wa.me/972502463500" target="_blank" rel="noopener" aria-label="דברו איתי בוואטסאפ">
-  <img class="wa-off" src="assets/wa-btn.svg" alt="">
-  <img class="wa-on" src="assets/wa-btn-hover.svg" alt="">
 </a>
 
 <section class="gd-sec" id="g-mitug" data-gd="1">

@@ -73,7 +73,7 @@
 
   const css = `
   .dev-fab,.dev-panel,.dev-hl{position:fixed;z-index:2147483000;font-family:'IBM Plex Sans Hebrew',system-ui,sans-serif}
-  .dev-fab{left:14px;bottom:16px;width:46px;height:46px;border-radius:50%;border:0;cursor:pointer;
+  .dev-fab{left:14px;bottom:104px;width:46px;height:46px;border-radius:50%;border:0;cursor:pointer;
     background:#1d64f2;color:#fff;font-size:20px;line-height:46px;text-align:center;
     box-shadow:0 6px 20px rgba(0,0,0,.45)}
   .dev-fab.on{background:#e0783c}
