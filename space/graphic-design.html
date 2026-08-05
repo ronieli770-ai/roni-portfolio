@@ -530,7 +530,8 @@
     #menu-overlay .mo-dots{gap:30px;margin-top:26px}
     #menu-overlay .mo-dots a{width:66px;height:66px}
 
-    /* rail — bigger dots inside a 44px tap target */
+    /* rail — bigger dots inside a 44px tap target, no sticky hover pill */
+    .rail b .tip{display:none}
     .rail{right:12px;gap:20px}
     .rail b{width:10px;height:10px}
     .rail b::after{content:'';position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%)}
@@ -832,5 +833,6 @@
   });
 })();
 </script>
+<script src="dev-review.js"></script>
 </body>
 </html>

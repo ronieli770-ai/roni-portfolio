@@ -181,7 +181,8 @@
     transition:transform .3s ease,opacity .3s ease;
   }
   #menu-overlay .mo-dots a:hover{transform:translateY(-4px);opacity:.85}
-  #menu-overlay .mo-dots a img{width:44%;height:44%;display:block}
+  /* height:auto — the mail glyph is 30x24 and must not be forced into a square */
+  #menu-overlay .mo-dots a img{width:44%;height:auto;display:block}
 
   .rail{
     position:fixed;top:50%;right:2.6vw;transform:translateY(-50%);z-index:30;
@@ -274,7 +275,7 @@
   }
   .pane.show .copy > *{opacity:1;transform:none;filter:none}
   .pane .status-box{opacity:0;transform:translateY(16px);transition:opacity .8s ease, transform .9s cubic-bezier(.16,.84,.24,1)}
-  .landing-copy{text-align:right;position:absolute;top:14%;right:clamp(40px,6vw,100px);max-width:none;background:var(--title-grad);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transition:opacity .8s ease,transform .9s cubic-bezier(.16,.84,.24,1)}
+  .landing-copy{text-align:right;position:absolute;top:14%;right:clamp(40px,6vw,100px);max-width:none;background:var(--title-grad);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transition:opacity .9s ease .45s,transform .9s cubic-bezier(.16,.84,.24,1) .45s}
   .pane.show .landing-copy{opacity:1}
   .pane.show .hint{opacity:1!important}
   .pane.show .status-box{opacity:1;transform:none}
@@ -352,6 +353,15 @@
   .proj-section.active{opacity:1;pointer-events:auto}
   .proj-section .proj-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
   .proj-section .proj-scrim{position:absolute;inset:0;pointer-events:none}
+  /* a hair of grain over the clip — dark gradients in an h.264 file band into
+     visible steps, and noise this faint dissolves the steps without reading
+     as texture. one rasterised tile, no runtime cost */
+  .proj-bplanet{display:none}
+  .proj-section .proj-grain{
+    position:absolute;inset:0;pointer-events:none;opacity:.055;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:140px 140px;
+  }
   .proj-section .proj-planet-wrap{pointer-events:none;will-change:transform;transition:transform 1.1s cubic-bezier(.22,1,.36,1)}
   .proj-section .proj-planet-wrap img{display:block;width:100%}
   .proj-section .proj-laptop{position:absolute;bottom:6.9%;width:62%;transform:translateY(10.2%);filter:drop-shadow(0 40px 70px rgba(0,0,0,.55))}
@@ -409,6 +419,13 @@
 
   @keyframes astro-float{0%,100%{transform:translate3d(0,0,0) rotate(0deg)}50%{transform:translate3d(0,-16px,0) rotate(-1.2deg)}}
 
+  /* the name carries the weight */
+  .ab-name{font-weight:700}
+  /* the paragraph lights up word by word once the section is in */
+  .wordfx .w{opacity:.3}
+  @keyframes word-in{from{opacity:.3}to{opacity:1}}
+  .proj-section.enter .wordfx .w{animation:word-in .45s ease forwards}
+
   .form-input{
     position:absolute;background:transparent;border:1px solid #fff;border-radius:5px;
     backdrop-filter:blur(42.3px);-webkit-backdrop-filter:blur(42.3px);
@@ -442,6 +459,7 @@
 
   @media (max-width:720px){
     .btn{width:136px;height:56px;font-size:17px}
+    #hero .btns{left:44px}
     .rail{right:14px}
     /* no room to move the card left on a phone — it clears the button upwards */
     .status-box{right:clamp(24px,4vw,60px);bottom:107px}
@@ -471,6 +489,241 @@
   .wa-fab:hover .wa-off{opacity:0}
   @media (max-width:768px){
     .wa-fab{--wa:108px;right:calc(14px - .242 * var(--wa))}
+  }
+
+  /* ================= MOBILE ================= */
+  /* the desktop layout is built from percentages of a wide frame — on a phone
+     each section is re-laid out as a column instead of being squeezed */
+  @media (max-width:768px){
+    /* header — matches the graphic-design page */
+    .logo{top:16px;left:14px;width:128px}
+    .menu{top:29px;right:14px;width:36px}
+
+    /* hero */
+    #hero .title{top:118px;left:44px;right:44px;width:auto;transform:none;font-size:34px}
+    /* the bold line matches the hamburger buttons, and "בתחום" drops a line */
+    #hero .title .l2{font-size:45px;line-height:.95}
+    #hero .title .l3{display:block}
+    /* the glitch copies are one flat string — they would wrap differently */
+    #hero .title.anim-glitch::before,#hero .title.anim-glitch::after{display:none}
+    .status-box{
+      left:44px;right:auto;
+      min-width:0;padding:14px 18px;border-radius:16px;font-size:13px;
+    }
+    /* the panes have no buttons, so their card takes the spot "לתיק עבודות"
+       held in the hero — same left edge, same bottom edge */
+    .pane .status-box{bottom:clamp(24px,4vh,50px)}
+    /* no sticky hover pill on touch — it stays open after a tap */
+    .rail b .tip{display:none}
+    .hint{display:none}
+
+    /* pane 4 — נעים להכיר */
+    .landing-copy{top:118px;right:44px;left:44px}
+    .landing-copy p:nth-of-type(1){font-size:40px!important}
+    .landing-copy p:nth-of-type(2){font-size:58px!important}
+    .landing-copy p:nth-of-type(3){font-size:22px!important;margin-top:10px!important}
+
+    /* mars — the three stops become full-width blocks */
+    [data-mars-section] [data-intro] h2{font-size:32px!important}
+    /* the copy sits at the top of the screen, 20px clear of the nav dots and
+       the same distance from the left edge so the block reads as centred */
+    [data-mars-section] [data-stop]{
+      right:44px!important;left:44px!important;width:auto!important;
+      top:170px!important;bottom:auto!important;max-height:44vh!important;
+    }
+    [data-mars-section] [data-stop] span{width:78px!important;margin-bottom:14px!important}
+    [data-mars-section] [data-stop] h3{font-size:28px!important;margin-bottom:14px!important}
+    [data-mars-section] [data-stop] p{font-size:15px!important;line-height:1.55!important}
+
+    /* projects — the clip runs behind, zoomed so its planet only rises into
+       the lower third; small saturn top-left, copy centred, laptop centred */
+    .proj-section .proj-scrim{display:none!important}
+    .proj-bplanet{display:none!important}
+    /* the whole clip is shifted down so its planet only rises into the lower
+       third; the top edge fades into the black sky so no seam shows */
+    .proj-section .proj-video{
+      top:18%!important;height:100%!important;
+      -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14%);
+      mask-image:linear-gradient(to bottom,transparent 0,#000 14%);
+    }
+    /* each object owns a band: planet top-left (fully inside the frame),
+       copy under it aligned right, laptop centred at the bottom */
+    .proj-section .proj-planet-wrap{
+      left:8%!important;right:auto!important;top:104px!important;width:40%!important;
+    }
+    /* the uranus export is cut flat on its right (opaque pixels stop at the
+       canvas edge). Clipping the wrapper to a circle over the intact area
+       gives a real sphere silhouette — no invented pixels, no seam — and the
+       inset shadow puts the limb back where the crop removed it. */
+    .proj-section[data-proj="2"] .proj-planet-wrap{
+      left:calc(8% - 20px)!important;aspect-ratio:1;border-radius:50%;overflow:hidden;
+      box-shadow:inset -14px -8px 34px rgba(0,0,0,.55);
+    }
+    .proj-section[data-proj="2"] .proj-planet-wrap img{
+      width:117.66%!important;max-width:none;margin-left:-17.38%;margin-top:-25.21%;
+    }
+    /* saturn is rotated 50deg, so its rings push the box ~32px past every side */
+    .proj-section[data-proj="0"] .proj-planet-wrap{left:calc(14% - 30px)!important;top:100px!important}
+    .proj-section .proj-text{
+      left:44px!important;right:44px!important;width:auto!important;
+      top:242px!important;bottom:auto!important;
+    }
+    .proj-section .proj-text-inner{gap:0;align-items:flex-start;text-align:right}
+    .proj-section .proj-eyebrow{font-size:18px;line-height:.85}
+    .proj-section .proj-heading{font-size:34px;line-height:.93;margin-top:13px}
+    .proj-section .proj-body{font-size:16px;line-height:1.35;margin-top:17px}
+    .proj-section .proj-cta{
+      margin-top:24px;align-self:flex-start;
+      width:157px;height:38px;padding:0;font-size:18px;font-weight:600;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .proj-section .proj-laptop{
+      left:50%!important;right:auto!important;top:498px;bottom:auto;
+      width:112%!important;transform:translateX(-50%);
+    }
+    /* the desktop slide-in ends off-centre here — on a phone the laptop just
+       fades in, staying centred */
+    @keyframes m-lap-fade{
+      from{opacity:0;transform:translateX(-50%) translateY(16px)}
+      to{opacity:1;transform:translateX(-50%)}
+    }
+    .proj-section.enter .proj-laptop,
+    .proj-section.enter .proj-laptop[style*="right"]{
+      animation:m-lap-fade .9s cubic-bezier(.16,1,.3,1) .45s both;
+    }
+
+    /* למה אתם צריכים את זה — the deck stacks into a column */
+    .proj-section[data-proj="3"]{gap:28px!important;padding:118px 44px 100px 44px!important}
+    .why-title{font-size:27px!important}
+    .proj-section[data-proj="3"] > div:last-child{flex-direction:column;gap:8px!important;flex:1 1 auto;min-height:0}
+    .why-card-a,.why-card-b,.why-card-c{
+      flex:1 1 auto!important;
+      max-width:none!important;margin-block:0!important;
+      padding:24px 26px!important;gap:10px!important;border-radius:20px!important;
+    }
+    /* the three start as one pile at the top — third on top, the ones under it
+       blurred — and settle into the column as the section comes in */
+    .why-card-a{z-index:1}
+    .why-card-b{z-index:2}
+    .why-card-c{z-index:3}
+    @keyframes m-deck-a{
+      0%{opacity:0;transform:rotate(-5deg);filter:blur(7px)}
+      16%{opacity:1;transform:rotate(-5deg);filter:blur(7px)}
+      26%{transform:rotate(-5deg);filter:blur(7px)}
+      100%{opacity:1;transform:none;filter:blur(0)}
+    }
+    @keyframes m-deck-b{
+      0%{opacity:0;transform:translate3d(0,calc(-100% - 10px),0);filter:blur(4px)}
+      16%{opacity:1;transform:translate3d(0,calc(-100% - 10px),0);filter:blur(4px)}
+      26%{transform:translate3d(0,calc(-100% - 10px),0);filter:blur(4px)}
+      100%{opacity:1;transform:none;filter:blur(0)}
+    }
+    @keyframes m-deck-c{
+      0%{opacity:0;transform:translate3d(0,calc(-200% - 20px),0) rotate(5deg)}
+      16%{opacity:1;transform:translate3d(0,calc(-200% - 20px),0) rotate(5deg)}
+      26%{transform:translate3d(0,calc(-200% - 20px),0) rotate(5deg)}
+      100%{opacity:1;transform:none}
+    }
+    .proj-section.enter .why-card-a{animation:m-deck-a 1.5s cubic-bezier(.22,1,.36,1) .05s both}
+    .proj-section.enter .why-card-b{animation:m-deck-b 1.5s cubic-bezier(.22,1,.36,1) .05s both}
+    .proj-section.enter .why-card-c{animation:m-deck-c 1.5s cubic-bezier(.22,1,.36,1) .05s both}
+    /* the portrait floats to the right — the heading and the paragraph both run
+       the full width of the card, bounded only by its padding */
+    .proj-section[data-proj="3"] article{display:block!important;align-content:center}
+    .proj-section[data-proj="3"] article > div{
+      float:right;width:84px!important;margin:0 0 8px 15px;
+    }
+    .proj-section[data-proj="3"] article h3{
+      width:auto!important;font-size:19px!important;line-height:1.15!important;
+      text-align:right!important;margin-bottom:10px!important;
+    }
+    /* the headings carry a hard <br> from the desktop layout — on a phone the
+       line should break wherever the card runs out of room */
+    .proj-section[data-proj="3"] article h3 br{display:none}
+    .proj-section[data-proj="3"] article p{
+      font-size:12px!important;line-height:1.4!important;text-align:right!important;
+    }
+
+    /* נעים להכיר, רוני אליהו */
+    .proj-section[data-proj="4"]{
+      display:flex!important;flex-direction:column;justify-content:center;
+      padding:118px 44px 96px 44px;gap:10px;
+    }
+    .proj-section[data-proj="4"] > div{
+      position:relative!important;left:auto!important;right:auto!important;
+      top:auto!important;width:auto!important;
+    }
+    .proj-section[data-proj="4"] > div:first-of-type{width:min(282px,100%)!important;align-self:center}
+    .proj-section[data-proj="4"] h2{
+      position:relative!important;right:auto!important;top:auto!important;
+      font-size:30px!important;line-height:1.05!important;
+    }
+    .proj-section[data-proj="4"] > div:last-of-type p{
+      font-size:13px!important;line-height:1.45!important;margin:0 0 9px!important;
+    }
+
+    /* מוכנים להמריא — laid out from the Figma iPhone frame (402x874),
+       keeping the site's own 118px header offset and 44px side padding */
+    .proj-section[data-proj="5"]{
+      display:flex!important;flex-direction:column;justify-content:flex-start;
+      padding:118px 44px 0 44px;gap:0;
+    }
+    .proj-section[data-proj="5"] > img:last-of-type{
+      position:relative!important;left:auto!important;right:auto!important;
+      top:auto!important;bottom:auto!important;
+      width:calc(100% + 44px)!important;height:auto!important;opacity:1;
+      order:99;margin:24px -44px 0 0;flex:none;
+    }
+    .proj-section[data-proj="5"] h2{
+      position:relative!important;right:auto!important;top:auto!important;
+      font-size:34px!important;line-height:.9625!important;
+    }
+    /* the white bubbles are gone — the glyph sits at the right of each line */
+    .proj-section[data-proj="5"] a[style*="border-radius:50%"]{display:none!important}
+    .proj-section[data-proj="5"] > a{
+      position:relative!important;right:auto!important;left:auto!important;top:auto!important;
+      font-size:18px!important;text-align:right;
+    }
+    .proj-section[data-proj="5"] > a[href^="tel"]{margin-top:29px!important}
+    .proj-section[data-proj="5"] > a[href^="mailto"]{margin-top:15px!important}
+    .proj-section[data-proj="5"] > a[href^="tel"]::before,
+    .proj-section[data-proj="5"] > a[href^="mailto"]::after{
+      content:'';display:inline-block;vertical-align:-3px;
+      width:20px;height:19px;background:#fff;
+    }
+    .proj-section[data-proj="5"] > a[href^="tel"]::before{
+      margin-left:10px;
+      -webkit-mask:url(menu-icon-phone.svg) center/contain no-repeat;
+      mask:url(menu-icon-phone.svg) center/contain no-repeat;
+    }
+    .proj-section[data-proj="5"] > a[href^="mailto"]::after{
+      margin-left:10px;
+      -webkit-mask:url(menu-icon-mail.svg) center/contain no-repeat;
+      mask:url(menu-icon-mail.svg) center/contain no-repeat;
+    }
+    .proj-section[data-proj="5"] > div{
+      position:relative!important;left:auto!important;top:auto!important;
+      width:auto!important;height:auto!important;flex:0 0 auto;margin-top:23px;
+      display:flex;flex-wrap:wrap;gap:10px;padding:28px 30px 30px;
+    }
+    .proj-section[data-proj="5"] > div h3{
+      position:relative!important;left:auto!important;top:auto!important;
+      transform:none!important;width:100%!important;margin-bottom:8px!important;
+      font-size:24px!important;line-height:26px!important;
+    }
+    .proj-section[data-proj="5"] .form-input{
+      position:relative!important;left:auto!important;top:auto!important;
+      width:100%!important;height:30px!important;font-size:15px!important;flex:none;
+    }
+    /* name and phone share the first row, name on the right */
+    .proj-section[data-proj="5"] input.form-input:nth-of-type(1),
+    .proj-section[data-proj="5"] input.form-input:nth-of-type(2){width:calc(50% - 5px)!important}
+    .proj-section[data-proj="5"] textarea.form-input{height:94px!important;padding-top:10px}
+    .proj-section[data-proj="5"] > div button{
+      position:relative!important;left:auto!important;top:auto!important;
+      width:100%!important;height:39px!important;font-size:18px!important;flex:none;
+    }
+  }
   }
 </style>
 </head>
@@ -511,7 +764,7 @@
 
 <section id="hero">
   <video class="hero-bg" autoplay loop muted playsinline><source src="0.mp4" type="video/mp4"></video>
-  <h1 class="title anim-glitch" data-text="אתרים שגורמים לעסק שלכם להיראות ראשון בתחום"><span class="l1">אתרים שגורמים לעסק שלכם</span> <span class="l2">להיראות ראשון בתחום</span></h1>
+  <h1 class="title anim-glitch" data-text="אתרים שגורמים לעסק שלכם להיראות ראשון בתחום"><span class="l1">אתרים שגורמים לעסק שלכם</span> <span class="l2">להיראות ראשון <span class="l3">בתחום</span></span></h1>
   <div class="btns">
     <a class="btn solid" href="https://wa.me/972000000000" target="_blank" rel="noopener">בואו נדבר</a>
     <a class="btn line" href="#">לתיק עבודות</a>
@@ -538,9 +791,9 @@
   <section class="pane">
     <div class="status-box">סטטוס: נחיתה<br>גובה: 0<br>מהירות: 0 קמ״ש<br>מרחק מהמתחרים: ∞</div>
     <div class="copy landing-copy">
-      <p class="anim-glitch-r" data-text="נעים להכיר" style="font-size:80px;font-weight:300;line-height:.88;margin:0">נעים להכיר</p>
-      <p class="anim-glitch-r" data-text="רוני אליהו" style="font-size:120px;font-weight:700;line-height:.88;margin:0">רוני אליהו</p>
-      <p class="anim-glitch-r" data-text="אני הטייסת שלכם להיום" style="font-size:45px;font-weight:300;line-height:1;margin-top:12px">אני הטייסת שלכם להיום</p>
+      <p class="anim-glitch" data-text="נעים להכיר" style="font-size:80px;font-weight:300;line-height:.88;margin:0">נעים להכיר</p>
+      <p class="anim-glitch" data-text="רוני אליהו" style="font-size:120px;font-weight:700;line-height:.88;margin:0">רוני אליהו</p>
+      <p class="anim-glitch" data-text="אני הטייסת שלכם להיום" style="font-size:45px;font-weight:300;line-height:1;margin-top:12px">אני הטייסת שלכם להיום</p>
     </div>
     <div class="hint" style="position:absolute;bottom:3vh;left:50%;transform:translateX(-50%);opacity:0;transition:opacity .6s">
       <span>גללו</span><i></i>
@@ -590,6 +843,8 @@
   <section class="proj-section active" data-proj="0">
     <div style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1.6px 1.6px at 12% 22%,#fff,transparent),radial-gradient(1.2px 1.2px at 78% 12%,#fff,transparent),radial-gradient(1.8px 1.8px at 62% 38%,#fff,transparent),radial-gradient(1.2px 1.2px at 88% 62%,#fff,transparent),radial-gradient(1.4px 1.4px at 42% 8%,#fff,transparent),radial-gradient(1.1px 1.1px at 92% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 20% 68%,#fff,transparent),radial-gradient(1.2px 1.2px at 70% 78%,#fff,transparent);opacity:.5"></div>
     <video class="proj-video" src="space-bg.mp4" autoplay muted loop playsinline></video>
+    <div class="proj-grain"></div>
+    <img class="proj-bplanet" src="planet-bottom.png" alt="">
     <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 30%,rgba(5,5,10,.5) 56%,rgba(5,5,10,.85) 76%,rgba(5,5,10,.94) 100%)"></div>
     <div class="proj-planet-wrap" style="position:absolute;right:2%;top:6%;width:26%">
       <img src="saturn.png" alt="" style="transform:rotate(50.75deg);will-change:transform;animation:ring-float 10s ease-in-out infinite;opacity:.92;filter:brightness(.72) saturate(.72) contrast(1.06) sepia(.14)">
@@ -607,6 +862,8 @@
 
   <section class="proj-section" data-proj="1">
     <video class="proj-video" src="space-bg.mp4" autoplay muted loop playsinline style="transform:scaleX(-1)"></video>
+    <div class="proj-grain"></div>
+    <img class="proj-bplanet" src="planet-bottom.png" alt="">
     <div class="proj-scrim" style="background:linear-gradient(to left,rgba(5,5,10,0) 30%,rgba(5,5,10,.5) 56%,rgba(5,5,10,.85) 76%,rgba(5,5,10,.94) 100%)"></div>
     <div class="proj-planet-wrap" style="position:absolute;left:-6%;top:8%;width:30%">
       <img src="planet-galaxy.png" alt="" style="will-change:transform;animation:ring-float-plain 10s ease-in-out infinite;opacity:.88;filter:brightness(.7) saturate(.72) contrast(1.05) sepia(.12)">
@@ -625,6 +882,8 @@
   <section class="proj-section" data-proj="2">
     <div style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1.6px 1.6px at 12% 22%,#fff,transparent),radial-gradient(1.2px 1.2px at 78% 12%,#fff,transparent),radial-gradient(1.8px 1.8px at 62% 38%,#fff,transparent),radial-gradient(1.2px 1.2px at 88% 62%,#fff,transparent),radial-gradient(1.4px 1.4px at 42% 8%,#fff,transparent),radial-gradient(1.1px 1.1px at 92% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 20% 68%,#fff,transparent),radial-gradient(1.2px 1.2px at 70% 78%,#fff,transparent);opacity:.5"></div>
     <video class="proj-video" src="space-bg.mp4" autoplay muted loop playsinline></video>
+    <div class="proj-grain"></div>
+    <img class="proj-bplanet" src="planet-bottom.png" alt="">
     <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 38%,rgba(5,5,10,.38) 62%,rgba(5,5,10,.62) 80%,rgba(5,5,10,.72) 100%)"></div>
     <div class="proj-planet-wrap" style="position:absolute;right:-1%;top:4%;width:28%">
       <img src="planet-uranus.png" alt="" style="will-change:transform;animation:ring-float-s 12s ease-in-out infinite;opacity:.88;filter:brightness(.7) saturate(.72) contrast(1.05) sepia(.12)">
@@ -653,7 +912,7 @@
         <div style="width:clamp(120px,10.5vw,200px);aspect-ratio:1;border-radius:50%;overflow:hidden;flex:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%);mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%)">
           <img src="avatar-shekel.png" alt="" style="display:block;width:100%;height:100%;object-fit:cover">
         </div>
-        <h3 style="margin:0;color:#EDF1F6;font-size:35px;font-weight:400;line-height:1.22;overflow-wrap:break-word;text-align:center">מיצוי הפוטנציאל<br>והעלאת מחירים</h3>
+        <h3 style="margin:0;color:#EDF1F6;font-size:35px;font-weight:400;line-height:1.22;overflow-wrap:break-word;text-align:center">מיצוי הפוטנציאל<br> והעלאת מחירים</h3>
         <p style="margin:0;color:#ffffff;font-size:18px;line-height:1.7;text-align:center;text-wrap:pretty">לקוחות משלמים יותר למותגים שנראים כמו הטופ של התעשייה. אתר מעוצב בסטנדרט פרימיום מייצר אוטוריטה מיידית ומאפשר לכם לגבות את המחיר שבאמת מגיע לכם.</p>
       </article>
 
@@ -661,7 +920,7 @@
         <div style="width:clamp(132px,11.5vw,218px);aspect-ratio:1;border-radius:50%;overflow:hidden;flex:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%);mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%)">
           <img src="avatar-heart.png" alt="" style="display:block;width:100%;height:100%;object-fit:cover">
         </div>
-        <h3 style="margin:0;color:#EDF1F6;font-size:35px;font-weight:400;line-height:1.22;overflow-wrap:break-word;text-align:center">אמון והמרה<br>מהירה</h3>
+        <h3 style="margin:0;color:#EDF1F6;font-size:35px;font-weight:400;line-height:1.22;overflow-wrap:break-word;text-align:center">אמון והמרה<br> מהירה</h3>
         <p style="margin:0;color:#ffffff;font-size:18px;line-height:1.7;text-align:center;text-wrap:pretty">כשגולש נכנס לאתר חווייתי, זורם ומרשים, רמת האמון שלו מזנקת בשניות. הוא לא רק מסתכל, הוא מבין עם מי יש לו עסק ומשאיר פרטים בביטחון מלא.</p>
       </article>
 
@@ -669,7 +928,7 @@
         <div style="width:clamp(120px,10.5vw,200px);aspect-ratio:1;border-radius:50%;overflow:hidden;flex:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%);mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%)">
           <img src="avatar-point.png" alt="" style="display:block;width:100%;height:100%;object-fit:cover">
         </div>
-        <h3 style="margin:0;color:#EDF1F6;font-size:35px;font-weight:400;line-height:1.22;overflow-wrap:break-word;text-align:center">בולטות מול<br>המתחרים</h3>
+        <h3 style="margin:0;color:#EDF1F6;font-size:35px;font-weight:400;line-height:1.22;overflow-wrap:break-word;text-align:center">בולטות מול<br> המתחרים</h3>
         <p style="margin:0;color:#ffffff;font-size:18px;line-height:1.7;text-align:center;text-wrap:pretty">רוב האתרים בשוק נראים אותו דבר ונשכחים שנייה אחרי שסוגרים את הלשונית. אתר דינמי עם שפה ויזואלית ייחודית מייצר אימפקט שאי אפשר להתעלם ממנו.</p>
       </article>
 
@@ -681,7 +940,7 @@
     <div style="position:absolute;left:11.63%;top:14.77%;width:min(33%,60vh);animation:astro-float 7s ease-in-out infinite;will-change:transform">
       <img src="astronaut.png" alt="" style="display:block;width:100%;transform:scaleX(-1);filter:brightness(.8) contrast(1.04) saturate(.9);image-rendering:auto">
     </div>
-    <h2 style="position:absolute;right:11.57%;top:32.05%;margin:0;text-align:right;font-weight:400;font-size:min(80px,4.63vw);line-height:.9625;background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent">נעים להכיר,<br>רוני אליהו</h2>
+    <h2 style="position:absolute;right:11.57%;top:32.05%;margin:0;text-align:right;font-weight:400;font-size:min(80px,4.63vw);line-height:.9625;background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent">נעים להכיר,<br><span class="ab-name">רוני אליהו</span></h2>
     <div style="position:absolute;right:11.63%;top:49.87%;width:min(562px,32.52%);text-align:right;color:#fff;font-size:18px;line-height:normal">
       <p style="margin:0 0 23px;font-weight:600">כשאנשים מגיעים לאתר שלכם, יש לכם בדיוק 3 שניות להוכיח להם שהם הגיעו למקום הנכון.</p>
       <p style="margin:0 0 23px;font-weight:400">המטרה שלי היא לקחת עסקים מעולים ולהעניק להם נוכחות דיגיטלית בסטנדרט הגבוה ביותר. כל פרויקט אצלי נבנה מאפס מתוך שילוב של סטוריטלינג ויזואלי סוחף, אנימציות דינמיות ותשומת לב לכל פיקסל.</p>
@@ -1122,6 +1381,10 @@
     nudge(e.deltaY > 0 ? 1 : -1);
   }, { passive:false });
   addEventListener('keydown', e => {
+    /* space and the arrows drive the section navigation — but not while the
+       caret is in a field, otherwise you cannot type a space anywhere */
+    const t = e.target;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
     if (marsMode){
       const d = e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ' ? 1
         : e.key === 'ArrowUp' || e.key === 'PageUp' ? -1 : 0;
@@ -1147,6 +1410,29 @@
   addEventListener('touchend', () => { ty = null; });
   dots.forEach((b, k) => b.addEventListener('click', () => goSection(k)));
   addEventListener('resize', size);
+
+
+  /* ---------- background clip: pick the lightest file that still looks sharp ----------
+     the variants are optional — a missing file falls straight back to space-bg.mp4,
+     so the site keeps working until they are exported. */
+  (function pickBgClip(){
+    const BASE = 'space-bg.mp4';
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const portrait = window.innerHeight > window.innerWidth;
+    const devW = window.innerWidth * dpr;
+    /* the base clip is already 2560x1440 — only phones still want their own crop */
+    let want = BASE;
+    if (portrait && window.innerWidth <= 900) want = 'space-bg-portrait.mp4';
+    if (want === BASE) return;
+    document.querySelectorAll('video.proj-video').forEach(v => {
+      const keep = v.getAttribute('src');
+      v.addEventListener('error', () => {
+        if (v.getAttribute('src') !== keep){ v.setAttribute('src', keep); v.load(); }
+      }, { once:true });
+      v.setAttribute('src', want);
+      v.load();
+    });
+  })();
 
   /* ---------- boot ---------- */
   size();
@@ -1406,6 +1692,46 @@
     });
   });
 
+  /* split the "נעים להכיר" copy into words so it can light up one by one */
+  (function buildWordReveal(){
+    const box = document.querySelector('.proj-section[data-proj="4"] > div:last-of-type');
+    if (!box) return;
+    box.classList.add('wordfx');
+    const spans = [];
+    box.querySelectorAll('p').forEach(par => {
+      const parts = par.textContent.split(/(\s+)/);
+      par.textContent = '';
+      parts.forEach(tok => {
+        if (!tok.trim()){ par.appendChild(document.createTextNode(tok)); return; }
+        const w = document.createElement('span');
+        w.className = 'w';
+        w.textContent = tok;
+        par.appendChild(w);
+        spans.push(w);
+      });
+    });
+    const last = 4 - 0.45;                    /* the final word finishes at 4s */
+    spans.forEach((w, i) => {
+      w.style.animationDelay = (spans.length > 1 ? (i / (spans.length - 1)) * last : 0).toFixed(3) + 's';
+    });
+  })();
+
+  /* the landing lines glitch once every 4s, using the hero's burst */
+  (function loopLandingGlitch(){
+    const copy = document.querySelector('.landing-copy');
+    if (!copy) return;
+    const pane = copy.closest('.pane');
+    const lines = [...copy.querySelectorAll('.anim-glitch')];
+    setInterval(() => {
+      if (!pane.classList.contains('show')) return;
+      lines.forEach(el => {
+        el.classList.remove('glitch-fire');
+        void el.offsetWidth;
+        el.classList.add('glitch-fire');
+      });
+    }, 4000);
+  })();
+
   /* one-shot glitch burst on hover */
   document.querySelectorAll('.glitch').forEach(el => {
     el.addEventListener('mouseenter', () => {
@@ -1419,5 +1745,6 @@
   });
 })();
 </script>
+<script src="dev-review.js"></script>
 </body>
 </html>
