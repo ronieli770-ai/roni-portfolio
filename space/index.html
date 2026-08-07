@@ -505,7 +505,7 @@
   .wa-fab:hover{transform:translateY(-3px);background:#fff}
   .wa-fab:hover::before{background:#FA9154}
   @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px){
-    .wa-fab{--wa:56px;right:14px}
+    .wa-fab{--wa:56px;right:14px;bottom:clamp(24px,4vh,50px)}
   }
 
   /* ================= MOBILE ================= */
@@ -528,10 +528,28 @@
     #hero .title .l3{display:block}
     /* the glitch copies are one flat string — they would wrap differently */
     #hero .title.anim-glitch::before,#hero .title.anim-glitch::after{display:none}
+    /* the desktop burst ends on translateX(-50%) to keep the centred title in
+       place; here the title is anchored by left/right, so it needs a version
+       that shakes and lands back on nothing */
+    @keyframes m-glitch{
+      0%{transform:none;filter:none}
+      5%{transform:translate(2px,0);filter:drop-shadow(0 0 8px rgba(141,168,203,.4))}
+      10%{transform:translate(-2px,0)}
+      15%{transform:translate(3px,0);filter:drop-shadow(0 0 14px rgba(141,168,203,.7))}
+      20%{transform:translate(-1px,0)}
+      25%{transform:translate(2px,0)}
+      30%{transform:none;filter:drop-shadow(0 0 20px rgba(141,168,203,.9))}
+      40%{filter:drop-shadow(0 0 24px rgba(141,168,203,1))}
+      55%{filter:drop-shadow(0 0 14px rgba(141,168,203,.5))}
+      70%{filter:drop-shadow(0 0 4px rgba(141,168,203,.1))}
+      85%,100%{transform:none;filter:none}
+    }
+    #hero .title.anim-glitch.glitch-fire{animation:m-glitch .5s 1 forwards}
     .status-box{
       left:14px;right:auto;
       min-width:0;padding:14px 18px;border-radius:16px;font-size:13px;
     }
+    .status-box::before{border-radius:16px}
     /* the panes have no buttons, so their card takes the spot "לתיק עבודות"
        held in the hero — same left edge, same bottom edge */
     .pane .status-box{bottom:clamp(24px,4vh,50px)}
