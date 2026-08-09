@@ -141,8 +141,15 @@
 
     _loop() {
       if (this._dead || !this._renderer) return;
+      /* the element stays in the dom while its section is closed — rendering a
+         full webgl frame the whole time we are elsewhere on the page is what
+         starves the other animations */
+      if (!this.offsetParent || !this.clientWidth) {
+        requestAnimationFrame(() => this._loop());
+        return;
+      }
       const now = performance.now();
-      const dt = Math.min(0.05, (now - this._last) / 1000);
+      const dt = Math.min(0.05, (now - this._last) / 1000);   /* clamped: a paused tab must not jump */
       this._last = now;
 
       this._spin += num(this, 'idle', 0.04) * dt;

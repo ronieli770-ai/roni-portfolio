@@ -276,10 +276,10 @@
   .pane.active{pointer-events:auto}
   .copy{max-width:min(900px,90vw);text-align:center}
   .copy > *{
-    opacity:0;transform:translateY(30px);filter:blur(7px);
-    transition:opacity .8s ease, transform .9s cubic-bezier(.16,.84,.24,1), filter .8s ease;
+    opacity:0;transform:translateY(30px);
+    transition:opacity .8s ease, transform .9s cubic-bezier(.16,.84,.24,1);
   }
-  .pane.show .copy > *{opacity:1;transform:none;filter:none}
+  .pane.show .copy > *{opacity:1;transform:none}
   .pane .status-box{opacity:0;transform:translateY(16px);transition:opacity .8s ease, transform .9s cubic-bezier(.16,.84,.24,1)}
   .landing-copy{text-align:right;position:absolute;top:14%;right:clamp(40px,6vw,100px);max-width:none;background:var(--title-grad);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transition:opacity .9s ease .45s,transform .9s cubic-bezier(.16,.84,.24,1) .45s}
   .pane.show .landing-copy{opacity:1}
@@ -382,7 +382,7 @@
   }
   .proj-section .proj-planet-wrap{pointer-events:none;will-change:transform;transition:transform 1.1s cubic-bezier(.22,1,.36,1)}
   .proj-section .proj-planet-wrap img{display:block;width:100%}
-  .proj-section .proj-laptop{position:absolute;bottom:6.9%;width:62%;transform:translateY(10.2%);filter:drop-shadow(0 40px 70px rgba(0,0,0,.55))}
+  .proj-section .proj-laptop{position:absolute;bottom:6.9%;width:62%;transform:translateY(10.2%);filter:drop-shadow(0 40px 70px rgba(0,0,0,.55));will-change:transform,opacity}
   .proj-section .proj-text{position:absolute;bottom:6.9%;width:clamp(300px,24%,460px)}
   .proj-section .proj-text-inner{display:flex;flex-direction:column;align-items:flex-start;gap:14px;text-align:right;will-change:transform}
   .proj-section .proj-eyebrow{color:#E8935A;font-size:18px;font-weight:500;letter-spacing:.02em}
@@ -476,6 +476,10 @@
     mask-image:radial-gradient(circle 260px at var(--mx,50%) var(--my,50%),rgba(0,0,0,.85) 0%,rgba(0,0,0,.45) 35%,rgba(0,0,0,.16) 62%,transparent 88%);
   }
   [class*="why-card-"]{position:relative;overflow:hidden;backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px)}
+  @media (hover:none) and (pointer:coarse){
+    /* three live blur surfaces animating at once drops frames on a phone */
+    [class*="why-card-"]{backdrop-filter:none;-webkit-backdrop-filter:none;background-color:rgba(255,255,255,.045)}
+  }
   [class*="why-card-"]::before{
     content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
     background:radial-gradient(280px circle at var(--cx,50%) var(--cy,50%),rgba(250,145,84,.13) 0%,rgba(224,120,60,.05) 45%,transparent 72%);
@@ -668,16 +672,16 @@
     .why-card-b{z-index:2}
     .why-card-c{z-index:3}
     @keyframes m-deck-a{
-      0%{opacity:0;transform:rotate(-5deg);filter:blur(7px)}
-      16%{opacity:1;transform:rotate(-5deg);filter:blur(7px)}
-      26%{transform:rotate(-5deg);filter:blur(7px)}
-      100%{opacity:1;transform:none;filter:blur(0)}
+      0%{opacity:0;transform:rotate(-5deg)}
+      16%{opacity:1;transform:rotate(-5deg)}
+      26%{transform:rotate(-5deg)}
+      100%{opacity:1;transform:none}
     }
     @keyframes m-deck-b{
-      0%{opacity:0;transform:translate3d(0,calc(-100% - 10px),0);filter:blur(4px)}
-      16%{opacity:1;transform:translate3d(0,calc(-100% - 10px),0);filter:blur(4px)}
-      26%{transform:translate3d(0,calc(-100% - 10px),0);filter:blur(4px)}
-      100%{opacity:1;transform:none;filter:blur(0)}
+      0%{opacity:0;transform:translate3d(0,calc(-100% - 10px),0)}
+      16%{opacity:1;transform:translate3d(0,calc(-100% - 10px),0)}
+      26%{transform:translate3d(0,calc(-100% - 10px),0)}
+      100%{opacity:1;transform:none}
     }
     @keyframes m-deck-c{
       0%{opacity:0;transform:translate3d(0,calc(-200% - 20px),0) rotate(5deg)}
@@ -1553,9 +1557,10 @@
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     const portrait = window.innerHeight > window.innerWidth;
     const devW = window.innerWidth * dpr;
-    /* the base clip is already 2560x1440 — only phones still want their own crop */
-    let want = BASE;
-    if (portrait && window.innerWidth <= 900) want = 'space-bg-portrait.mp4';
+    /* a portrait crop would suit phones better, but until space-bg-portrait.mp4
+       exists asking for it costs three 404s and delays the clip on every mobile
+       load — so the base file is used until that export lands */
+    const want = BASE;
     if (want === BASE) return;
     document.querySelectorAll('video.proj-video').forEach(v => {
       const keep = v.getAttribute('src');
