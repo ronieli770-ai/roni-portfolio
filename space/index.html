@@ -1197,17 +1197,17 @@
      moon's centre exactly on the bottom edge — half of it showing — on any
      screen shape, and marsUpdate turns it into the world units the globe wants. */
   const MARS_TRACK = [
-    { p:0.00, zoom:1.20, offx:0.00, offy:-0.66, yaw:0.00, idle:0.34, exp:1.00, haze:0.85, tilt:0, glow:0.50 },
-    { p:0.12, zoom:1.18, offx:0.00, offy:-0.90, yaw:0.30, idle:0.20, exp:1.02, haze:0.95, tilt:0, glow:0.60 },
-    { p:0.26, zoom:1.16, offx:0.00, offy:-0.96, yaw:0.70, idle:0.06, exp:1.06, haze:1.05, tilt:0, glow:0.72 },
-    { p:0.30, zoom:1.15, offx:0.00, offy:-1.00, yaw:0.82, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
-    { p:0.455, zoom:1.15, offx:0.00, offy:-1.00, yaw:0.94, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
-    { p:0.515, zoom:1.15, offx:0.00, offy:-1.00, yaw:1.62, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
-    { p:0.665, zoom:1.15, offx:0.00, offy:-1.00, yaw:1.74, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
-    { p:0.715, zoom:1.15, offx:0.00, offy:-1.00, yaw:2.42, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
-    { p:0.795, zoom:1.15, offx:0.00, offy:-1.00, yaw:2.54, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
-    { p:0.860, zoom:1.15, offx:0.00, offy:-0.90, yaw:2.80, idle:-0.075, exp:1.06, haze:0.90, tilt:1.5708, glow:0.6, rim:0.25 },
-    { p:1.00, zoom:1.15, offx:0.00, offy:-2.60, yaw:2.80, idle:-0.075, exp:1.04, haze:0.90, tilt:1.5708, glow:0.6, rim:0.9 },
+    { p:0.00, zoom:1.20, offx:0.00, offy:-0.66, yaw:0.00, idle:0.34, exp:1.00, haze:0.85, tilt:0, glow:0.50 , mscale:2 },
+    { p:0.12, zoom:1.18, offx:0.00, offy:-0.90, yaw:0.30, idle:0.20, exp:1.02, haze:0.95, tilt:0, glow:0.60 , mscale:2 },
+    { p:0.26, zoom:1.16, offx:0.00, offy:-0.96, yaw:0.70, idle:0.06, exp:1.06, haze:1.05, tilt:0, glow:0.72 , mscale:2 },
+    { p:0.30, zoom:1.15, offx:0.00, offy:-1.00, yaw:0.82, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 , mscale:2 },
+    { p:0.455, zoom:1.15, offx:0.00, offy:-1.00, yaw:0.94, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 , mscale:2 },
+    { p:0.515, zoom:1.15, offx:0.00, offy:-1.00, yaw:1.62, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 , mscale:2 },
+    { p:0.665, zoom:1.15, offx:0.00, offy:-1.00, yaw:1.74, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 , mscale:2 },
+    { p:0.715, zoom:1.15, offx:0.00, offy:-1.00, yaw:2.42, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 , mscale:2 },
+    { p:0.795, zoom:1.15, offx:0.00, offy:-1.00, yaw:2.54, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 , mscale:2 },
+    { p:0.860, zoom:1.15, offx:0.00, offy:-0.90, yaw:2.80, idle:-0.075, exp:1.06, haze:0.90, tilt:1.5708, glow:0.6, rim:0.25 , mscale:2 },
+    { p:1.00, zoom:1.15, offx:0.00, offy:-2.60, yaw:2.80, idle:-0.075, exp:1.04, haze:0.90, tilt:1.5708, glow:0.6, rim:0.9 , mscale:2 },
   ];
   const MARS_STOPS = [[0.30,0.458],[0.518,0.668],[0.718,0.800]];
   const MARS_STATIONS = [0, 0.37, 0.59, 0.79, 1];
@@ -1246,12 +1246,20 @@
     if (globe){
       /* only touch an attribute when its value actually moved */
       const set = (name, val) => { if (globe.getAttribute(name) !== val) globe.setAttribute(name, val); };
-      set('zoom', k.zoom.toFixed(3));
       set('offx', k.offx.toFixed(3));
-      /* px per world unit: the globe fits by width in portrait, by height in
-         landscape — so the same fraction lands the same way on both */
-      const shape = Math.max(1, (window.innerHeight || 800) / (window.innerWidth || 800));
-      set('offy', (k.offy * 1.05 / Math.max(.15, k.zoom) * shape).toFixed(3));
+      /* the track frames the moon by where its centre sits (offy as a fraction
+         of half the viewport). mscale grows the sphere around that framing
+         while its top edge stays put, so a bigger moon fills downwards. */
+      const vw = window.innerWidth || 800, vh = window.innerHeight || 800;
+      const dim = vw < vh ? vw : vh;              /* the globe fits by the short side */
+      const shape = Math.max(1, vh / vw);
+      const zBase = Math.max(.15, k.zoom);
+      const rBase = 1.35 * (dim / 2) * zBase / 1.05;
+      const topEdge = (vh / 2 - k.offy * shape * (dim / 2)) - rBase;
+      const z = zBase * (k.mscale || 1);
+      const unit = (dim / 2) * z / 1.05;
+      set('zoom', z.toFixed(3));
+      set('offy', (-((topEdge + 1.35 * unit) - vh / 2) / unit).toFixed(3));
       set('yaw', k.yaw.toFixed(3));
       set('idle', k.idle.toFixed(4));
       set('exp', k.exp.toFixed(3));
