@@ -331,13 +331,11 @@
   .anim-glitch.glitch-fire::after{clip-path:inset(50% 0 0 0);animation:glitchBot .5s 1 forwards}
 
   /* ---------- transition video ---------- */
-  #trans-video-wrap{position:fixed;inset:0;z-index:10;display:none;background:#000}
-  #trans-video-wrap.on{display:flex;align-items:center;justify-content:center}
-  #trans-video-wrap video{width:100%;height:100%;object-fit:cover}
 
   /* ---------- mars section ---------- */
   #mars-wrap{position:fixed;inset:0;z-index:11;display:none;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y}
-  #mars-wrap.on{display:block}
+  #mars-wrap.on{display:block;opacity:0;transition:opacity .55s ease}
+  #mars-wrap.on.vis{opacity:1}
   [data-mars-section] h2,[data-mars-section] h3{background:none;-webkit-background-clip:initial;background-clip:initial;color:#fff}
   mars-globe:not(:defined){opacity:0}
 
@@ -843,7 +841,6 @@
   </section>
 </div>
 
-<div id="trans-video-wrap"><video id="trans-video" src="transition.mp4" preload="none" muted playsinline></video></div>
 
 <div id="mars-wrap">
   <div id="mars-root" data-mars-section dir="rtl" style="position:relative;height:760vh;background:transparent;font-family:'IBM Plex Sans Hebrew',sans-serif;">
@@ -1361,6 +1358,11 @@
   function enterMars(){
     marsMode = true;
     marsWrap.classList.add('on');
+    /* the class flips display, so the fade needs a style flush before the
+       opacity change — a reflow does it synchronously, unlike rAF, which a
+       backgrounded tab would never run */
+    void marsWrap.offsetWidth;
+    marsWrap.classList.add('vis');
     marsWrap.scrollTop = 0;
     marsStopIdx = -1;
     hideCopy(idx);
@@ -1375,7 +1377,7 @@
 
   function exitMars(){
     marsMode = false;
-    marsWrap.classList.remove('on');
+    marsWrap.classList.remove('on','vis');
     marsAnim = null; marsForceP = null; projPrepped = false;
     document.getElementById('bg').style.display = '';
     rail.style.display = '';
@@ -1417,7 +1419,7 @@
       setTimeout(() => heroTitle.classList.remove('glitch-fire'), 500);
     }
     if (idx === LAST && d > 0){
-      playTransition();
+      enterMars();
       return;
     }
     go(idx + d);
@@ -1503,26 +1505,6 @@
   setTimeout(() => loader.classList.add('gone'), 12000);
 
   /* ---------- transition video ---------- */
-  const transWrap = document.getElementById('trans-video-wrap');
-  const transVid = document.getElementById('trans-video');
-  let transPlaying = false;
-
-  function playTransition(){
-    if (transPlaying) return;
-    transPlaying = true;
-    transWrap.classList.add('on');
-    transVid.currentTime = 0;
-    transVid.onloadedmetadata = () => {
-      transVid.playbackRate = transVid.duration / 2.5;
-    };
-    if (transVid.duration) transVid.playbackRate = transVid.duration / 2.5;
-    transVid.play().catch(() => {});
-    transVid.onended = () => {
-      transWrap.classList.remove('on');
-      transPlaying = false;
-      enterMars();
-    };
-  }
 
   /* ---------- projects mode ---------- */
   const projWrap = document.getElementById('projects-wrap');
@@ -1584,7 +1566,7 @@
   function enterProjects(){
     projMode = true;
     marsMode = false;
-    marsWrap.classList.remove('on');
+    marsWrap.classList.remove('on','vis');
     marsAnim = null; marsForceP = null;
     if (!projWrap.classList.contains('on')) projPrepBehind();
   }
@@ -1646,10 +1628,9 @@
   }
 
   function goSection(n){
-    if (transPlaying) return;
     if (n <= LAST){
       if (projMode){ projMode = false; projWrap.classList.remove('on'); }
-      if (marsMode){ marsMode = false; marsWrap.classList.remove('on'); marsAnim = null; marsForceP = null; }
+      if (marsMode){ marsMode = false; marsWrap.classList.remove('on','vis'); marsAnim = null; marsForceP = null; }
       document.getElementById('bg').style.display = '';
       hint.style.display = '';
       if (idx === n){ enter(n); showCopy(n); }
@@ -1666,7 +1647,7 @@
     if (projMode){ projShow(pi); return; }
     if (marsMode){
       marsMode = false;
-      marsWrap.classList.remove('on');
+      marsWrap.classList.remove('on','vis');
       marsAnim = null; marsForceP = null;
     } else {
       hideCopy(idx);
