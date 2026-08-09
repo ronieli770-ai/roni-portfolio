@@ -28,6 +28,12 @@
   }
 
   /* ---------- background glows (figma: #3C5F95, blur 250) ---------- */
+  /* the opening screens ride on one layer so the handoff to the moon can move
+     both at once instead of cutting between them */
+  #bg,#stage,#veil,#deck{will-change:transform}
+  .handoff{transform:translateY(var(--ho,0px))}
+  #mars-wrap.sliding{transform:translateY(var(--mo,100vh))}
+
   #bg{
     position:fixed;inset:0;z-index:0;background:#000;
     background-image:
@@ -1355,14 +1361,15 @@
     marsTweenTo(MARS_STATIONS[next]);
   }
 
-  function enterMars(){
-    marsMode = true;
-    marsWrap.classList.add('on');
-    /* the class flips display, so the fade needs a style flush before the
-       opacity change — a reflow does it synchronously, unlike rAF, which a
-       backgrounded tab would never run */
-    void marsWrap.offsetWidth;
-    marsWrap.classList.add('vis');
+  const openLayers = ['bg', 'stage', 'veil', 'deck'].map(id => document.getElementById(id));
+
+  function clearHandoff(){
+    openLayers.forEach(el => { el.classList.remove('handoff'); el.style.removeProperty('--ho'); });
+    marsWrap.classList.remove('sliding');
+    marsWrap.style.removeProperty('--mo');
+  }
+
+  function settleMars(){
     marsWrap.scrollTop = 0;
     marsStopIdx = -1;
     hideCopy(idx);
@@ -1375,8 +1382,48 @@
     marsUpdate();
   }
 
+  /* the closing screen slides up while the moon rises into its place — both are
+     on screen through the whole move, the way two stacked sections read when
+     you scroll past the seam */
+  function slideToMars(){
+    if (marsMode) return;
+    marsMode = true;
+    marsWrap.classList.add('on', 'vis', 'sliding');
+    marsWrap.style.setProperty('--mo', '100vh');
+    openLayers.forEach(el => el.classList.add('handoff'));
+    marsStopIdx = -1;
+    marsUpdate();
+    void marsWrap.offsetWidth;
+
+    const vh = () => window.innerHeight || 800;
+    const dur = 900, t0 = performance.now();
+    const ease = t => (t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2);
+    const step = () => {
+      const u = Math.min(1, (performance.now() - t0) / dur);
+      const e = ease(u);
+      const off = vh() * e;
+      openLayers.forEach(el => el.style.setProperty('--ho', (-off) + 'px'));
+      marsWrap.style.setProperty('--mo', (vh() - off) + 'px');
+      if (u < 1) requestAnimationFrame(step);
+      else { clearHandoff(); settleMars(); }
+    };
+    requestAnimationFrame(step);
+    /* a backgrounded tab never runs rAF — land it anyway */
+    setTimeout(() => { if (marsMode && marsWrap.classList.contains('sliding')){ clearHandoff(); settleMars(); } }, dur + 400);
+  }
+
+  function enterMars(){
+    marsMode = true;
+    marsWrap.classList.add('on');
+    void marsWrap.offsetWidth;
+    marsWrap.classList.add('vis');
+    clearHandoff();
+    settleMars();
+  }
+
   function exitMars(){
     marsMode = false;
+    clearHandoff();
     marsWrap.classList.remove('on','vis');
     marsAnim = null; marsForceP = null; projPrepped = false;
     document.getElementById('bg').style.display = '';
@@ -1419,7 +1466,7 @@
       setTimeout(() => heroTitle.classList.remove('glitch-fire'), 500);
     }
     if (idx === LAST && d > 0){
-      enterMars();
+      slideToMars();
       return;
     }
     go(idx + d);
