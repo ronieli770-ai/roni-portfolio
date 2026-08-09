@@ -343,6 +343,20 @@
   #mars-wrap.on{display:block;opacity:0;transition:opacity .55s ease}
   #mars-wrap.on.vis{opacity:1}
   [data-mars-section] h2,[data-mars-section] h3{background:none;-webkit-background-clip:initial;background-clip:initial;color:#fff}
+  /* the section title borrows the "למה אתם צריכים את זה?" treatment */
+  [data-mars-section] h2.mars-title{
+    margin:0;text-align:center;
+    font-size:clamp(38px,4.6vw,76px);font-weight:300;line-height:1.1;letter-spacing:-.015em;
+    background:linear-gradient(270deg,#FFFFFF 0%,#AFC9E4 100%);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;-webkit-text-fill-color:transparent;
+  }
+  /* the three reasons stand side by side and stack up as you scroll */
+  .mars-stops{
+    position:absolute;left:6vw;right:6vw;top:26vh;
+    display:flex;align-items:flex-start;gap:clamp(20px,2.6vw,48px);
+  }
+  .mars-stops [data-stop]{flex:1 1 0;min-width:0}
   mars-globe:not(:defined){opacity:0}
 
   /* ---------- project sections ---------- */
@@ -571,15 +585,16 @@
     [data-mars-section] [data-intro] h2{font-size:32px!important}
     /* the copy sits at the top of the screen, 20px clear of the nav dots and
        the same distance from the left edge so the block reads as centred */
-    [data-mars-section] [data-stop]{
-      right:44px!important;left:14px!important;width:auto!important;
-      top:210px!important;bottom:auto!important;max-height:40vh!important;
+    /* three stacked blocks have to clear the moon's top edge */
+    .mars-stops{
+      left:14px;right:44px;top:174px;flex-direction:column;gap:10px;
     }
+    [data-mars-section] [data-stop]{max-height:none!important}
     [data-mars-section] [data-intro]{padding-top:118px!important}
-    [data-mars-section] [data-intro] h2{font-size:28px!important}
-    [data-mars-section] [data-stop] span{width:78px!important;margin-bottom:14px!important}
-    [data-mars-section] [data-stop] h3{font-size:28px!important;margin-bottom:14px!important}
-    [data-mars-section] [data-stop] p{font-size:15px!important;line-height:1.55!important}
+    [data-mars-section] [data-intro] h2{font-size:27px!important}
+    [data-mars-section] [data-stop] span{width:64px!important;margin-bottom:9px!important}
+    [data-mars-section] [data-stop] h3{font-size:22px!important;margin-bottom:8px!important}
+    [data-mars-section] [data-stop] p{font-size:13px!important;line-height:1.45!important}
 
     /* projects — the clip runs behind, zoomed so its planet only rises into
        the lower third; small saturn top-left, copy centred, laptop centred */
@@ -861,25 +876,27 @@
       <div data-scrim style="position:absolute;inset:0;background:radial-gradient(75% 70% at 82% 78%,rgba(4,3,2,0.72) 0%,rgba(4,3,2,0.42) 42%,rgba(4,3,2,0) 74%);opacity:0;pointer-events:none;"></div>
 
       <div data-intro style="position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding:min(14vh,150px) 6vw 0;transition:opacity .5s ease;pointer-events:none;">
-        <h2 style="margin:0;text-align:center;font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;">למה לעבוד דווקא איתי</h2>
+        <h2 class="mars-title">למה לעבוד דווקא איתי</h2>
       </div>
 
-      <div data-stop="1" style="position:absolute;right:6vw;top:26vh;width:min(560px,33vw);max-height:56vh;text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
+      <div class="mars-stops">
+      <div data-stop="1" style="text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
         <span style="display:block;width:116px;height:2px;margin:0 0 min(26px,2.6vh) auto;background:linear-gradient(to left,#FFB067,rgba(255,176,103,0.15));"></span>
         <h3 style="margin:0 0 min(26px,2.8vh);font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;text-wrap:balance;">אתר שמצדיק מחיר גבוה יותר</h3>
         <p style="margin:0;font-weight:400;font-size:18px;line-height:1.6;color:#cfd4da;">כשהאתר נראה כמו של מותג גדול, הלקוח מפסיק להשוות אותך לזול ביותר. אותו שירות בדיוק נתפס כפרימיום — וההצעה שלך עוברת עם פחות מיקוח.</p>
       </div>
 
-      <div data-stop="2" style="position:absolute;right:6vw;top:26vh;width:min(560px,33vw);max-height:56vh;text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
+      <div data-stop="2" style="text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
         <span style="display:block;width:116px;height:2px;margin:0 0 min(26px,2.6vh) auto;background:linear-gradient(to left,#FFB067,rgba(255,176,103,0.15));"></span>
         <h3 style="margin:0 0 min(26px,2.8vh);font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;text-wrap:balance;">חוויה שמחזיקה אותם עד הכפתור</h3>
         <p style="margin:0;font-weight:400;font-size:18px;line-height:1.6;color:#cfd4da;">רוב הגולשים מחליטים בשלוש שניות אם להישאר. תנועה, קצב ומידע שנחשף בגלילה מחזיקים אותם עד הסוף — ומשאירים אותם עם סיבה להשאיר פרטים.</p>
       </div>
 
-      <div data-stop="3" style="position:absolute;right:6vw;top:26vh;width:min(560px,33vw);max-height:56vh;text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
+      <div data-stop="3" style="text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
         <span style="display:block;width:116px;height:2px;margin:0 0 min(26px,2.6vh) auto;background:linear-gradient(to left,#FFB067,rgba(255,176,103,0.15));"></span>
         <h3 style="margin:0 0 min(26px,2.8vh);font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;text-wrap:balance;">ביקור שנשאר איתם גם אחרי שסגרו</h3>
         <p style="margin:0;font-weight:400;font-size:18px;line-height:1.6;color:#cfd4da;">אתר לא צריך רק להציג שירותים — הוא צריך לקחת את הגולש למקום. כשהביקור מרגיש כמו חוויה, זוכרים אותך, מספרים עליך, וחוזרים כשיש תקציב.</p>
+      </div>
       </div>
     </div>
   </div>
@@ -1302,7 +1319,7 @@
     if (stop !== marsStopIdx){
       marsStopIdx = stop;
       for (let i = 1; i <= 3; i++){
-        const on = i === stop;
+        const on = i <= stop;
         marsRoot.querySelectorAll('[data-stop="'+i+'"]').forEach(el => {
           el.style.opacity = on ? '1' : '0';
           el.style.transform = 'translateY('+(on ? '0px' : '24px')+')';
