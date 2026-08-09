@@ -573,8 +573,10 @@
        the same distance from the left edge so the block reads as centred */
     [data-mars-section] [data-stop]{
       right:44px!important;left:14px!important;width:auto!important;
-      top:170px!important;bottom:auto!important;max-height:44vh!important;
+      top:210px!important;bottom:auto!important;max-height:40vh!important;
     }
+    [data-mars-section] [data-intro]{padding-top:118px!important}
+    [data-mars-section] [data-intro] h2{font-size:28px!important}
     [data-mars-section] [data-stop] span{width:78px!important;margin-bottom:14px!important}
     [data-mars-section] [data-stop] h3{font-size:28px!important;margin-bottom:14px!important}
     [data-mars-section] [data-stop] p{font-size:15px!important;line-height:1.55!important}
@@ -851,30 +853,30 @@
 <div id="mars-wrap">
   <div id="mars-root" data-mars-section dir="rtl" style="position:relative;height:760vh;background:transparent;font-family:'IBM Plex Sans Hebrew',sans-serif;">
     <div style="position:sticky;top:0;height:100vh;overflow:hidden;">
-      <div data-mars-bg style="position:absolute;inset:0;background:#000;transition:opacity .6s ease;pointer-events:none;"></div>
+      <div data-mars-bg style="position:absolute;inset:0;transition:opacity .6s ease;pointer-events:none;background:radial-gradient(62% 46% at 50% 88%,rgba(31,62,123,.62) 0%,rgba(31,62,123,.20) 46%,rgba(0,0,0,0) 74%),radial-gradient(90% 55% at 50% 108%,rgba(31,62,123,.45) 0%,rgba(0,0,0,0) 72%),#000;"></div>
 
 
       <mars-globe idle="0.045" ease="0.06" zoom="1.20" offx="0" offy="0" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:auto;cursor:grab;"></mars-globe>
 
       <div data-scrim style="position:absolute;inset:0;background:radial-gradient(75% 70% at 82% 78%,rgba(4,3,2,0.72) 0%,rgba(4,3,2,0.42) 42%,rgba(4,3,2,0) 74%);opacity:0;pointer-events:none;"></div>
 
-      <div data-intro style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 6vw;transition:opacity .5s ease;pointer-events:none;">
+      <div data-intro style="position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding:min(14vh,150px) 6vw 0;transition:opacity .5s ease;pointer-events:none;">
         <h2 style="margin:0;text-align:center;font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;">למה לעבוד דווקא איתי</h2>
       </div>
 
-      <div data-stop="1" style="position:absolute;right:6vw;bottom:10vh;width:min(560px,33vw);max-height:76vh;text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
+      <div data-stop="1" style="position:absolute;right:6vw;top:26vh;width:min(560px,33vw);max-height:56vh;text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
         <span style="display:block;width:116px;height:2px;margin:0 0 min(26px,2.6vh) auto;background:linear-gradient(to left,#FFB067,rgba(255,176,103,0.15));"></span>
         <h3 style="margin:0 0 min(26px,2.8vh);font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;text-wrap:balance;">אתר שמצדיק מחיר גבוה יותר</h3>
         <p style="margin:0;font-weight:400;font-size:18px;line-height:1.6;color:#cfd4da;">כשהאתר נראה כמו של מותג גדול, הלקוח מפסיק להשוות אותך לזול ביותר. אותו שירות בדיוק נתפס כפרימיום — וההצעה שלך עוברת עם פחות מיקוח.</p>
       </div>
 
-      <div data-stop="2" style="position:absolute;right:6vw;bottom:10vh;width:min(560px,33vw);max-height:76vh;text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
+      <div data-stop="2" style="position:absolute;right:6vw;top:26vh;width:min(560px,33vw);max-height:56vh;text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
         <span style="display:block;width:116px;height:2px;margin:0 0 min(26px,2.6vh) auto;background:linear-gradient(to left,#FFB067,rgba(255,176,103,0.15));"></span>
         <h3 style="margin:0 0 min(26px,2.8vh);font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;text-wrap:balance;">חוויה שמחזיקה אותם עד הכפתור</h3>
         <p style="margin:0;font-weight:400;font-size:18px;line-height:1.6;color:#cfd4da;">רוב הגולשים מחליטים בשלוש שניות אם להישאר. תנועה, קצב ומידע שנחשף בגלילה מחזיקים אותם עד הסוף — ומשאירים אותם עם סיבה להשאיר פרטים.</p>
       </div>
 
-      <div data-stop="3" style="position:absolute;right:6vw;bottom:10vh;width:min(560px,33vw);max-height:76vh;text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
+      <div data-stop="3" style="position:absolute;right:6vw;top:26vh;width:min(560px,33vw);max-height:56vh;text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
         <span style="display:block;width:116px;height:2px;margin:0 0 min(26px,2.6vh) auto;background:linear-gradient(to left,#FFB067,rgba(255,176,103,0.15));"></span>
         <h3 style="margin:0 0 min(26px,2.8vh);font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;text-wrap:balance;">ביקור שנשאר איתם גם אחרי שסגרו</h3>
         <p style="margin:0;font-weight:400;font-size:18px;line-height:1.6;color:#cfd4da;">אתר לא צריך רק להציג שירותים — הוא צריך לקחת את הגולש למקום. כשהביקור מרגיש כמו חוויה, זוכרים אותך, מספרים עליך, וחוזרים כשיש תקציב.</p>
@@ -1190,18 +1192,22 @@
   let marsLastWheelTs = 0;
   let marsStopIdx = -1;
 
+  /* the moon rides low and centred, about half of it below the edge, so the
+     copy has the top of the screen to itself. offy is a fraction: 1 puts the
+     moon's centre exactly on the bottom edge — half of it showing — on any
+     screen shape, and marsUpdate turns it into the world units the globe wants. */
   const MARS_TRACK = [
-    { p:0.00, zoom:1.20, offx:0.00, offy:0.00, yaw:0.00, idle:0.34, exp:1.00, haze:0.85, tilt:0, glow:0.50 },
-    { p:0.12, zoom:1.85, offx:-0.10, offy:-0.30, yaw:0.30, idle:0.20, exp:1.02, haze:0.95, tilt:0, glow:0.60 },
-    { p:0.26, zoom:3.38, offx:-0.32, offy:-0.770, yaw:0.70, idle:0.06, exp:1.06, haze:1.05, tilt:0, glow:0.72 },
-    { p:0.30, zoom:3.60, offx:-0.36, offy:-0.788, yaw:0.82, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
-    { p:0.455, zoom:3.64, offx:-0.36, offy:-0.790, yaw:0.94, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
-    { p:0.515, zoom:3.68, offx:-0.34, offy:-0.792, yaw:1.62, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
-    { p:0.665, zoom:3.73, offx:-0.34, offy:-0.794, yaw:1.74, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
-    { p:0.715, zoom:3.77, offx:-0.32, offy:-0.796, yaw:2.42, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
-    { p:0.795, zoom:3.81, offx:-0.32, offy:-0.798, yaw:2.54, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
-    { p:0.860, zoom:2.62, offx:0.00, offy:0.00, yaw:2.80, idle:-0.075, exp:1.06, haze:0.90, tilt:1.5708, glow:0.6, rim:0.25 },
-    { p:1.00, zoom:2.62, offx:0.00, offy:-3.50, yaw:2.80, idle:-0.075, exp:1.04, haze:0.90, tilt:1.5708, glow:0.6, rim:0.9 },
+    { p:0.00, zoom:1.20, offx:0.00, offy:-0.66, yaw:0.00, idle:0.34, exp:1.00, haze:0.85, tilt:0, glow:0.50 },
+    { p:0.12, zoom:1.18, offx:0.00, offy:-0.90, yaw:0.30, idle:0.20, exp:1.02, haze:0.95, tilt:0, glow:0.60 },
+    { p:0.26, zoom:1.16, offx:0.00, offy:-0.96, yaw:0.70, idle:0.06, exp:1.06, haze:1.05, tilt:0, glow:0.72 },
+    { p:0.30, zoom:1.15, offx:0.00, offy:-1.00, yaw:0.82, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
+    { p:0.455, zoom:1.15, offx:0.00, offy:-1.00, yaw:0.94, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
+    { p:0.515, zoom:1.15, offx:0.00, offy:-1.00, yaw:1.62, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
+    { p:0.665, zoom:1.15, offx:0.00, offy:-1.00, yaw:1.74, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
+    { p:0.715, zoom:1.15, offx:0.00, offy:-1.00, yaw:2.42, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
+    { p:0.795, zoom:1.15, offx:0.00, offy:-1.00, yaw:2.54, idle:0.05, exp:1.06, haze:1.05, tilt:0, glow:0.76 },
+    { p:0.860, zoom:1.15, offx:0.00, offy:-0.90, yaw:2.80, idle:-0.075, exp:1.06, haze:0.90, tilt:1.5708, glow:0.6, rim:0.25 },
+    { p:1.00, zoom:1.15, offx:0.00, offy:-2.60, yaw:2.80, idle:-0.075, exp:1.04, haze:0.90, tilt:1.5708, glow:0.6, rim:0.9 },
   ];
   const MARS_STOPS = [[0.30,0.458],[0.518,0.668],[0.718,0.800]];
   const MARS_STATIONS = [0, 0.37, 0.59, 0.79, 1];
@@ -1242,7 +1248,10 @@
       const set = (name, val) => { if (globe.getAttribute(name) !== val) globe.setAttribute(name, val); };
       set('zoom', k.zoom.toFixed(3));
       set('offx', k.offx.toFixed(3));
-      set('offy', k.offy.toFixed(3));
+      /* px per world unit: the globe fits by width in portrait, by height in
+         landscape — so the same fraction lands the same way on both */
+      const shape = Math.max(1, (window.innerHeight || 800) / (window.innerWidth || 800));
+      set('offy', (k.offy * 1.05 / Math.max(.15, k.zoom) * shape).toFixed(3));
       set('yaw', k.yaw.toFixed(3));
       set('idle', k.idle.toFixed(4));
       set('exp', k.exp.toFixed(3));
@@ -1264,8 +1273,10 @@
         place(marsRoot.querySelector('[data-glow-core]'), 2.15, k.glow);
       }
     }
+    /* the headline is the section's title now, so it stays up top the whole way
+       and only clears out for the descent */
     const intro = marsRoot.querySelector('[data-intro]');
-    if (intro){ const f2 = Math.min(1, Math.max(0, (p-0.04)/0.11)); intro.style.opacity = String(1-f2); }
+    if (intro){ const f2 = Math.min(1, Math.max(0, (p-0.86)/0.06)); intro.style.opacity = String(1-f2); }
     const scrim = marsRoot.querySelector('[data-scrim]');
     if (scrim){
       if (!scrim.style.transition) scrim.style.transition = 'opacity .6s ease';
