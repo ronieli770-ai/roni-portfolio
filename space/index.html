@@ -620,9 +620,12 @@
        canvas edge). Clipping the wrapper to a circle over the intact area
        gives a real sphere silhouette — no invented pixels, no seam — and the
        inset shadow puts the limb back where the crop removed it. */
+    /* the wrapper is the whole disc here, while saturn's ball fills only 64%
+       of its own box — so this one is sized to match that ball, not the box */
     .proj-section[data-proj="2"] .proj-planet-wrap{
-      left:calc(8% - 20px)!important;aspect-ratio:1;border-radius:50%;overflow:hidden;
-      box-shadow:inset -14px -8px 34px rgba(0,0,0,.55);
+      left:calc(8% - 20px)!important;width:25.7%!important;
+      aspect-ratio:1;border-radius:50%;overflow:hidden;
+      box-shadow:inset -9px -5px 22px rgba(0,0,0,.55);
     }
     .proj-section[data-proj="2"] .proj-planet-wrap img{
       width:117.66%!important;max-width:none;margin-left:-17.38%;margin-top:-25.21%;
