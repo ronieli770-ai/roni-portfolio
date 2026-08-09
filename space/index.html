@@ -1131,6 +1131,16 @@
   const showCopy = k => panes[k].classList.add('show');
   const hideCopy = k => panes[k].classList.remove('show');
 
+  /* three.js and the moon are fetched a screen early — arriving at the section
+     used to start the download, which is why the moon showed up late */
+  let marsWarmed = false;
+  function warmMars(){
+    if (marsWarmed) return;
+    marsWarmed = true;
+    const globe = marsRoot.querySelector('mars-globe');
+    if (globe && globe.warmup) globe.warmup();
+  }
+
   function startLoop(){
     mode = 'loop';
     dir = CH[idx].loop;
@@ -1142,6 +1152,7 @@
        playing, instead of pulling all 44MB at boot */
     const nx = CH[idx + 1];
     if (nx && nx.play){ loadSeq(nx.play, () => loadSeq(nx.loop)); }
+    if (idx >= LAST - 1) warmMars();
   }
 
   function enter(n){

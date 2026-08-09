@@ -40,19 +40,26 @@
       addEventListener('touchmove', onMove, { passive: false });
       addEventListener('mouseup', onUp);
       addEventListener('touchend', onUp);
-      /* three.js plus the 21MB moon are only worth fetching once this section
-         is actually on screen — until then the element has no size */
-      const boot = () => loadThree().then(([THREE, GLTF]) => {
-        this.THREE = THREE; this.GLTFLoader = GLTF.GLTFLoader; this._start();
-      });
-      if (this.clientWidth > 0 && this.clientHeight > 0) boot();
+      /* three.js and the model are not fetched at page load, but the page can
+         call warmup() a screen ahead so they are ready on arrival */
+      this._boot = () => {
+        if (this._booting) return this._booting;
+        this._booting = loadThree().then(([THREE, GLTF]) => {
+          this.THREE = THREE; this.GLTFLoader = GLTF.GLTFLoader; this._start();
+        });
+        return this._booting;
+      };
+      if (this.clientWidth > 0 && this.clientHeight > 0) this._boot();
       else {
         const ro = new ResizeObserver(() => {
-          if (this.clientWidth > 0 && this.clientHeight > 0){ ro.disconnect(); boot(); }
+          if (this.clientWidth > 0 && this.clientHeight > 0){ ro.disconnect(); this._boot(); }
         });
         ro.observe(this);
       }
     }
+
+    /* start fetching before the section is reached */
+    warmup() { if (this._boot) this._boot(); }
 
     disconnectedCallback() {
       this._dead = true;
