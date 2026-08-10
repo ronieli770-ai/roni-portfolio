@@ -59,6 +59,13 @@
   #veil.on{opacity:1}
 
   /* ---------- chrome ---------- */
+  /* frosts the strip behind the logo and the menu once a section scrolls
+     under them — otherwise the copy runs straight through the header */
+  #hdr-glass{
+    position:fixed;top:0;left:0;right:0;height:0;z-index:11;pointer-events:none;
+    opacity:0;transition:opacity .28s ease;
+  }
+  #hdr-glass.on{opacity:1}
   .logo{position:fixed;top:clamp(16px,2.8vh,32px);left:2.2vw;width:min(170px,11vw);z-index:12}
   .logo img{width:100%;display:block}
   .menu{position:fixed;top:clamp(16px,2.8vh,32px);right:2.2vw;z-index:12;width:min(78px,5.2vw);aspect-ratio:78/76;cursor:pointer}
@@ -575,6 +582,13 @@
      each section is re-laid out as a column instead of being squeezed */
   @media (max-width:768px){
     /* header — matches the graphic-design page */
+    #hdr-glass{
+      height:100px;
+      background:linear-gradient(180deg,rgba(5,5,10,.62) 0%,rgba(5,5,10,.34) 62%,rgba(5,5,10,0) 100%);
+      -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+      -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 58%,transparent 100%);
+      mask-image:linear-gradient(180deg,#000 0%,#000 58%,transparent 100%);
+    }
     .logo{top:16px;left:14px;width:128px}
     /* the logo png carries transparent padding — these offsets line the
        burger's bars up with the wordmark's ink, not with its box */
@@ -714,6 +728,12 @@
        the content overflows, which pushed the title up under the header */
     .proj-section[data-proj="3"] .why-title{margin-bottom:20px!important}
     .proj-section[data-proj="3"]::-webkit-scrollbar{width:0;height:0}
+    /* the glow and the stars are absolute inside the scroller, so they used to
+       scroll off with the cards and the section ran out of background. fixed
+       keeps them behind the whole thing, scroll included. */
+    .proj-section[data-proj="3"] > div:not(:last-of-type){
+      position:fixed!important;inset:0!important;
+    }
     .why-title{font-size:27px!important}
     /* the stack takes the height its cards need and the section scrolls to it.
        while it was boxed to the screen the overflow spilled out of both ends of
@@ -760,7 +780,7 @@
       display:grid!important;
       grid-template-columns:auto 1fr;
       align-content:start;justify-items:stretch;
-      column-gap:14px;row-gap:12px;
+      column-gap:22px!important;row-gap:22px!important;
     }
     .proj-section[data-proj="3"] article > div{
       grid-column:1;grid-row:1;
@@ -879,6 +899,7 @@
 </div>
 <div id="veil"></div>
 
+<div id="hdr-glass"></div>
 <a class="logo" href="#"><img src="assets/logo.png" alt="סטודיו רוני"></a>
 <div class="menu"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
@@ -1729,6 +1750,7 @@
     });
     const sec = projSections[n];
     sec.scrollTop = 0;
+    hdrGlass.classList.remove('on');
     void sec.offsetWidth;
     sec.classList.add('enter');
     railSet(5 + n);
@@ -1858,6 +1880,13 @@
     setTimeout(() => { projCooling = false; }, 500);
     projShow(next);
   }
+
+  /* the header frosts over while a section is scrolled under it */
+  const hdrGlass = document.getElementById('hdr-glass');
+  projSections.forEach(sec => sec.addEventListener('scroll', () => {
+    if (!sec.classList.contains('active')) return;
+    hdrGlass.classList.toggle('on', sec.scrollTop > 8);
+  }, { passive:true }));
 
   /* a section taller than the screen scrolls on its own; the gesture only
      moves to the next section once it has run out of room in that direction */
