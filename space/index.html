@@ -823,7 +823,9 @@
     }
     .proj-section[data-proj="4"] > div:first-of-type img{
       width:auto!important;height:100%;max-width:min(282px,100%);
-      object-fit:contain;margin:0 auto;
+      /* contain letterboxes the astronaut inside its box; anchoring it to the
+         bottom puts the slack above her instead of between her and the copy */
+      object-fit:contain;object-position:bottom;margin:0 auto;
     }
     .proj-section[data-proj="4"] .ab-card{flex:0 0 auto}
     .proj-section[data-proj="4"] h2{
