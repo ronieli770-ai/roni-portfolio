@@ -703,15 +703,29 @@
     }
 
     /* למה אתם צריכים את זה — the deck stacks into a column */
-    /* 16px body copy needs the room — the cards are boxed to the screen
-       height, so the padding is what gives it back */
-    .proj-section[data-proj="3"]{gap:28px!important;padding:118px 44px 60px 14px!important}
+    /* the three cards do not fit a phone screen at a readable size, so the
+       section scrolls a little instead of squeezing them. the bottom padding
+       is what keeps the last card clear of the whatsapp button. */
+    .proj-section[data-proj="3"]{
+      display:block!important;padding:118px 44px 120px 14px!important;
+      overflow-y:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+    }
+    /* block, not flex: a flex scroll container eats its own start padding once
+       the content overflows, which pushed the title up under the header */
+    .proj-section[data-proj="3"] .why-title{margin-bottom:20px!important}
+    .proj-section[data-proj="3"]::-webkit-scrollbar{width:0;height:0}
     .why-title{font-size:27px!important}
-    .proj-section[data-proj="3"] > div:last-child{flex-direction:column;gap:8px!important;flex:1 1 auto;min-height:0}
+    /* the stack takes the height its cards need and the section scrolls to it.
+       while it was boxed to the screen the overflow spilled out of both ends of
+       the centred column, which is what cut the first and last card. */
+    .proj-section[data-proj="3"] > div:last-child{
+      flex-direction:column;gap:12px!important;
+      flex:0 0 auto!important;min-height:auto!important;justify-content:flex-start!important;
+    }
     .why-card-a,.why-card-b,.why-card-c{
-      flex:1 1 auto!important;
+      flex:0 0 auto!important;
       max-width:none!important;margin-block:0!important;
-      padding:16px 18px!important;gap:10px!important;border-radius:20px!important;
+      padding:20px!important;gap:0!important;border-radius:20px!important;
     }
     /* the three start as one pile at the top — third on top, the ones under it
        blurred — and settle into the column as the section comes in */
@@ -739,20 +753,29 @@
     .proj-section.enter .why-card-a{animation:m-deck-a 1.5s cubic-bezier(.22,1,.36,1) .05s both}
     .proj-section.enter .why-card-b{animation:m-deck-b 1.5s cubic-bezier(.22,1,.36,1) .05s both}
     .proj-section.enter .why-card-c{animation:m-deck-c 1.5s cubic-bezier(.22,1,.36,1) .05s both}
-    /* the portrait floats to the right — the heading and the paragraph both run
-       the full width of the card, bounded only by its padding */
-    .proj-section[data-proj="3"] article{display:block!important;align-content:center}
+    /* portrait on the right with the heading beside it, and the paragraph on
+       its own row underneath running the full width of both. floating the
+       portrait used to let the copy wrap under it and pushed it past the card. */
+    .proj-section[data-proj="3"] article{
+      display:grid!important;
+      grid-template-columns:auto 1fr;
+      align-content:start;justify-items:stretch;
+      column-gap:14px;row-gap:12px;
+    }
     .proj-section[data-proj="3"] article > div{
-      float:right;width:84px!important;margin:0 0 8px 15px;
+      grid-column:1;grid-row:1;
+      width:84px!important;margin:0!important;
     }
     .proj-section[data-proj="3"] article h3{
+      grid-column:2;grid-row:1;align-self:center;
       width:auto!important;font-size:19px!important;line-height:1.15!important;
-      text-align:right!important;margin-bottom:10px!important;
+      text-align:right!important;margin:0!important;
     }
     /* the headings carry a hard <br> from the desktop layout — on a phone the
        line should break wherever the card runs out of room */
     .proj-section[data-proj="3"] article h3 br{display:none}
     .proj-section[data-proj="3"] article p{
+      grid-column:1 / -1;grid-row:2;
       font-size:16px!important;line-height:1.4!important;text-align:right!important;
     }
 
@@ -1705,6 +1728,7 @@
       });
     });
     const sec = projSections[n];
+    sec.scrollTop = 0;
     void sec.offsetWidth;
     sec.classList.add('enter');
     railSet(5 + n);
@@ -1835,7 +1859,18 @@
     projShow(next);
   }
 
+  /* a section taller than the screen scrolls on its own; the gesture only
+     moves to the next section once it has run out of room in that direction */
+  function ownScroll(d){
+    const sec = projSections[projIdx];
+    if (!sec || sec.scrollHeight - sec.clientHeight < 4) return false;
+    const top = sec.scrollTop <= 0;
+    const bottom = sec.scrollTop + sec.clientHeight >= sec.scrollHeight - 1;
+    return d > 0 ? !bottom : !top;
+  }
+
   projWrap.addEventListener('wheel', e => {
+    if (ownScroll(e.deltaY)) return;
     e.preventDefault();
     if (Math.abs(e.deltaY) < 4) return;
     projGesture(e.deltaY);
@@ -1846,6 +1881,7 @@
   projWrap.addEventListener('touchmove', e => {
     if (projTouchY === null) return;
     const d = projTouchY - e.touches[0].clientY;
+    if (ownScroll(d)){ projTouchY = null; return; }
     if (Math.abs(d) > 40){ projGesture(d); projTouchY = null; }
     else e.preventDefault();
   }, { passive: false });
