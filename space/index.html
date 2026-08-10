@@ -1098,6 +1098,14 @@
   const railSet = n => dots.forEach((b, k) => b.classList.toggle('on', k === n));
 
   /* ---------- sequences ---------- */
+  /* a phone cannot hold 360 decoded 1280x720 frames — it throws the oldest ones
+     away and has to decode them again mid-clip, which is what made the clips
+     freeze. on mobile we fetch every second frame (pick() covers the gaps, so
+     the clip runs the same length at half the rate) and we let go of the
+     sequences that are no longer next to the current chapter. */
+  const LOW = matchMedia('(max-width:768px),(hover:none) and (pointer:coarse)').matches;
+  const STEP = LOW ? 2 : 1;
+  const CNT = Math.ceil(N / STEP);
   const seqs = {};                                  // dir -> { imgs, done }
   function seq(dir){
     if (!seqs[dir]) seqs[dir] = { imgs:new Array(N).fill(null), done:0, started:false };
@@ -1105,18 +1113,34 @@
   }
   function loadSeq(dir, cb){
     const s = seq(dir);
-    if (s.started) { if (s.done >= N && cb) cb(); return; }
+    if (s.started) { if (s.done >= CNT && cb) cb(); return; }
     s.started = true;
-    for (let i = 0; i < N; i++){
+    for (let i = 0; i < N; i += STEP){
       const img = new Image();
       img.decoding = 'async';
-      const fin = ok => { if (ok) s.imgs[i] = img; if (++s.done >= N && cb) cb(); };
+      const fin = ok => { if (ok) s.imgs[i] = img; if (++s.done >= CNT && cb) cb(); };
       img.onload = () => fin(true);
       img.onerror = () => fin(false);
       img.src = dir + '/' + String(i).padStart(3, '0') + '.jpg';
     }
   }
-  const full = dir => seq(dir).done >= N;
+  const full = dir => seq(dir).done >= CNT;
+  function releaseFar(){
+    const keep = new Set();
+    const add = c => { if (c){ if (c.play) keep.add(c.play); if (c.loop) keep.add(c.loop); } };
+    add(CH[idx]);
+    if (CH[idx + 1]) keep.add(CH[idx + 1].play);
+    if (CH[idx - 1]) keep.add(CH[idx - 1].play);   // so scrolling back is not a re-download
+    for (const d in seqs){
+      if (keep.has(d) || d === dir) continue;
+      const s = seqs[d];
+      for (let i = 0; i < N; i++){
+        const im = s.imgs[i];
+        if (im){ im.onload = im.onerror = null; im.src = ''; s.imgs[i] = null; }
+      }
+      delete seqs[d];
+    }
+  }
   function pick(dir, i){
     const a = seq(dir).imgs;
     if (a[i]) return a[i];
@@ -1184,8 +1208,11 @@
     loadSeq(CH[idx].loop);
     /* 60 frames per sequence — fetch the next chapter only once this one is
        playing, instead of pulling all 44MB at boot */
+    releaseFar();
     const nx = CH[idx + 1];
-    if (nx && nx.play){ loadSeq(nx.play, () => loadSeq(nx.loop)); }
+    /* on a phone we stop at the next clip — its loop is fetched when we get
+       there, so there is one sequence less sitting in memory */
+    if (nx && nx.play){ loadSeq(nx.play, () => { if (!LOW) loadSeq(nx.loop); }); }
     if (idx >= LAST - 1) warmMars();
   }
 
