@@ -1146,7 +1146,15 @@
   let mode = 'still';  // 'still' | 'play' | 'loop'
   let dir = null;      // sequence currently on screen
   let f = 0, acc = 0, prev = 0;
-  let busy = false;    // true while a play-through is running — input is ignored
+  let busy = false;    // true while a play-through is running
+  /* a scroll made during the play-through used to be thrown away, so the page
+     felt dead for the couple of seconds a clip takes. now it is remembered and
+     fired the moment the clip lands, and the clip itself hurries to the end. */
+  let pending = 0, rush = false;
+  function flush(){
+    const d = pending; pending = 0; rush = false;
+    if (d) setTimeout(() => nudge(d), 0);
+  }
 
   function marks(){
     panes.forEach((p, k) => p.classList.toggle('active', k === idx));
@@ -1171,6 +1179,7 @@
     dir = CH[idx].loop;
     f = 0; acc = 0;
     busy = false;
+    flush();
     showCopy(idx);
     loadSeq(CH[idx].loop);
     /* 60 frames per sequence — fetch the next chapter only once this one is
@@ -1188,6 +1197,7 @@
       stage.classList.remove('on');
       veil.classList.remove('on');
       mode = 'still'; dir = null; busy = false;
+      flush();
       return;
     }
     hero.classList.add('off');
@@ -1212,7 +1222,7 @@
     if (full(CH[n].play)) begin();
     else {
       loadSeq(CH[n].play, begin);      // never start a clip that would stutter
-      setTimeout(() => { if (idx !== n) begin(); }, 6000);
+      setTimeout(() => { if (idx !== n) begin(); }, 1500);
     }
   }
 
@@ -1227,7 +1237,7 @@
     if (marsMode || projMode) return;
 
     if (mode === 'play'){
-      acc += dt;
+      acc += rush ? dt * 3 : dt;
       const step = 1000 / FPS;
       while (acc >= step){
         acc -= step;
@@ -1534,7 +1544,9 @@
   let cooling = false;
   const heroTitle = document.querySelector('#hero .title');
   function nudge(d){
-    if (marsMode || projMode || busy || cooling) return;
+    if (marsMode || projMode) return;
+    if (busy){ pending = d; rush = true; return; }
+    if (cooling) return;
     cooling = true;
     setTimeout(() => { cooling = false; }, 300);
     if (idx === 0 && d > 0){
