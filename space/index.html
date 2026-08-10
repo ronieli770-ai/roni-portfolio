@@ -381,6 +381,12 @@
     background-size:140px 140px;
   }
   .proj-section .proj-planet-wrap{pointer-events:none;will-change:transform;transition:transform 1.1s cubic-bezier(.22,1,.36,1)}
+  /* the uranus export is a disc that fills its whole canvas, while the other
+     two fill about two thirds of theirs — at the same box width it reads far
+     larger. Sized to the first project's ball, and moved clear of the header. */
+  .proj-section[data-proj="2"] .proj-planet-wrap{
+    right:4%!important;left:auto!important;top:118px!important;width:20%!important;
+  }
   .proj-section .proj-planet-wrap img{display:block;width:100%}
   .proj-section .proj-laptop{position:absolute;bottom:6.9%;width:62%;transform:translateY(10.2%);filter:drop-shadow(0 40px 70px rgba(0,0,0,.55));will-change:transform,opacity}
   .proj-section .proj-text{position:absolute;bottom:6.9%;width:clamp(300px,24%,460px)}
@@ -491,9 +497,9 @@
   .proj-section.enter .why-card-b{animation:deck-mid 1.3s cubic-bezier(.22,1,.36,1) .05s both}
   .proj-section.enter .why-card-c{animation:deck-side-c 1.3s cubic-bezier(.22,1,.36,1) .05s both}
 
-  @keyframes ring-float{0%,100%{transform:rotate(50.75deg) translate(0,0)}25%{transform:rotate(50.75deg) translate(-5px,-34px)}50%{transform:rotate(50.75deg) translate(2px,-58px)}75%{transform:rotate(50.75deg) translate(6px,-28px)}}
-  @keyframes ring-float-plain{0%,100%{transform:translate(0,0)}25%{transform:translate(-5px,-34px)}50%{transform:translate(2px,-58px)}75%{transform:translate(6px,-28px)}}
-  @keyframes ring-float-s{0%,100%{transform:translate(0,0)}25%{transform:translate(-2px,-13px)}50%{transform:translate(1px,-22px)}75%{transform:translate(2px,-11px)}}
+  @keyframes ring-float{0%,100%{transform:rotate(50.75deg) translate(0,0)}25%{transform:rotate(50.75deg) translate(-2px,-7px)}50%{transform:rotate(50.75deg) translate(1px,-12px)}75%{transform:rotate(50.75deg) translate(2px,-6px)}}
+  @keyframes ring-float-plain{0%,100%{transform:translate(0,0)}25%{transform:translate(-2px,-7px)}50%{transform:translate(1px,-12px)}75%{transform:translate(2px,-6px)}}
+  @keyframes ring-float-s{0%,100%{transform:translate(0,0)}25%{transform:translate(-1px,-6px)}50%{transform:translate(1px,-10px)}75%{transform:translate(1px,-5px)}}
 
   @media (max-width:720px){
     .btn{width:136px;height:56px;font-size:17px}
