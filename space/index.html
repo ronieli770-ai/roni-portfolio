@@ -282,6 +282,15 @@
   .pane.show .copy > *{opacity:1;transform:none}
   .pane .status-box{opacity:0;transform:translateY(16px);transition:opacity .8s ease, transform .9s cubic-bezier(.16,.84,.24,1)}
   .landing-copy{text-align:right;position:absolute;top:14%;right:clamp(40px,6vw,100px);max-width:none;background:var(--title-grad);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transition:opacity .9s ease .45s,transform .9s cubic-bezier(.16,.84,.24,1) .45s}
+  /* each line carries its own gradient. relying on the wrapper's
+     background-clip:text broke the moment a glitch burst put an animated
+     filter on the line — that isolates it from the wrapper's clip and the
+     text simply stopped being painted, permanently (the burst is `forwards`). */
+  .landing-copy p{
+    background:var(--title-grad);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+  }
   .pane.show .landing-copy{opacity:1}
   .pane.show .hint{opacity:1!important}
   .pane.show .status-box{opacity:1;transform:none}
@@ -590,7 +599,8 @@
       70%{filter:drop-shadow(0 0 4px rgba(141,168,203,.1))}
       85%,100%{transform:none;filter:none}
     }
-    #hero .title.anim-glitch.glitch-fire{animation:m-glitch .5s 1 forwards}
+    #hero .title.anim-glitch.glitch-fire,
+    .landing-copy .anim-glitch.glitch-fire{animation:m-glitch .5s 1 forwards}
     .status-box{
       left:14px;right:auto;
       min-width:0;padding:14px 18px;border-radius:16px;font-size:13px;
@@ -605,6 +615,8 @@
 
     /* pane 4 — נעים להכיר */
     .landing-copy{top:118px;right:44px;left:14px}
+    /* the glitch copies are one flat string — they wrap differently here */
+    .landing-copy .anim-glitch::before,.landing-copy .anim-glitch::after{display:none}
     .landing-copy p:nth-of-type(1){font-size:40px!important}
     .landing-copy p:nth-of-type(2){font-size:58px!important}
     .landing-copy p:nth-of-type(3){font-size:22px!important;margin-top:10px!important}
