@@ -882,7 +882,7 @@
 <div class="hint" id="hint"><span>גללו</span><i></i></div>
 
 <section id="hero">
-  <video class="hero-bg" autoplay loop muted playsinline><source src="0.mp4" type="video/mp4"></video>
+  <video class="hero-bg" autoplay loop muted playsinline preload="auto" fetchpriority="high"></video>
   <h1 class="title anim-glitch" data-text="אתרים שגורמים לעסק שלכם להיראות ראשון בתחום"><span class="l1">אתרים שגורמים לעסק שלכם</span> <span class="l2">להיראות ראשון <span class="l3">בתחום</span></span></h1>
   <div class="btns">
     <a class="btn solid" href="https://wa.me/972000000000" target="_blank" rel="noopener">בואו נדבר</a>
@@ -1601,12 +1601,26 @@
         if (v.getAttribute('src') !== keep){ v.setAttribute('src', keep); v.load(); }
       }, { once:true });
       v.setAttribute('src', want);
-      v.load();
+      /* preload="none" — swapping the src is enough; calling load() here would
+         put three copies of the clip on the wire during the hero */
+      if (v.preload !== 'none') v.load();
     });
   })();
 
   /* ---------- boot ---------- */
   marks();
+
+  /* the hero clip is the first thing anyone sees, so it gets the connection to
+     itself — everything else waits until it can play. it used to share the
+     opening seconds with the moon, three.js and the portfolio clip, and on a
+     phone it simply lost. 1920x1080 is also more than a phone shows: there is
+     a 720p cut at a third of the weight. */
+  const heroV = document.querySelector('#hero .hero-bg');
+  const small = matchMedia('(max-width:768px),(hover:none) and (pointer:coarse)').matches;
+  heroV.src = small ? '0-m.mp4' : '0.mp4';
+  heroV.load();
+  const heroPlay = heroV.play();
+  if (heroPlay && heroPlay.catch) heroPlay.catch(() => {});
 
   let ready = 0;
   const bump = () => {
@@ -1624,7 +1638,10 @@
      are all pulled then instead of at the section that needs them — that is
      why the moon used to arrive after you had already scrolled to it. */
   const idle = window.requestIdleCallback || (fn => setTimeout(fn, 1));
-  idle(() => {
+  let heavyDone = false;
+  const heavy = () => idle(() => {
+    if (heavyDone) return;
+    heavyDone = true;
     warmMars();
     /* the moon comes first — it is the next thing on screen. the portfolio clip
        waits for it rather than competing with it for the same connection. */
@@ -1634,12 +1651,20 @@
     };
     fetch('moon.glb', { cache:'force-cache' }).then(after, after);
   });
+  /* the chapter clips come first; the moon and the portfolio clip follow */
+  vp.addEventListener('canplaythrough', heavy, { once:true });
+  setTimeout(heavy, 5000);
   /* the loader waits for the first clip to be playable, not downloaded whole */
-  arm(vp, CH[1].play);
-  arm(vl, CH[1].loop);
   vp.addEventListener('canplay', bump, { once:true });
   vp.addEventListener('error', bump, { once:true });
   setTimeout(bump, 4000);
+  const queue = () => { arm(vp, CH[1].play); arm(vl, CH[1].loop); };
+  if (heroV.readyState >= 3) queue();
+  else {
+    heroV.addEventListener('canplaythrough', queue, { once:true });
+    heroV.addEventListener('error', queue, { once:true });
+    setTimeout(queue, 2500);           // never let a stalled hero hold the rest
+  }
   setTimeout(() => loader.classList.add('gone'), 12000);
 
   /* ---------- transition video ---------- */
