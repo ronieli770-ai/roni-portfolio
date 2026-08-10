@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>סטודיו רוני · אתרים שגורמים לעסק שלכם להיראות ראשון בתחום</title>
 <meta name="description" content="סטודיו רוני — עיצוב גרפי, מיתוג ובניית אתרים לעסקים שרוצים להיראות ראשונים בתחום.">
+<link rel="preconnect" href="https://esm.sh" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -1589,10 +1590,10 @@
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     const portrait = window.innerHeight > window.innerWidth;
     const devW = window.innerWidth * dpr;
-    /* a portrait crop would suit phones better, but until space-bg-portrait.mp4
-       exists asking for it costs three 404s and delays the clip on every mobile
-       load — so the base file is used until that export lands */
-    const want = BASE;
+    /* the master is 2560x1440 and 13MB — nine times what a phone can show, and
+       it used to arrive right when the portfolio sections did. a 720p/24fps
+       version of the same clip is 1.5MB. */
+    const want = (portrait || devW <= 1400) ? 'space-bg-m.mp4' : BASE;
     if (want === BASE) return;
     document.querySelectorAll('video.proj-video').forEach(v => {
       const keep = v.getAttribute('src');
@@ -1618,6 +1619,21 @@
   const art = new Image();
   art.onload = art.onerror = bump;
   art.src = 'assets/rocket.png';
+  /* three.js, the moon model and the portfolio clip are the three heavy things
+     on the page. the hero is the only quiet moment on the whole site, so they
+     are all pulled then instead of at the section that needs them — that is
+     why the moon used to arrive after you had already scrolled to it. */
+  const idle = window.requestIdleCallback || (fn => setTimeout(fn, 1));
+  idle(() => {
+    warmMars();
+    /* the moon comes first — it is the next thing on screen. the portfolio clip
+       waits for it rather than competing with it for the same connection. */
+    const after = () => {
+      const bg = document.querySelector('video.proj-video');
+      if (bg){ bg.preload = 'auto'; bg.load(); }
+    };
+    fetch('moon.glb', { cache:'force-cache' }).then(after, after);
+  });
   /* the loader waits for the first clip to be playable, not downloaded whole */
   arm(vp, CH[1].play);
   arm(vl, CH[1].loop);
