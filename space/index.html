@@ -636,12 +636,14 @@
       left:14px;right:44px;top:187px;flex-direction:column;gap:20px;
     }
     [data-mars-section] [data-stop]{max-height:none!important}
-    [data-mars-section] [data-intro]{padding-top:118px!important}
+    /* the same left/right margins the rest of the mobile content sits in, so
+       the title is centred on the same axis as למה אתם צריכים את זה */
+    [data-mars-section] [data-intro]{padding:118px 44px 0 14px!important}
     [data-mars-section] [data-intro] h2{font-size:27px!important}
     /* same treatment as the long copy in the portfolio sections */
     [data-mars-section] [data-stop] span{width:64px!important;margin-bottom:13px!important}
-    [data-mars-section] [data-stop] h3{font-size:34px!important;line-height:.93!important;margin-bottom:17px!important}
-    [data-mars-section] [data-stop] p{font-size:16px!important;line-height:1.35!important}
+    [data-mars-section] [data-stop] h3{font-size:19px!important;line-height:1.15!important;margin-bottom:10px!important}
+    [data-mars-section] [data-stop] p{font-size:16px!important;line-height:1.4!important}
 
     /* projects — the clip runs behind, zoomed so its planet only rises into
        the lower third; small saturn top-left, copy centred, laptop centred */
@@ -700,13 +702,15 @@
     }
 
     /* למה אתם צריכים את זה — the deck stacks into a column */
-    .proj-section[data-proj="3"]{gap:28px!important;padding:118px 44px 100px 14px!important}
+    /* 16px body copy needs the room — the cards are boxed to the screen
+       height, so the padding is what gives it back */
+    .proj-section[data-proj="3"]{gap:28px!important;padding:118px 44px 60px 14px!important}
     .why-title{font-size:27px!important}
     .proj-section[data-proj="3"] > div:last-child{flex-direction:column;gap:8px!important;flex:1 1 auto;min-height:0}
     .why-card-a,.why-card-b,.why-card-c{
       flex:1 1 auto!important;
       max-width:none!important;margin-block:0!important;
-      padding:24px 26px!important;gap:10px!important;border-radius:20px!important;
+      padding:16px 18px!important;gap:10px!important;border-radius:20px!important;
     }
     /* the three start as one pile at the top — third on top, the ones under it
        blurred — and settle into the column as the section comes in */
@@ -748,7 +752,7 @@
        line should break wherever the card runs out of room */
     .proj-section[data-proj="3"] article h3 br{display:none}
     .proj-section[data-proj="3"] article p{
-      font-size:12px!important;line-height:1.4!important;text-align:right!important;
+      font-size:16px!important;line-height:1.4!important;text-align:right!important;
     }
 
     /* נעים להכיר, רוני אליהו */
