@@ -386,6 +386,13 @@
      larger. Sized to the first project's ball, and moved clear of the header. */
   .proj-section[data-proj="2"] .proj-planet-wrap{
     right:4%!important;left:auto!important;top:118px!important;width:20%!important;
+    /* the export stops dead at its canvas edge, so the disc is clipped to the
+       intact part of the sphere and the limb is painted back with a shadow */
+    aspect-ratio:1;border-radius:50%;overflow:hidden;
+    box-shadow:inset -14px -8px 34px rgba(0,0,0,.55);
+  }
+  .proj-section[data-proj="2"] .proj-planet-wrap img{
+    width:117.66%!important;max-width:none;margin-left:-17.38%;margin-top:-25.21%;
   }
   .proj-section .proj-planet-wrap img{display:block;width:100%}
   .proj-section .proj-laptop{position:absolute;bottom:6.9%;width:62%;transform:translateY(10.2%);filter:drop-shadow(0 40px 70px rgba(0,0,0,.55));will-change:transform,opacity}
@@ -626,15 +633,11 @@
        canvas edge). Clipping the wrapper to a circle over the intact area
        gives a real sphere silhouette — no invented pixels, no seam — and the
        inset shadow puts the limb back where the crop removed it. */
-    /* the wrapper is the whole disc here, while the other two fill only part of
-       their own canvas — sized to the ball in project 2 (77.4% of its box) */
+    /* sized to the ball in project 2 (77.4% of its box); the clip itself comes
+       from the base rule */
     .proj-section[data-proj="2"] .proj-planet-wrap{
-      left:calc(8% - 20px)!important;width:31%!important;
-      aspect-ratio:1;border-radius:50%;overflow:hidden;
+      left:calc(8% - 20px)!important;right:auto!important;top:104px!important;width:31%!important;
       box-shadow:inset -9px -5px 22px rgba(0,0,0,.55);
-    }
-    .proj-section[data-proj="2"] .proj-planet-wrap img{
-      width:117.66%!important;max-width:none;margin-left:-17.38%;margin-top:-25.21%;
     }
     /* saturn is rotated 50deg, so its rings push the box ~32px past every side */
     .proj-section[data-proj="0"] .proj-planet-wrap{left:calc(14% - 30px)!important;top:100px!important}
