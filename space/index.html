@@ -44,7 +44,13 @@
   /* ---------- video canvas ---------- */
   #stage{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .7s ease}
   #stage.on{opacity:1}
-  #stage canvas{width:100%;height:100%;display:block}
+  /* the chapter clips are real h.264 files now — a phone decodes them in
+     hardware instead of holding hundreds of decoded jpegs in memory */
+  #stage video{
+    position:absolute;inset:0;width:100%;height:100%;display:block;
+    object-fit:cover;opacity:0;background:#000;
+  }
+  #stage video.on{opacity:1}
   #veil{
     position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .7s ease;
     background:linear-gradient(to bottom, rgba(0,0,0,.62), rgba(0,0,0,.15) 38%, rgba(0,0,0,.25) 62%, rgba(0,0,0,.78));
@@ -838,7 +844,10 @@
 <div id="loader"><p>טוען את המסע</p><div class="lbar"><i id="lfill"></i></div></div>
 
 <div id="bg"></div>
-<div id="stage"><canvas id="c"></canvas></div>
+<div id="stage">
+  <video id="vp" playsinline muted preload="auto"></video>
+  <video id="vl" playsinline muted loop preload="auto"></video>
+</div>
 <div id="veil"></div>
 
 <a class="logo" href="#"><img src="assets/logo.png" alt="סטודיו רוני"></a>
@@ -1083,18 +1092,17 @@
 <script src="galaxy-bg.js"></script>
 <script>
 (() => {
-  const N = 60, FPS = 30, LOOP_FPS = 24;
   /* chapter = one clip that plays through, then a clip that loops until the next nudge */
   const CH = [
-    { play:null,        loop:null        },   // hero — the figma composition
-    { play:'frames/s1', loop:'frames/s2' },
-    { play:'frames/s3', loop:'frames/s4' },
-    { play:'frames/s5', loop:'frames/s6' },
+    { play:null,           loop:null           },   // hero — the figma composition
+    { play:'clips/s1.mp4', loop:'clips/s2.mp4' },
+    { play:'clips/s3.mp4', loop:'clips/s4.mp4' },
+    { play:'clips/s5.mp4', loop:'clips/s6.mp4' },
   ];
   const LAST = CH.length - 1;
 
-  const canvas = document.getElementById('c');
-  const ctx = canvas.getContext('2d', { alpha:false });
+  const vp = document.getElementById('vp');    // the play-through
+  const vl = document.getElementById('vl');    // the loop that follows it
   const stage = document.getElementById('stage');
   const veil = document.getElementById('veil');
   const hero = document.getElementById('hero');
@@ -1109,86 +1117,38 @@
   const dots = [...rail.children];
   const railSet = n => dots.forEach((b, k) => b.classList.toggle('on', k === n));
 
-  /* ---------- sequences ---------- */
-  /* a phone cannot hold 360 decoded 1280x720 frames — it throws the oldest ones
-     away and has to decode them again mid-clip, which is what made the clips
-     freeze. on mobile we fetch every second frame (pick() covers the gaps, so
-     the clip runs the same length at half the rate) and we let go of the
-     sequences that are no longer next to the current chapter. */
-  const LOW = matchMedia('(max-width:768px),(hover:none) and (pointer:coarse)').matches;
-  const STEP = LOW ? 2 : 1;
-  const CNT = Math.ceil(N / STEP);
-  const seqs = {};                                  // dir -> { imgs, done }
-  function seq(dir){
-    if (!seqs[dir]) seqs[dir] = { imgs:new Array(N).fill(null), done:0, started:false };
-    return seqs[dir];
+  /* ---------- clips ----------
+     these used to be 360 separate jpegs painted onto a canvas. a phone could
+     not hold that many decoded frames, so it threw them away and had to decode
+     them again mid-clip — which is why the clips froze and the first one took
+     so long to appear. they are h.264 files now: 4.5MB instead of 44MB, played
+     by the video decoder, streamed rather than downloaded whole. */
+  function arm(v, src){
+    if (!src || v.dataset.src === src) return;
+    v.dataset.src = src;
+    v.src = src;
+    v.load();
   }
-  function loadSeq(dir, cb){
-    const s = seq(dir);
-    if (s.started) { if (s.done >= CNT && cb) cb(); return; }
-    s.started = true;
-    for (let i = 0; i < N; i += STEP){
-      const img = new Image();
-      img.decoding = 'async';
-      const fin = ok => { if (ok) s.imgs[i] = img; if (++s.done >= CNT && cb) cb(); };
-      img.onload = () => fin(true);
-      img.onerror = () => fin(false);
-      img.src = dir + '/' + String(i).padStart(3, '0') + '.jpg';
-    }
-  }
-  const full = dir => seq(dir).done >= CNT;
-  function releaseFar(){
-    const keep = new Set();
-    const add = c => { if (c){ if (c.play) keep.add(c.play); if (c.loop) keep.add(c.loop); } };
-    add(CH[idx]);
-    if (CH[idx + 1]) keep.add(CH[idx + 1].play);
-    if (CH[idx - 1]) keep.add(CH[idx - 1].play);   // so scrolling back is not a re-download
-    for (const d in seqs){
-      if (keep.has(d) || d === dir) continue;
-      const s = seqs[d];
-      for (let i = 0; i < N; i++){
-        const im = s.imgs[i];
-        if (im){ im.onload = im.onerror = null; im.src = ''; s.imgs[i] = null; }
-      }
-      delete seqs[d];
-    }
-  }
-  function pick(dir, i){
-    const a = seq(dir).imgs;
-    if (a[i]) return a[i];
-    for (let d = 1; d < N; d++){ if (a[i-d]) return a[i-d]; if (a[i+d]) return a[i+d]; }
-    return null;
-  }
-
-  /* ---------- canvas ---------- */
-  let lastImg = null;
-  function size(){
-    const dpr = Math.min(devicePixelRatio || 1, 2);
-    canvas.width  = Math.max(1, Math.round(innerWidth  * dpr));
-    canvas.height = Math.max(1, Math.round(innerHeight * dpr));
-    if (lastImg) paint(lastImg);
-  }
-  function paint(img){
-    if (!img) return;
-    lastImg = img;
-    const cw = canvas.width, ch = canvas.height;
-    const r = Math.max(cw / img.width, ch / img.height);
-    const w = img.width * r, h = img.height * r;
-    ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+  const show = v => { v.classList.add('on'); };
+  const hide = v => { v.classList.remove('on'); v.pause(); };
+  /* a clip that will not start (a phone that refuses autoplay, a slow first
+     byte) must not leave the page stuck on the previous one */
+  function run(v){
+    const p = v.play();
+    if (p && p.catch) p.catch(() => {});
   }
 
   /* ---------- state ---------- */
   let idx = 0;         // current chapter
   let mode = 'still';  // 'still' | 'play' | 'loop'
-  let dir = null;      // sequence currently on screen
-  let f = 0, acc = 0, prev = 0;
   let busy = false;    // true while a play-through is running
+  let guard = null;    // fallback in case 'ended' never fires
   /* a scroll made during the play-through used to be thrown away, so the page
      felt dead for the couple of seconds a clip takes. now it is remembered and
      fired the moment the clip lands, and the clip itself hurries to the end. */
-  let pending = 0, rush = false;
+  let pending = 0;
   function flush(){
-    const d = pending; pending = 0; rush = false;
+    const d = pending; pending = 0; vp.playbackRate = 1;
     if (d) setTimeout(() => nudge(d), 0);
   }
 
@@ -1211,20 +1171,19 @@
   }
 
   function startLoop(){
+    if (mode === 'loop') return;
+    clearTimeout(guard);
     mode = 'loop';
-    dir = CH[idx].loop;
-    f = 0; acc = 0;
+    vl.currentTime = 0;
+    run(vl);
+    show(vl); hide(vp);
     busy = false;
     flush();
     showCopy(idx);
-    loadSeq(CH[idx].loop);
-    /* 60 frames per sequence — fetch the next chapter only once this one is
-       playing, instead of pulling all 44MB at boot */
-    releaseFar();
+    /* the next chapter's opening clip is fetched while this one loops, so the
+       scroll into it starts on a file that is already there */
     const nx = CH[idx + 1];
-    /* on a phone we stop at the next clip — its loop is fetched when we get
-       there, so there is one sequence less sitting in memory */
-    if (nx && nx.play){ loadSeq(nx.play, () => { if (!LOW) loadSeq(nx.loop); }); }
+    if (nx && nx.play) arm(vp, nx.play);
     if (idx >= LAST - 1) warmMars();
   }
 
@@ -1235,7 +1194,9 @@
       hero.classList.remove('off');
       stage.classList.remove('on');
       veil.classList.remove('on');
-      mode = 'still'; dir = null; busy = false;
+      mode = 'still'; busy = false;
+      clearTimeout(guard);
+      hide(vp); hide(vl);
       flush();
       return;
     }
@@ -1243,51 +1204,26 @@
     stage.classList.add('on');
     veil.classList.add('on');
     mode = 'play';
-    dir = CH[n].play;
-    f = 0; acc = 0;
-    paint(pick(dir, 0));
-    loadSeq(CH[n].loop);               // have the loop ready before the clip ends
+    arm(vp, CH[n].play);
+    arm(vl, CH[n].loop);               // have the loop ready before the clip ends
+    vp.playbackRate = 1;
+    vp.currentTime = 0;
+    run(vp);
+    show(vp); hide(vl);
+    /* the loop takes over on 'ended'; this is the net if the clip never gets
+       there — a stalled download used to freeze the page on the old picture */
+    clearTimeout(guard);
+    guard = setTimeout(startLoop, 4000);
   }
+
+  vp.addEventListener('ended', () => { if (mode === 'play') startLoop(); });
 
   function go(n){
     n = Math.max(0, Math.min(LAST, n));
     if (n === idx || busy) return;
     busy = true;
     hideCopy(idx);
-
-    if (n === 0){ setTimeout(() => enter(0), 300); return; }
-
-    const begin = () => setTimeout(() => enter(n), 300);
-    if (full(CH[n].play)) begin();
-    else {
-      loadSeq(CH[n].play, begin);      // never start a clip that would stutter
-      setTimeout(() => { if (idx !== n) begin(); }, 1500);
-    }
-  }
-
-  /* ---------- render loop ---------- */
-  function tick(t){
-    requestAnimationFrame(tick);
-    const dt = prev ? Math.min(t - prev, 100) : 0;
-    prev = t;
-    if (!dir) return;
-    /* the hero canvas is covered while the moon or the portfolio is on screen —
-       repainting a full-screen frame every tick there is pure waste */
-    if (marsMode || projMode) return;
-
-    if (mode === 'play'){
-      acc += rush ? dt * 3 : dt;
-      const step = 1000 / FPS;
-      while (acc >= step){
-        acc -= step;
-        if (++f >= N){ f = N - 1; paint(pick(dir, f)); startLoop(); return; }
-      }
-      paint(pick(dir, f));
-    } else if (mode === 'loop'){
-      acc += dt;
-      const step = 1000 / LOOP_FPS;
-      if (acc >= step){ acc -= step; f = (f + 1) % N; paint(pick(dir, f)); }
-    }
+    setTimeout(() => enter(n), 300);
   }
 
   /* ---------- mars controller ---------- */
@@ -1503,6 +1439,9 @@
     veil.classList.remove('on');
     document.getElementById('bg').style.display = 'none';
     hint.style.display = 'none';
+    /* nothing on screen is showing them — a decoding video off-screen is
+       battery and heat for nothing */
+    vp.pause(); vl.pause();
     railSet(4);
     marsUpdate();
   }
@@ -1548,6 +1487,7 @@
 
   function exitMars(){
     marsMode = false;
+    if (mode === 'loop') run(vl); else if (mode === 'play') run(vp);
     clearHandoff();
     marsWrap.classList.remove('on','vis');
     marsAnim = null; marsForceP = null; projPrepped = false;
@@ -1584,7 +1524,8 @@
   const heroTitle = document.querySelector('#hero .title');
   function nudge(d){
     if (marsMode || projMode) return;
-    if (busy){ pending = d; rush = true; return; }
+    /* a scroll during the play-through hurries the clip to its end */
+    if (busy){ pending = d; vp.playbackRate = 3; return; }
     if (cooling) return;
     cooling = true;
     setTimeout(() => { cooling = false; }, 300);
@@ -1633,7 +1574,6 @@
   }, { passive:true });
   addEventListener('touchend', () => { ty = null; });
   dots.forEach((b, k) => b.addEventListener('click', () => goSection(k)));
-  addEventListener('resize', size);
 
 
   /* ---------- background clip: pick the lightest file that still looks sharp ----------
@@ -1660,9 +1600,7 @@
   })();
 
   /* ---------- boot ---------- */
-  size();
   marks();
-  requestAnimationFrame(tick);
 
   let ready = 0;
   const bump = () => {
@@ -1670,13 +1608,17 @@
     if (ready >= 2){
       loader.classList.add('gone');
       setTimeout(() => loader.remove(), 900);
-      loadSeq('frames/s2');          /* the first loop only — the rest arrive per chapter */
     }
   };
   const art = new Image();
   art.onload = art.onerror = bump;
   art.src = 'assets/rocket.png';
-  loadSeq('frames/s1', bump);
+  /* the loader waits for the first clip to be playable, not downloaded whole */
+  arm(vp, CH[1].play);
+  arm(vl, CH[1].loop);
+  vp.addEventListener('canplay', bump, { once:true });
+  vp.addEventListener('error', bump, { once:true });
+  setTimeout(bump, 4000);
   setTimeout(() => loader.classList.add('gone'), 12000);
 
   /* ---------- transition video ---------- */
