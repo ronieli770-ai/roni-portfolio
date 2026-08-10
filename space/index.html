@@ -473,14 +473,25 @@
   @keyframes word-in{from{opacity:.3}to{opacity:1}}
   .proj-section.enter .wordfx .w{animation:word-in .45s ease forwards}
 
+  /* the ring lives on the wrapper: a gradient painted over the whole box with
+     its middle masked away, which keeps the corners round and the field empty */
+  .field{position:absolute;display:block;border-radius:5px}
+  .field::before{
+    content:'';position:absolute;inset:0;border-radius:inherit;
+    padding:1px;pointer-events:none;
+    background:linear-gradient(to left,rgba(255,255,255,1) 0%,rgba(255,255,255,0) 100%);
+    -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    mask-composite:exclude;
+  }
   .form-input{
-    position:absolute;background:transparent;border:1px solid #fff;border-radius:5px;
-    backdrop-filter:blur(42.3px);-webkit-backdrop-filter:blur(42.3px);
+    width:100%;height:100%;background:transparent;border:0;border-radius:5px;
     color:#fff;font-family:'IBM Plex Sans Hebrew',sans-serif;font-size:min(18px,1.05vw);
     text-align:center;outline:none;padding:0 12px;
   }
   .form-input::placeholder{color:#fff;opacity:1}
-  textarea.form-input{resize:none;padding-top:3em}
+  textarea.form-input{resize:none;padding-top:3em;display:block}
   .why-reveal{
     position:absolute;inset:0;pointer-events:none;
     background:url(mars-texture.jpg) center/cover no-repeat;
@@ -792,14 +803,16 @@
       transform:none!important;width:100%!important;margin-bottom:8px!important;
       font-size:24px!important;line-height:26px!important;
     }
-    .proj-section[data-proj="5"] .form-input{
+    .proj-section[data-proj="5"] .field{
       position:relative!important;left:auto!important;top:auto!important;
-      width:100%!important;height:30px!important;font-size:15px!important;flex:none;
+      width:100%!important;height:30px!important;flex:none;
     }
+    .proj-section[data-proj="5"] .form-input{font-size:15px!important}
     /* name and phone share the first row, name on the right */
-    .proj-section[data-proj="5"] input.form-input:nth-of-type(1),
-    .proj-section[data-proj="5"] input.form-input:nth-of-type(2){width:calc(50% - 5px)!important}
-    .proj-section[data-proj="5"] textarea.form-input{height:94px!important;padding-top:10px}
+    .proj-section[data-proj="5"] .field:nth-of-type(1),
+    .proj-section[data-proj="5"] .field:nth-of-type(2){width:calc(50% - 5px)!important}
+    .proj-section[data-proj="5"] .field:nth-of-type(4){height:94px!important}
+    .proj-section[data-proj="5"] textarea.form-input{padding-top:10px}
     .proj-section[data-proj="5"] > div button{
       position:relative!important;left:auto!important;top:auto!important;
       width:100%!important;height:39px!important;font-size:18px!important;flex:none;
@@ -1043,11 +1056,11 @@
 
     <div style="position:absolute;left:6.66%;top:36.65%;width:43.34%;height:57.44%;border-radius:20px;border:1px solid transparent;background:linear-gradient(252.1deg,rgba(255,255,255,0) 12.5%,rgba(255,255,255,.2) 87.5%) padding-box,linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.4) 100%) border-box;backdrop-filter:blur(42.3px);-webkit-backdrop-filter:blur(42.3px)">
       <h3 style="position:absolute;left:50%;transform:translateX(-50%);top:7%;width:91.7%;margin:0;text-align:center;font-weight:500;font-size:min(35px,2.03vw);line-height:1.156;background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent">השאירו פרטים קצרים ונתחיל לבנות את האתר שישים אתכם בטופ.</h3>
-      <input class="form-input" type="text" placeholder="שם מלא" style="left:50.97%;top:30.47%;width:39.09%;height:7.15%">
-      <input class="form-input" type="tel" placeholder="טלפון" style="left:9.92%;top:30.47%;width:39.09%;height:7.15%">
-      <input class="form-input" type="text" placeholder="שם העסק או לינק לאתר קיים (רשות)" style="left:9.92%;top:39.63%;width:80.02%;height:7.15%">
-      <textarea class="form-input" placeholder="מה תחום העסק שלכם?" style="left:9.92%;top:48.78%;width:80.02%;height:22.17%"></textarea>
-      <input class="form-input" type="text" placeholder="מה היעד המרכזי של האתר?" style="left:9.92%;top:72.96%;width:80.02%;height:7.15%">
+      <span class="field" style="left:50.97%;top:30.47%;width:39.09%;height:7.15%"><input class="form-input" type="text" placeholder="שם מלא"></span>
+      <span class="field" style="left:9.92%;top:30.47%;width:39.09%;height:7.15%"><input class="form-input" type="tel" placeholder="טלפון"></span>
+      <span class="field" style="left:9.92%;top:39.63%;width:80.02%;height:7.15%"><input class="form-input" type="text" placeholder="שם העסק או לינק לאתר קיים (רשות)"></span>
+      <span class="field" style="left:9.92%;top:48.78%;width:80.02%;height:22.17%"><textarea class="form-input" placeholder="מה תחום העסק שלכם?"></textarea></span>
+      <span class="field" style="left:9.92%;top:72.96%;width:80.02%;height:7.15%"><input class="form-input" type="text" placeholder="מה היעד המרכזי של האתר?"></span>
       <button type="button" style="position:absolute;left:9.93%;top:82.12%;width:80.14%;height:9.3%;border:0;border-radius:10px;cursor:pointer;background:linear-gradient(to left,#E0783C 0%,#FA9154 100%);color:#fff;font-family:'IBM Plex Sans Hebrew',sans-serif;font-weight:600;font-size:min(24px,1.39vw)">שגרו את הטופס 🚀</button>
     </div>
   </section>
