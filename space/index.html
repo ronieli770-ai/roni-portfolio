@@ -542,7 +542,7 @@
   @keyframes ring-float-plain{0%,100%{transform:translate(0,0)}25%{transform:translate(-2px,-7px)}50%{transform:translate(1px,-12px)}75%{transform:translate(2px,-6px)}}
   @keyframes ring-float-s{0%,100%{transform:translate(0,0)}25%{transform:translate(-1px,-6px)}50%{transform:translate(1px,-10px)}75%{transform:translate(1px,-5px)}}
 
-  @media (max-width:720px){
+  @media (max-width:720px), (hover:none) and (pointer:coarse) and (max-width:1024px), (max-aspect-ratio:3/4) and (max-width:1400px){
     .btn{width:136px;height:56px;font-size:17px}
     #hero .btns{left:14px}
     .rail{right:14px}
@@ -573,14 +573,20 @@
   }
   .wa-fab:hover{transform:translateY(-3px);background:#fff}
   .wa-fab:hover::before{background:#FA9154}
-  @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px){
+  /* the third clause catches a phone with "request desktop site" on: it
+     reports a wide viewport and a fine pointer, but the window is still far
+     taller than it is wide, which no real desktop window is. */
+  @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px), (max-aspect-ratio:3/4) and (max-width:1400px){
     .wa-fab{--wa:56px;right:14px;bottom:clamp(24px,4vh,50px)}
   }
 
   /* ================= MOBILE ================= */
   /* the desktop layout is built from percentages of a wide frame — on a phone
-     each section is re-laid out as a column instead of being squeezed */
-  @media (max-width:768px){
+     each section is re-laid out as a column instead of being squeezed.
+     this block carried a plain max-width:768px, so a phone with "request
+     desktop site" on — which reports ~980px and a fine pointer — got the
+     desktop layout and none of the mobile work applied at all. */
+  @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px), (max-aspect-ratio:3/4) and (max-width:1400px){
     /* header — matches the graphic-design page */
     #hdr-glass{
       height:100px;
@@ -805,7 +811,7 @@
        over — so it shrinks rather than climbing into the header. */
     .proj-section[data-proj="4"]{
       display:flex!important;flex-direction:column;justify-content:flex-start;
-      padding:118px 44px 108px 14px;gap:12px;overflow:hidden!important;
+      padding:118px 44px 124px 14px;gap:12px;overflow:hidden!important;
     }
     .proj-section[data-proj="4"] > div{
       position:relative!important;left:auto!important;right:auto!important;
@@ -1675,7 +1681,7 @@
      phone it simply lost. 1920x1080 is also more than a phone shows: there is
      a 720p cut at a third of the weight. */
   const heroV = document.querySelector('#hero .hero-bg');
-  const small = matchMedia('(max-width:768px),(hover:none) and (pointer:coarse)').matches;
+  const small = matchMedia('(max-width:768px),(hover:none) and (pointer:coarse) and (max-width:1024px),(max-aspect-ratio:3/4) and (max-width:1400px)').matches;
   heroV.src = small ? '0-m.mp4' : '0.mp4';
   heroV.load();
   const heroPlay = heroV.play();
