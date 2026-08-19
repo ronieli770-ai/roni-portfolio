@@ -362,17 +362,6 @@
   .mail{margin-top:24px;font-size:15px;color:var(--dim)}
   .mail a{color:var(--orange-lt);text-decoration:none;border-bottom:1px solid rgba(250,145,84,.4);padding-bottom:2px}
 
-  /* ---------- loader ---------- */
-  #loader{
-    position:fixed;inset:0;z-index:99;background:#000;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
-    transition:opacity .8s ease;
-  }
-  #loader.gone{opacity:0;pointer-events:none}
-  .lbar{width:min(220px,50vw);height:2px;background:rgba(141,168,203,.2);overflow:hidden;border-radius:2px}
-  .lbar i{display:block;height:100%;width:0;background:var(--btn-grad);transition:width .3s ease}
-  #loader p{font-size:12px;letter-spacing:.42em;color:rgba(226,235,248,.55);font-weight:300}
-
   @keyframes glitchMain{0%{transform:translateX(-50%);filter:none}5%{transform:translateX(-50%) translate(2px,0);filter:drop-shadow(0 0 8px rgba(141,168,203,.4))}10%{transform:translateX(-50%) translate(-2px,0)}15%{transform:translateX(-50%) translate(3px,0);filter:drop-shadow(0 0 14px rgba(141,168,203,.7))}20%{transform:translateX(-50%) translate(-1px,0)}25%{transform:translateX(-50%) translate(2px,0)}30%{transform:translateX(-50%);filter:drop-shadow(0 0 20px rgba(141,168,203,.9))}40%{filter:drop-shadow(0 0 24px rgba(141,168,203,1))}55%{filter:drop-shadow(0 0 14px rgba(141,168,203,.5))}70%{filter:drop-shadow(0 0 4px rgba(141,168,203,.1))}85%,100%{transform:translateX(-50%);filter:none}}
   @keyframes glitchTop{0%{opacity:0;transform:none}5%{opacity:1;transform:translate(4px,0)}10%{opacity:1;transform:translate(-3px,0)}15%{opacity:1;transform:translate(5px,0)}20%{opacity:1;transform:translate(-4px,0)}25%{opacity:1;transform:translate(3px,0)}30%{opacity:.6;transform:translate(-1px,0)}40%{opacity:.3;transform:none}55%,100%{opacity:0}}
   @keyframes glitchBot{0%{opacity:0;transform:none}5%{opacity:1;transform:translate(-5px,0)}10%{opacity:1;transform:translate(4px,0)}15%{opacity:1;transform:translate(-3px,0)}20%{opacity:1;transform:translate(5px,0)}25%{opacity:1;transform:translate(-2px,0)}30%{opacity:.6;transform:translate(1px,0)}40%{opacity:.3;transform:none}55%,100%{opacity:0}}
@@ -708,7 +697,7 @@
   textarea.form-input{resize:none;padding-top:3em;display:block}
   .why-reveal{
     position:absolute;inset:0;pointer-events:none;
-    background:url(mars-texture.jpg) center/cover no-repeat;
+    background:url(mars-texture.webp) center/cover no-repeat;
     opacity:0;transition:opacity .5s ease;
     -webkit-mask-image:radial-gradient(circle 260px at var(--mx,50%) var(--my,50%),rgba(0,0,0,.85) 0%,rgba(0,0,0,.45) 35%,rgba(0,0,0,.16) 62%,transparent 88%);
     mask-image:radial-gradient(circle 260px at var(--mx,50%) var(--my,50%),rgba(0,0,0,.85) 0%,rgba(0,0,0,.45) 35%,rgba(0,0,0,.16) 62%,transparent 88%);
@@ -1043,6 +1032,10 @@
       display:block!important;padding:119px 44px 36px 14px;
       overflow-y:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
     }
+    /* the section scrolls, so an absolute backdrop only covers the first
+       viewport and the stars run out mid-scroll - pinned to the viewport the
+       field stays under the copy the whole way down */
+    .proj-section[data-proj="4"] galaxy-bg{position:fixed!important}
     .proj-section[data-proj="4"]::-webkit-scrollbar{width:0;height:0}
     .proj-section[data-proj="4"] > div{
       position:relative!important;left:auto!important;right:auto!important;
@@ -1050,7 +1043,11 @@
     }
     .proj-section[data-proj="4"] .ab-card{
       background:none;backdrop-filter:none;-webkit-backdrop-filter:none;
-      padding:0;border-radius:0;transform:none;
+      padding:0;border-radius:0;transform:none!important;
+      /* the desktop entry animation ends on translateY(-50%) and holds it, which
+         draws the copy 116px above the space it occupies - the phantom gap at
+         the bottom of the scroll */
+      animation:none!important;
     }
     /* the mockup: the astronaut runs nearly full width and the copy sits under
        her, centred. everything is normal flow - the copy physically cannot
@@ -1145,10 +1142,17 @@
   }
   }
 </style>
+<link rel="stylesheet" href="assets/rl-loader.css">
 </head>
 <body>
 
-<div id="loader"><p>טוען את המסע</p><div class="lbar"><i id="lfill"></i></div></div>
+<div class="rl-loader" id="rl-loader">
+  <div class="rl-mark">
+    <div class="rl-glow"><div class="rl-l rl-base"></div></div>
+    <div class="rl-l rl-top"></div>
+    <div class="rl-l rl-bot"></div>
+  </div>
+</div>
 
 <div id="bg"></div>
 <div id="stage">
@@ -1158,16 +1162,16 @@
 <div id="veil"></div>
 
 <div id="hdr-glass"></div>
-<a class="logo" href="#"><img src="assets/logo.png" alt="סטודיו רוני"></a>
+<a class="logo" href="#"><img src="assets/logo.webp" alt="סטודיו רוני"></a>
 <div class="menu"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
 <div id="menu-overlay">
-  <img class="mo-logo" src="assets/logo.png" alt="סטודיו רוני">
+  <img class="mo-logo" src="assets/logo.webp" alt="סטודיו רוני">
   <div class="mo-portraits">
-    <img class="mo-dark" src="roni-portrait.png" alt="" loading="lazy" decoding="async">
-    <img class="mo-light" data-src="roni-portrait-light.png" alt="">
+    <img class="mo-dark" src="roni-portrait.webp" alt="" loading="lazy" decoding="async">
+    <img class="mo-light" data-src="roni-portrait-light.webp" alt="">
   </div>
-  <img class="mo-earth" src="earth-globe.png" alt="" loading="lazy" decoding="async">
+  <img class="mo-earth" src="earth-globe.webp" alt="" loading="lazy" decoding="async">
   <nav class="mo-nav">
     <a class="glitch" href="#" data-text="פרויקטים">פרויקטים</a>
     <a class="glitch" href="graphic-design.html" data-text="עיצוב גרפי">עיצוב גרפי</a>
@@ -1318,7 +1322,7 @@
 
       <article class="why-card-a" style="flex:1 1 0;min-width:0;max-width:360px;margin-block:clamp(14px,2.2vh,28px);justify-content:center;padding:clamp(20px,1.7vw,30px) clamp(16px,1.8vw,30px);display:flex;flex-direction:column;align-items:center;gap:22px;border-radius:26px;border:1.5px solid transparent;background:linear-gradient(135deg,rgba(255,255,255,.095) 0%,rgba(255,255,255,.01) 100%) padding-box,linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.10) 100%) border-box;box-shadow:0 24px 60px rgba(0,0,0,.35);transform:rotate(3deg)">
         <div style="width:clamp(120px,10.5vw,200px);aspect-ratio:1;border-radius:50%;overflow:hidden;flex:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%);mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%)">
-          <img src="avatar-shekel-m.png" srcset="avatar-shekel-m.png 320w, avatar-shekel.png 1024w" sizes="(max-width:768px) 84px, 200px" alt="" style="display:block;width:100%;height:100%;object-fit:cover">
+          <img src="avatar-shekel-m.webp" srcset="avatar-shekel-m.webp 320w, avatar-shekel.webp 1024w" sizes="(max-width:768px) 84px, 200px" alt="" style="display:block;width:100%;height:100%;object-fit:cover">
         </div>
         <h3 style="margin:0;color:#EDF1F6;font-size:35px;font-weight:400;line-height:1.22;overflow-wrap:break-word;text-align:center">מיצוי הפוטנציאל<br> והעלאת מחירים</h3>
         <p style="margin:0;color:#ffffff;font-size:18px;line-height:1.7;text-align:center;text-wrap:pretty">לקוחות משלמים יותר למותגים שנראים כמו הטופ של התעשייה. אתר מעוצב בסטנדרט פרימיום מייצר אוטוריטה מיידית ומאפשר לכם לגבות את המחיר שבאמת מגיע לכם.</p>
@@ -1326,7 +1330,7 @@
 
       <article class="why-card-b" style="flex:1 1 0;min-width:0;max-width:405px;padding:clamp(26px,2.4vw,44px) clamp(20px,2.1vw,38px);display:flex;flex-direction:column;align-items:center;gap:22px;border-radius:26px;border:1.5px solid transparent;background:linear-gradient(135deg,rgba(255,255,255,.095) 0%,rgba(255,255,255,.01) 100%) padding-box,linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.10) 100%) border-box;box-shadow:0 24px 60px rgba(0,0,0,.35)">
         <div style="width:clamp(132px,11.5vw,218px);aspect-ratio:1;border-radius:50%;overflow:hidden;flex:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%);mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%)">
-          <img src="avatar-heart-m.png" srcset="avatar-heart-m.png 320w, avatar-heart.png 1024w" sizes="(max-width:768px) 84px, 200px" alt="" style="display:block;width:100%;height:100%;object-fit:cover">
+          <img src="avatar-heart-m.webp" srcset="avatar-heart-m.webp 320w, avatar-heart.webp 1024w" sizes="(max-width:768px) 84px, 200px" alt="" style="display:block;width:100%;height:100%;object-fit:cover">
         </div>
         <h3 style="margin:0;color:#EDF1F6;font-size:35px;font-weight:400;line-height:1.22;overflow-wrap:break-word;text-align:center">אמון והמרה<br> מהירה</h3>
         <p style="margin:0;color:#ffffff;font-size:18px;line-height:1.7;text-align:center;text-wrap:pretty">כשגולש נכנס לאתר חווייתי, זורם ומרשים, רמת האמון שלו מזנקת בשניות. הוא לא רק מסתכל, הוא מבין עם מי יש לו עסק ומשאיר פרטים בביטחון מלא.</p>
@@ -1334,7 +1338,7 @@
 
       <article class="why-card-c" style="flex:1 1 0;min-width:0;max-width:360px;margin-block:clamp(14px,2.2vh,28px);justify-content:center;padding:clamp(20px,1.7vw,30px) clamp(16px,1.8vw,30px);display:flex;flex-direction:column;align-items:center;gap:22px;border-radius:26px;border:1.5px solid transparent;background:linear-gradient(135deg,rgba(255,255,255,.095) 0%,rgba(255,255,255,.01) 100%) padding-box,linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.10) 100%) border-box;box-shadow:0 24px 60px rgba(0,0,0,.35);transform:rotate(-3deg)">
         <div style="width:clamp(120px,10.5vw,200px);aspect-ratio:1;border-radius:50%;overflow:hidden;flex:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%);mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%)">
-          <img src="avatar-point-m.png" srcset="avatar-point-m.png 320w, avatar-point.png 1024w" sizes="(max-width:768px) 84px, 200px" alt="" style="display:block;width:100%;height:100%;object-fit:cover">
+          <img src="avatar-point-m.webp" srcset="avatar-point-m.webp 320w, avatar-point.webp 1024w" sizes="(max-width:768px) 84px, 200px" alt="" style="display:block;width:100%;height:100%;object-fit:cover">
         </div>
         <h3 style="margin:0;color:#EDF1F6;font-size:35px;font-weight:400;line-height:1.22;overflow-wrap:break-word;text-align:center">בולטות מול<br> המתחרים</h3>
         <p style="margin:0;color:#ffffff;font-size:18px;line-height:1.7;text-align:center;text-wrap:pretty">רוב האתרים בשוק נראים אותו דבר ונשכחים שנייה אחרי שסוגרים את הלשונית. אתר דינמי עם שפה ויזואלית ייחודית מייצר אימפקט שאי אפשר להתעלם ממנו.</p>
@@ -1346,7 +1350,7 @@
   <section class="proj-section" data-proj="4" style="background:#000">
     <galaxy-bg style="position:absolute;inset:0;pointer-events:none"></galaxy-bg>
     <div style="position:absolute;left:11.63%;top:14.77%;width:min(33%,60vh);animation:astro-float 7s ease-in-out infinite;will-change:transform">
-      <img src="astronaut-m.png" srcset="astronaut-m.png 640w, astronaut.png 1600w" sizes="(max-width:768px) 150px, 33vw" alt="" style="display:block;width:100%;transform:scaleX(-1);filter:brightness(.8) contrast(1.04) saturate(.9);image-rendering:auto">
+      <img src="astronaut-m.webp" srcset="astronaut-m.webp 640w, astronaut.webp 1600w" sizes="(max-width:768px) 150px, 33vw" alt="" style="display:block;width:100%;transform:scaleX(-1);filter:brightness(.8) contrast(1.04) saturate(.9);image-rendering:auto">
     </div>
     <div class="ab-card">
     <h2 style="margin:0;text-align:right;font-weight:400;font-size:min(80px,4.63vw);line-height:.9625;background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent">נעים להכיר,<br> <span class="ab-name">רוני אליהו</span></h2>
@@ -1360,7 +1364,7 @@
 
   <section class="proj-section" data-proj="5" style="background:#000">
     <img src="form-glow.svg" alt="" style="position:absolute;left:-48.87%;top:-29.58%;width:128.75%;aspect-ratio:1;pointer-events:none">
-    <img src="form-moon.png" alt="" loading="lazy" decoding="async" style="position:absolute;right:0;bottom:0;width:41%;height:64%;object-fit:contain;object-position:right bottom">
+    <img src="form-moon.webp" alt="" loading="lazy" decoding="async" style="position:absolute;right:0;bottom:0;width:41%;height:64%;object-fit:contain;object-position:right bottom">
 
     <h2 style="position:absolute;right:3.82%;top:14.77%;margin:0;text-align:right;font-weight:400;font-size:min(80px,4.63vw);line-height:.9625;background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent">מוכנים להמריא?</h2>
 
@@ -1381,9 +1385,9 @@
   </section>
 </div>
 
-<script src="mars-builder.js"></script>
-<script src="mars-globe.js"></script>
-<script src="galaxy-bg.js"></script>
+<script src="mars-builder.js" defer></script>
+<script src="mars-globe.js" defer></script>
+<script src="galaxy-bg.js" defer></script>
 <script>
 (() => {
   /* chapter = one clip that plays through, then a clip that loops until the next nudge */
@@ -1403,8 +1407,6 @@
   const panes = [...document.querySelectorAll('.pane')];
   const rail = document.getElementById('rail');
   const hint = document.getElementById('hint');
-  const loader = document.getElementById('loader');
-  const lfill = document.getElementById('lfill');
 
   const SECTIONS = ['פתיחה','המראה','שיוט','נעים להכיר','למה לעבוד דווקא איתי','פרויקט 1','פרויקט 2','פרויקט 3','למה אתם צריכים את זה','נעים להכיר, רוני אליהו','מוכנים להמריא'];
   SECTIONS.forEach(t => rail.insertAdjacentHTML('beforeend', '<b><span class="tip">' + t + '</span></b>'));
@@ -1894,17 +1896,8 @@
   const heroPlay = heroV.play();
   if (heroPlay && heroPlay.catch) heroPlay.catch(() => {});
 
-  let ready = 0;
-  const bump = () => {
-    lfill.style.width = Math.min(100, ++ready / 2 * 100) + '%';
-    if (ready >= 2){
-      loader.classList.add('gone');
-      setTimeout(() => loader.remove(), 900);
-    }
-  };
   const art = new Image();
-  art.onload = art.onerror = bump;
-  art.src = 'assets/rocket.png';
+  art.src = 'assets/rocket.webp';
   /* three.js, the moon model and the portfolio clip are the three heavy things
      on the page. the hero is the only quiet moment on the whole site, so they
      are all pulled then instead of at the section that needs them - that is
@@ -1923,10 +1916,6 @@
   /* the chapter clips come first; the moon and the portfolio clip follow */
   vp.addEventListener('canplaythrough', heavy, { once:true });
   setTimeout(heavy, 5000);
-  /* the loader waits for the first clip to be playable, not downloaded whole */
-  vp.addEventListener('canplay', bump, { once:true });
-  vp.addEventListener('error', bump, { once:true });
-  setTimeout(bump, 4000);
   const queue = () => { arm(vp, CH[1].play); arm(vl, CH[1].loop); };
   if (heroV.readyState >= 3) queue();
   else {
@@ -1934,7 +1923,6 @@
     heroV.addEventListener('error', queue, { once:true });
     setTimeout(queue, 2500);           // never let a stalled hero hold the rest
   }
-  setTimeout(() => loader.classList.add('gone'), 12000);
 
   /* ---------- transition video ---------- */
 
@@ -2217,14 +2205,13 @@
       setFront(((Math.round(pos) % N) + N) % N);
     }
 
-    cards.forEach((el, i) => el.addEventListener('click', () => {
-      if (moved > 6) return;
-      if (i === front){ lbOpen(el); return; }
-      target = Math.round(pos) + wrap(i - Math.round(pos));
-    }));
-
+    /* clicks are resolved on pointerup rather than on the cards: the stage
+       captures the pointer for the drag, and a captured pointer retargets the
+       click away from the card that was pressed */
+    let hitCard = null;
     stage.addEventListener('pointerdown', e => {
       dragging = true; moved = 0; lastX = e.clientX; vel = 0;
+      hitCard = e.target && e.target.closest ? e.target.closest('.pf-card') : null;
       stage.classList.add('dragging');
       stage.setPointerCapture(e.pointerId);
     });
@@ -2235,9 +2222,16 @@
          which in a right-to-left fan waits on the left */
       moved += Math.abs(dx); pos += dx / gap(); vel = dx / gap();
     });
-    ['pointerup','pointercancel'].forEach(ev => stage.addEventListener(ev, () => {
+    ['pointerup','pointercancel'].forEach(ev => stage.addEventListener(ev, e => {
       if (!dragging) return;
       dragging = false; stage.classList.remove('dragging');
+      const tapped = ev === 'pointerup' && moved <= 6 && hitCard;
+      hitCard = null;
+      if (tapped){
+        const i = cards.indexOf(tapped);
+        if (i === front){ lbOpen(cards[i]); return; }
+        if (i >= 0){ target = Math.round(pos) + wrap(i - Math.round(pos)); return; }
+      }
       target = Math.round(pos + vel * 6);
     }));
 
@@ -2266,7 +2260,6 @@
     const c = carousels[projIdx];
     if (c) c.tick();
   })();
-
   function projWarm(){}
 
   function projPrepBehind(){
@@ -2527,5 +2520,6 @@
 })();
 </script>
 <script src="dev-review.js"></script>
+<script src="assets/rl-loader.js"></script>
 </body>
 </html>

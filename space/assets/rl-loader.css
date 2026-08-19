@@ -1,0 +1,139 @@
+/* ===== Roni glitch intro loader — 2.5s, black, mono glitch ===== */
+html.rl-lock { overflow: hidden; }
+
+.rl-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: grid;
+  place-items: center;
+}
+.rl-loader.rl-out { opacity: 0; transition: opacity .35s ease; pointer-events: none; }
+
+.rl-mark {
+  position: relative;
+  width: min(46vw, 620px);
+  aspect-ratio: 4000 / 1926;
+  animation: rlJitter 2.5s steps(1, end) forwards;
+}
+
+/* the glow lives on a wrapper with NO background of its own — a drop-shadow
+   applied straight to a masked element paints the image's rectangle instead
+   of the letter shapes */
+.rl-glow {
+  position: absolute;
+  inset: 0;
+  animation: rlGlow 2.5s ease-out forwards;
+}
+
+.rl-l {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  -webkit-mask-image: url("logo.png");
+  mask-image: url("logo.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  mix-blend-mode: screen;
+}
+.rl-base { animation: rlFlicker 2.5s steps(1, end) forwards; }
+.rl-top  { clip-path: inset(0 0 50% 0); animation: rlTearTop 2.5s steps(1, end) forwards; }
+.rl-bot  { clip-path: inset(50% 0 0 0); animation: rlTearBot 2.5s steps(1, end) forwards; }
+
+/* Signal 0–22%  |  Lock 22–54%  |  Hold 54–84%  |  Exit 84–100% */
+
+@keyframes rlJitter {
+  0%   { transform: translate(7px, -2px) scale(1.045); opacity: 1; }
+  4%   { transform: translate(-6px, 2px) scale(1.040); }
+  8%   { transform: translate(5px, 1px)  scale(1.034); }
+  12%  { transform: translate(-4px, -1px) scale(1.028); }
+  16%  { transform: translate(4px, 1px)  scale(1.022); }
+  22%  { transform: translate(-3px, 0)   scale(1.014); }
+  34%  { transform: translate(2px, 0)    scale(1.006); }
+  54%  { transform: none; }
+  61%  { transform: translate(3px, 0); }
+  62%  { transform: translate(-2px, 0); }
+  64%  { transform: none; }
+  75%  { transform: translate(-2px, 0); }
+  76%  { transform: translate(2px, 0); }
+  78%  { transform: none; }
+  86%  { transform: translate(5px, 0)  scale(1.008); }
+  89%  { transform: translate(-5px, 0) scale(1.014); }
+  92%  { transform: translate(4px, 0)  scale(1.022); }
+  96%  { transform: none; scale: 1.03; opacity: 1; }
+  100% { transform: none; opacity: 0; }
+}
+
+@keyframes rlFlicker {
+  0%   { opacity: 0; }
+  2%   { opacity: 1; }
+  4%   { opacity: .18; }
+  6%   { opacity: 1; }
+  9%   { opacity: .18; }
+  11%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+@keyframes rlTearTop {
+  0%   { opacity: 1; transform: translate(26px, 0); }
+  4%   { opacity: 1; transform: translate(-22px, 0); }
+  8%   { opacity: 1; transform: translate(18px, 0); }
+  12%  { opacity: 1; transform: translate(-14px, 0); }
+  16%  { opacity: 1; transform: translate(12px, 0); }
+  22%  { opacity: .9; transform: translate(-8px, 0); }
+  34%  { opacity: .6; transform: translate(4px, 0); }
+  46%  { opacity: .3; transform: translate(-2px, 0); }
+  54%  { opacity: 0; transform: none; }
+  61%  { opacity: 1; transform: translate(-9px, 0); }
+  63%  { opacity: 0; transform: none; }
+  75%  { opacity: 1; transform: translate(6px, 0); }
+  77%  { opacity: 0; transform: none; }
+  86%  { opacity: 1; transform: translate(-20px, 0); }
+  89%  { opacity: 1; transform: translate(16px, 0); }
+  92%  { opacity: 1; transform: translate(-12px, 0); }
+  96%  { opacity: 0; transform: none; }
+  100% { opacity: 0; }
+}
+
+@keyframes rlTearBot {
+  0%   { opacity: 1; transform: translate(-24px, 0); }
+  4%   { opacity: 1; transform: translate(20px, 0); }
+  8%   { opacity: 1; transform: translate(-16px, 0); }
+  12%  { opacity: 1; transform: translate(13px, 0); }
+  16%  { opacity: 1; transform: translate(-10px, 0); }
+  22%  { opacity: .9; transform: translate(7px, 0); }
+  34%  { opacity: .6; transform: translate(-4px, 0); }
+  46%  { opacity: .3; transform: translate(2px, 0); }
+  54%  { opacity: 0; transform: none; }
+  61%  { opacity: 1; transform: translate(8px, 0); }
+  63%  { opacity: 0; transform: none; }
+  75%  { opacity: 1; transform: translate(-6px, 0); }
+  77%  { opacity: 0; transform: none; }
+  86%  { opacity: 1; transform: translate(18px, 0); }
+  89%  { opacity: 1; transform: translate(-15px, 0); }
+  92%  { opacity: 1; transform: translate(11px, 0); }
+  96%  { opacity: 0; transform: none; }
+  100% { opacity: 0; }
+}
+
+@keyframes rlGlow {
+  0%   { filter: drop-shadow(0 0 22px rgba(141, 168, 203, .85)); }
+  22%  { filter: drop-shadow(0 0 26px rgba(141, 168, 203, .95)); }
+  54%  { filter: drop-shadow(0 0 8px  rgba(141, 168, 203, .18)); }
+  61%  { filter: drop-shadow(0 0 18px rgba(141, 168, 203, .6)); }
+  68%  { filter: drop-shadow(0 0 8px  rgba(141, 168, 203, .18)); }
+  75%  { filter: drop-shadow(0 0 16px rgba(141, 168, 203, .5)); }
+  82%  { filter: drop-shadow(0 0 6px  rgba(141, 168, 203, .12)); }
+  92%  { filter: drop-shadow(0 0 28px rgba(141, 168, 203, 1)); }
+  100% { filter: drop-shadow(0 0 0 rgba(141, 168, 203, 0)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rl-mark, .rl-glow, .rl-l { animation: none !important; }
+  .rl-top, .rl-bot { opacity: 0; }
+}

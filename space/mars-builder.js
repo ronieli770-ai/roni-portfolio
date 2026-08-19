@@ -158,11 +158,11 @@
 
   function photoTextures(THREE) {
     const loader = new THREE.TextureLoader();
-    const map = loader.load('mars-texture.jpg');
+    const map = loader.load('mars-texture.webp');
     map.colorSpace = THREE.SRGBColorSpace;
     map.wrapS = THREE.RepeatWrapping;
     map.anisotropy = 16;
-    const bumpMap = loader.load('mars-texture.jpg');
+    const bumpMap = loader.load('mars-texture.webp');
     bumpMap.wrapS = THREE.RepeatWrapping;
     bumpMap.wrapT = THREE.RepeatWrapping;
     bumpMap.anisotropy = 16;
