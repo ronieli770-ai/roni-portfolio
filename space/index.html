@@ -445,6 +445,97 @@
   @keyframes proj-planet-l{from{opacity:0;transform:translate3d(-64px,-38px,0) scale(.94)}to{opacity:1;transform:none}}
   @keyframes proj-planet-r{from{opacity:0;transform:translate3d(64px,-38px,0) scale(.94)}to{opacity:1;transform:none}}
   @keyframes proj-up{from{opacity:0;transform:translate3d(0,26px,0)}to{opacity:1;transform:none}}
+  /* ---------- portfolio carousel ----------
+     figma node 329:2 on the 1728x1117 frame. the copy column is right-aligned
+     with its right edge on 1616px (6.48%) and is 349px wide (20.2%); the fan
+     sits to its left, centred on 32% of the viewport. */
+  .pf-glow{
+    position:absolute;left:8%;top:8%;width:52%;height:84%;pointer-events:none;
+    background:radial-gradient(56% 52% at 50% 46%,rgba(224,150,96,.12) 0%,rgba(224,150,96,.04) 46%,rgba(5,5,10,0) 74%);
+  }
+  .pf-stage{
+    position:absolute;left:32%;top:50%;width:0;height:0;
+    touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;z-index:2;
+  }
+  .pf-stage.dragging{cursor:grabbing}
+  .pf-card{
+    position:absolute;top:0;left:0;
+    width:var(--cw);height:var(--ch);margin:calc(var(--ch) / -2) 0 0 calc(var(--cw) / -2);
+    border-radius:var(--cr);overflow:hidden;background:#17171a;
+    border:1px solid rgba(255,255,255,.10);
+    box-shadow:0 30px 70px rgba(0,0,0,.62);
+    will-change:transform,opacity;
+  }
+  /* a project that is a site rides in a browser frame; a landing page rides in
+     a phone. the format is a property of the project, not of the slide. */
+  .pf-stage[data-format="site"]{--cw:min(460px,27vw);--ch:calc(var(--cw) * 0.625);--cr:12px}
+  .pf-stage[data-format="landing"]{--cw:min(258px,15vw);--ch:calc(var(--cw) * 2.1);--cr:26px}
+  .pf-bar{
+    height:30px;display:flex;align-items:center;gap:7px;padding:0 12px;
+    background:#232327;border-bottom:1px solid rgba(255,255,255,.07);direction:ltr;flex:none;
+  }
+  .pf-bar i{width:9px;height:9px;border-radius:50%;flex:none;display:block}
+  .pf-bar i:nth-child(1){background:#ff5f57}
+  .pf-bar i:nth-child(2){background:#febc2e}
+  .pf-bar i:nth-child(3){background:#28c840}
+  .pf-bar span{
+    margin-left:10px;flex:1;height:18px;border-radius:5px;background:#161619;
+    display:flex;align-items:center;justify-content:center;
+    font-size:10.5px;color:#9a978f;overflow:hidden;white-space:nowrap;
+  }
+  .pf-notch{
+    position:absolute;left:50%;top:8px;transform:translateX(-50%);
+    width:34%;height:16px;border-radius:99px;background:#0a0a0c;z-index:3;pointer-events:none;
+  }
+  .pf-screen{position:relative;width:100%;height:100%;overflow:hidden;background:#0d0d10}
+  .pf-stage[data-format="site"] .pf-screen{height:calc(100% - 30px)}
+  .pf-screen video,.pf-screen img{
+    display:block;width:100%;height:100%;object-fit:cover;object-position:top center;
+  }
+  /* until a recording is dropped in, the slide shows its own name instead of a
+     broken frame */
+  .pf-blank{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    padding:0 14px;text-align:center;font-size:13px;line-height:1.4;color:rgba(255,255,255,.5);
+    background:linear-gradient(150deg,#1c1d22 0%,#121317 60%,#0e0f12 100%);
+  }
+  .pf-glare{position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,0) 42%)}
+
+  .pf-dots{
+    position:absolute;left:32%;top:calc(50% + min(300px,20vw));transform:translateX(-50%);
+    display:flex;align-items:center;gap:9px;z-index:3;
+    /* the fan runs left-to-right by index, so the dots must too */
+    direction:ltr;
+  }
+  .pf-dots b{
+    display:block;width:9px;height:9px;border-radius:99px;background:rgba(255,255,255,.26);
+    cursor:pointer;transition:width .3s ease,background .3s ease;
+  }
+  .pf-dots b.on{width:26px;background:#fff}
+
+  .pf-copy{
+    position:absolute;right:6.48%;top:52.82%;width:20.2%;text-align:right;z-index:3;
+    font-family:'IBM Plex Sans Hebrew',sans-serif;
+  }
+  .pf-brand{display:block;color:#FA9154;font-size:min(18px,1.04vw);line-height:.85;font-weight:400}
+  .pf-title{
+    margin:7px 0 0;font-weight:400;font-size:min(60px,3.47vw);line-height:.93;
+    background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;-webkit-text-fill-color:transparent;
+  }
+  .pf-body{margin-top:23px;color:#fff;font-size:min(16px,.93vw);line-height:normal}
+  .pf-body strong{display:block;font-weight:700}
+  .pf-cta{
+    margin-top:35px;width:min(280px,16.2vw);aspect-ratio:280/65;border-radius:10px;
+    background:linear-gradient(to left,#E0783C 0%,#FA9154 100%);
+    color:#fff;font-weight:600;font-size:min(24px,1.39vw);text-decoration:none;
+    display:flex;align-items:center;justify-content:center;margin-left:auto;margin-right:0;
+  }
+  /* the copy is swapped out on every slide, so it fades rather than snapping */
+  .pf-copy.swap .pf-brand,.pf-copy.swap .pf-title,.pf-copy.swap .pf-body{opacity:0}
+  .pf-brand,.pf-title,.pf-body{transition:opacity .22s ease}
+
   .proj-section.enter .proj-video{animation:proj-fade .9s ease both}
   .proj-section.enter .proj-scrim{animation:proj-fade .9s ease both}
   .proj-section.enter .proj-laptop{animation:proj-lap-l 1.1s cubic-bezier(.16,1,.3,1) .25s both}
@@ -672,60 +763,39 @@
     [data-mars-section] [data-stop] h3{font-size:19px!important;line-height:1.15!important;margin-bottom:10px!important}
     [data-mars-section] [data-stop] p{font-size:16px!important;line-height:1.4!important}
 
-    /* projects — the clip runs behind, zoomed so its planet only rises into
-       the lower third; small saturn top-left, copy centred, laptop centred */
+    /* projects — the carousel takes the top of the screen and the copy sits
+       under it, on the same 14/44 margins as the rest of the mobile site */
     .proj-section .proj-scrim{display:none!important}
-    .proj-bplanet{display:none!important}
-    /* the whole clip is shifted down so its planet only rises into the lower
-       third; the top edge fades into the black sky so no seam shows */
-    .proj-section .proj-video,#proj-bg{
+    #proj-bg{
       top:18%!important;height:100%!important;
       -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14%);
       mask-image:linear-gradient(to bottom,transparent 0,#000 14%);
     }
-    /* each object owns a band: planet top-left (fully inside the frame),
-       copy under it aligned right, laptop centred at the bottom */
-    .proj-section .proj-planet-wrap{
-      left:8%!important;right:auto!important;top:104px!important;width:40%!important;
+    .pf-glow{left:0;top:60px;width:100%;height:46%}
+    /* the card starts on the 123px line under the header either way, and the
+       dots sit just under it — the copy owns the bottom of the screen */
+    .pf-stage{left:50%}
+    .pf-stage[data-format="site"]{--cw:min(300px,80vw);--ch:calc(var(--cw) * 0.625);--cr:10px;top:217px}
+    .pf-stage[data-format="landing"]{--cw:min(140px,38vw);--ch:calc(var(--cw) * 2.1);--cr:20px;top:270px}
+    .pf-bar{height:22px}
+    .pf-bar i{width:7px;height:7px}
+    .pf-bar span{height:14px;font-size:8.5px}
+    .pf-stage[data-format="site"] .pf-screen{height:calc(100% - 22px)}
+    .pf-blank{font-size:11px}
+    .pf-dots{left:50%;bottom:auto}
+    .proj-section:has(.pf-stage[data-format="site"]) .pf-dots{top:331px}
+    .proj-section:has(.pf-stage[data-format="landing"]) .pf-dots{top:437px}
+    .pf-dots b{width:7px;height:7px}
+    .pf-dots b.on{width:20px}
+    .pf-copy{
+      right:44px;left:14px;width:auto;top:auto;bottom:96px;text-align:right;
     }
-    /* the uranus export is cut flat on its right (opaque pixels stop at the
-       canvas edge). Clipping the wrapper to a circle over the intact area
-       gives a real sphere silhouette — no invented pixels, no seam — and the
-       inset shadow puts the limb back where the crop removed it. */
-    /* sized to the ball in project 2 (77.4% of its box); the clip itself comes
-       from the base rule */
-    .proj-section[data-proj="2"] .proj-planet-wrap{
-      left:calc(8% - 20px)!important;right:auto!important;top:104px!important;width:31%!important;
-      box-shadow:inset -9px -5px 22px rgba(0,0,0,.55);
-    }
-    /* saturn is rotated 50deg, so its rings push the box ~32px past every side */
-    .proj-section[data-proj="0"] .proj-planet-wrap{left:calc(14% - 30px)!important;top:100px!important}
-    .proj-section .proj-text{
-      left:14px!important;right:44px!important;width:auto!important;
-      top:242px!important;bottom:auto!important;
-    }
-    .proj-section .proj-text-inner{gap:0;align-items:flex-start;text-align:right}
-    .proj-section .proj-eyebrow{font-size:18px;line-height:.85}
-    .proj-section .proj-heading{font-size:34px;line-height:.93;margin-top:13px}
-    .proj-section .proj-body{font-size:16px;line-height:1.35;margin-top:17px}
-    .proj-section .proj-cta{
-      margin-top:24px;align-self:flex-start;
-      width:157px;height:38px;padding:0;font-size:18px;font-weight:600;
-      display:flex;align-items:center;justify-content:center;
-    }
-    .proj-section .proj-laptop{
-      left:50%!important;right:auto!important;top:498px;bottom:auto;
-      width:112%!important;transform:translateX(-50%);
-    }
-    /* the desktop slide-in ends off-centre here — on a phone the laptop just
-       fades in, staying centred */
-    @keyframes m-lap-fade{
-      from{opacity:0;transform:translateX(-50%) translateY(16px)}
-      to{opacity:1;transform:translateX(-50%)}
-    }
-    .proj-section.enter .proj-laptop,
-    .proj-section.enter .proj-laptop[style*="right"]{
-      animation:m-lap-fade .9s cubic-bezier(.16,1,.3,1) .45s both;
+    .pf-brand{font-size:18px;line-height:.85}
+    .pf-title{font-size:34px;line-height:.93;margin-top:13px}
+    .pf-body{font-size:16px;line-height:1.35;margin-top:17px}
+    .pf-cta{
+      margin-top:24px;width:157px;aspect-ratio:auto;height:38px;
+      font-size:18px;font-weight:600;margin-left:auto;margin-right:0;
     }
 
     /* למה אתם צריכים את זה — the deck stacks into a column */
@@ -1036,58 +1106,44 @@
        element, three times over. -->
   <video id="proj-bg" class="proj-video" src="space-bg.mp4" preload="none" muted loop playsinline></video>
   <section class="proj-section active" data-proj="0">
-    <div style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1.6px 1.6px at 12% 22%,#fff,transparent),radial-gradient(1.2px 1.2px at 78% 12%,#fff,transparent),radial-gradient(1.8px 1.8px at 62% 38%,#fff,transparent),radial-gradient(1.2px 1.2px at 88% 62%,#fff,transparent),radial-gradient(1.4px 1.4px at 42% 8%,#fff,transparent),radial-gradient(1.1px 1.1px at 92% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 20% 68%,#fff,transparent),radial-gradient(1.2px 1.2px at 70% 78%,#fff,transparent);opacity:.5"></div>
     <div class="proj-grain"></div>
-    <img class="proj-bplanet" src="planet-bottom-m.png" srcset="planet-bottom-m.png 520w, planet-bottom.png 1280w" sizes="(max-width:768px) 170px, 60vw" alt="">
-    <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 30%,rgba(5,5,10,.5) 56%,rgba(5,5,10,.85) 76%,rgba(5,5,10,.94) 100%)"></div>
-    <div class="proj-planet-wrap" style="position:absolute;right:2%;top:6%;width:26%">
-      <img src="saturn-m.png" srcset="saturn-m.png 500w, saturn.png 1400w" sizes="(max-width:768px) 110px, 24vw" alt="" style="transform:rotate(50.75deg);will-change:transform;animation:ring-float 10s ease-in-out infinite;opacity:.92;filter:brightness(.72) saturate(.72) contrast(1.06) sepia(.14)">
-    </div>
-    <img class="proj-laptop" src="laptop-fixed.png" alt="" style="left:-6%">
-    <div class="proj-text" style="right:12%">
-      <div class="proj-text-inner">
-        <span class="proj-eyebrow">Business name</span>
-        <h2 class="proj-heading">אתר / דף נחיתה</h2>
-        <p class="proj-body"><strong>עיצוב פרימיום שיגרום להם להגיד וואו</strong><br>לא עוד תבנית גנרית שכולם מכירים. כל פרויקט מקבל שפה ויזואלית ייחודית, קומפוזיציה מדויקת ותשומת לב לכל פיקסל - כזה שגורם לגולשים להבין מיד שאתם בטופ.</p>
-        <a class="proj-cta" href="#">למעבר לפרויקט</a>
-      </div>
+    <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 24%,rgba(5,5,10,.52) 52%,rgba(5,5,10,.86) 76%,rgba(5,5,10,.95) 100%)"></div>
+    <div class="pf-glow"></div>
+    <div class="pf-stage"></div>
+    <div class="pf-dots"></div>
+    <div class="pf-copy">
+      <span class="pf-brand"></span>
+      <h2 class="pf-title"></h2>
+      <div class="pf-body"></div>
+      <a class="pf-cta" target="_blank" rel="noopener">למעבר לפרוייקט</a>
     </div>
   </section>
 
   <section class="proj-section" data-proj="1">
     <div class="proj-grain"></div>
-    <img class="proj-bplanet" src="planet-bottom-m.png" srcset="planet-bottom-m.png 520w, planet-bottom.png 1280w" sizes="(max-width:768px) 170px, 60vw" alt="">
-    <div class="proj-scrim" style="background:linear-gradient(to left,rgba(5,5,10,0) 30%,rgba(5,5,10,.5) 56%,rgba(5,5,10,.85) 76%,rgba(5,5,10,.94) 100%)"></div>
-    <div class="proj-planet-wrap" style="position:absolute;left:-6%;top:8%;width:30%">
-      <img src="planet-galaxy-m.png" srcset="planet-galaxy-m.png 500w, planet-galaxy.png 1400w" sizes="(max-width:768px) 110px, 24vw" alt="" style="will-change:transform;animation:ring-float-plain 10s ease-in-out infinite;opacity:.88;filter:brightness(.7) saturate(.72) contrast(1.05) sepia(.12)">
-    </div>
-    <img class="proj-laptop" src="laptop-fixed.png" alt="" style="right:calc(9% - 30px);width:62%">
-    <div class="proj-text" style="left:5.5%">
-      <div class="proj-text-inner">
-        <span class="proj-eyebrow">Business name</span>
-        <h2 class="proj-heading">אתר / דף נחיתה</h2>
-        <p class="proj-body"><strong>עיצוב פרימיום שיגרום להם להגיד וואו</strong><br>לא עוד תבנית גנרית שכולם מכירים. כל פרויקט מקבל שפה ויזואלית ייחודית, קומפוזיציה מדויקת ותשומת לב לכל פיקסל - כזה שגורם לגולשים להבין מיד שאתם בטופ.</p>
-        <a class="proj-cta" href="#">למעבר לפרויקט</a>
-      </div>
+    <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 24%,rgba(5,5,10,.52) 52%,rgba(5,5,10,.86) 76%,rgba(5,5,10,.95) 100%)"></div>
+    <div class="pf-glow"></div>
+    <div class="pf-stage"></div>
+    <div class="pf-dots"></div>
+    <div class="pf-copy">
+      <span class="pf-brand"></span>
+      <h2 class="pf-title"></h2>
+      <div class="pf-body"></div>
+      <a class="pf-cta" target="_blank" rel="noopener">למעבר לפרוייקט</a>
     </div>
   </section>
 
   <section class="proj-section" data-proj="2">
-    <div style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1.6px 1.6px at 12% 22%,#fff,transparent),radial-gradient(1.2px 1.2px at 78% 12%,#fff,transparent),radial-gradient(1.8px 1.8px at 62% 38%,#fff,transparent),radial-gradient(1.2px 1.2px at 88% 62%,#fff,transparent),radial-gradient(1.4px 1.4px at 42% 8%,#fff,transparent),radial-gradient(1.1px 1.1px at 92% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 20% 68%,#fff,transparent),radial-gradient(1.2px 1.2px at 70% 78%,#fff,transparent);opacity:.5"></div>
     <div class="proj-grain"></div>
-    <img class="proj-bplanet" src="planet-bottom-m.png" srcset="planet-bottom-m.png 520w, planet-bottom.png 1280w" sizes="(max-width:768px) 170px, 60vw" alt="">
-    <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 38%,rgba(5,5,10,.38) 62%,rgba(5,5,10,.62) 80%,rgba(5,5,10,.72) 100%)"></div>
-    <div class="proj-planet-wrap" style="position:absolute;right:-1%;top:4%;width:28%">
-      <img src="planet-uranus.png" alt="" style="will-change:transform;animation:ring-float-s 12s ease-in-out infinite;opacity:.88;filter:brightness(.7) saturate(.72) contrast(1.05) sepia(.12)">
-    </div>
-    <img class="proj-laptop" src="laptop-fixed.png" alt="" style="left:-6%">
-    <div class="proj-text" style="right:12%">
-      <div class="proj-text-inner">
-        <span class="proj-eyebrow">Business name</span>
-        <h2 class="proj-heading">אתר / דף נחיתה</h2>
-        <p class="proj-body"><strong>עיצוב פרימיום שיגרום להם להגיד וואו</strong><br>לא עוד תבנית גנרית שכולם מכירים. כל פרויקט מקבל שפה ויזואלית ייחודית, קומפוזיציה מדויקת ותשומת לב לכל פיקסל - כזה שגורם לגולשים להבין מיד שאתם בטופ.</p>
-        <a class="proj-cta" href="#">למעבר לפרויקט</a>
-      </div>
+    <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 24%,rgba(5,5,10,.52) 52%,rgba(5,5,10,.86) 76%,rgba(5,5,10,.95) 100%)"></div>
+    <div class="pf-glow"></div>
+    <div class="pf-stage"></div>
+    <div class="pf-dots"></div>
+    <div class="pf-copy">
+      <span class="pf-brand"></span>
+      <h2 class="pf-title"></h2>
+      <div class="pf-body"></div>
+      <a class="pf-cta" target="_blank" rel="noopener">למעבר לפרוייקט</a>
     </div>
   </section>
 
@@ -1793,6 +1849,187 @@
     railSet(5 + n);
   }
 
+  /* ---------- portfolio carousels ----------
+     one carousel per project. the slides are that project's screens — the
+     landing page first, then the sections and the interactions inside them —
+     and the copy on the right is rewritten by whichever slide is in front.
+     drop a screen recording in as `src` (mp4) or a still as `img`. */
+  const PROJECTS = [
+    {
+      format:'landing',                 // 'landing' → phone frame, 'site' → browser frame
+      brand:'Business name',
+      title:'אתר / דף נחיתה',
+      url:'#',
+      host:'business.co.il',
+      slides:[
+        { title:'עיצוב פרימיום שיגרום להם להגיד וואו',
+          body:'לא עוד תבנית גנרית שכולם מכירים. כל פרויקט מקבל שפה ויזואלית ייחודית, קומפוזיציה מדויקת ותשומת לב לכל פיקסל - כזה שגורם לגולשים להבין מיד שאתם בטופ.' },
+        { title:'הסקשן שעוצר את הגלילה',
+          body:'הכותרת נחשפת מילה־מילה והרקע זז לאט מאחוריה. הגולש מבין תוך שנייה מה אתם עושים, ונשאר לקרוא את השאר.' },
+        { title:'אינטראקציה שמסבירה את המוצר',
+          body:'במקום פסקה שאף אחד לא קורא, הכרטיסיות נפתחות בגלילה ומספרות את הסיפור בקצב שלו.' },
+        { title:'טופס שממיר',
+          body:'שדות קצרים, כפתור אחד ברור, ואישור מיידי. כל חיכוך מיותר בדרך לליד פשוט הוסר.' }
+      ]
+    },
+    {
+      format:'site',
+      brand:'Business name',
+      title:'אתר תדמית',
+      url:'#',
+      host:'business.com',
+      slides:[
+        { title:'עמוד בית שמדבר בגובה העיניים',
+          body:'מבנה ברור, היררכיה נכונה, וכל סקשן עונה על שאלה אחת של הגולש. בלי עומס ובלי ניחושים.' },
+        { title:'תיק עבודות שנעים לדפדף בו',
+          body:'הפרויקטים נפרסים בגריד שנושם, וכל אחד נפתח לתצוגה מלאה בלי לטעון עמוד חדש.' },
+        { title:'מיקרו־אנימציות שמחזיקות קצב',
+          body:'תנועות קטנות במעברים ובריחוף — מספיק כדי שהאתר ירגיש חי, לא מספיק כדי להסיח.' }
+      ]
+    },
+    {
+      format:'site',
+      brand:'Business name',
+      title:'חנות אונליין',
+      url:'#',
+      host:'business.store',
+      slides:[
+        { title:'קטלוג שקל למצוא בו',
+          body:'סינון מהיר, תמונות גדולות ומחיר ברור. הלקוח מגיע למוצר הנכון בשלוש קליקים.' },
+        { title:'עמוד מוצר שמוכר',
+          body:'גלריה, מפרט קצר וכפתור קנייה שנשאר על המסך. כל מה שצריך כדי להחליט, במקום אחד.' },
+        { title:'צ׳קאאוט בלי נטישות',
+          body:'שלב אחד, תשלום מהיר ואישור ברור. הדרך מהעגלה להזמנה קצרה ככל האפשר.' }
+      ]
+    }
+  ];
+
+  const carousels = [];
+  PROJECTS.forEach((proj, si) => {
+    const sec = projSections[si];
+    if (!sec) return;
+    const stage = sec.querySelector('.pf-stage');
+    const dotsEl = sec.querySelector('.pf-dots');
+    const copy = sec.querySelector('.pf-copy');
+    if (!stage) return;
+
+    stage.dataset.format = proj.format;
+    copy.querySelector('.pf-brand').textContent = proj.brand;
+    copy.querySelector('.pf-title').textContent = proj.title;
+    copy.querySelector('.pf-cta').href = proj.url || '#';
+
+    const N = proj.slides.length;
+    const cards = proj.slides.map(sl => {
+      const el = document.createElement('article');
+      el.className = 'pf-card';
+      const media = sl.src
+        ? '<video src="' + sl.src + '" muted loop playsinline preload="none"></video>'
+        : (sl.img ? '<img src="' + sl.img + '" alt="">' : '<div class="pf-blank">' + sl.title + '</div>');
+      el.innerHTML =
+        (proj.format === 'site'
+          ? '<div class="pf-bar"><i></i><i></i><i></i><span>' + (proj.host || '') + '</span></div>'
+          : '<div class="pf-notch"></div>') +
+        '<div class="pf-screen">' + media + '<div class="pf-glare"></div></div>';
+      stage.appendChild(el);
+      return el;
+    });
+
+    const dots = proj.slides.map((_, i) => {
+      const b = document.createElement('b');
+      b.addEventListener('click', () => { target = Math.round(pos) + wrap(i - Math.round(pos)); });
+      dotsEl.appendChild(b);
+      return b;
+    });
+
+    /* the fan: cards step sideways, tilt, drop and shrink with distance */
+    const GAPU = 0.55, DROP = 14, TILT = 6, SHRINK = 0.10, FADE_AT = 2.4;
+    const gap = () => cards[0].offsetWidth * GAPU || 240;
+    let pos = 0, target = 0, front = -1;
+    let dragging = false, lastX = 0, moved = 0, vel = 0;
+
+    const wrap = d => ((d + N / 2) % N + N) % N - N / 2;
+
+    function paintCopy(i){
+      const sl = proj.slides[i];
+      if (!sl) return;
+      copy.classList.add('swap');
+      setTimeout(() => {
+        copy.querySelector('.pf-body').innerHTML =
+          '<strong>' + sl.title + '</strong>' + sl.body;
+        copy.classList.remove('swap');
+      }, 220);
+    }
+
+    function setFront(i){
+      if (i === front) return;
+      front = i;
+      cards.forEach((c, k) => {
+        const v = c.querySelector('video');
+        if (!v) return;
+        /* only the card in front decodes — the rest hold their first frame */
+        if (k === i){ v.preload = 'auto'; v.play().catch(() => {}); }
+        else v.pause();
+      });
+      dots.forEach((d, k) => d.classList.toggle('on', k === i));
+      paintCopy(i);
+    }
+
+    function render(){
+      const g = gap();
+      cards.forEach((el, i) => {
+        const off = wrap(i - pos), a = Math.abs(off);
+        const scale = Math.max(0.4, 1 - a * SHRINK);
+        const fade = a > FADE_AT ? Math.max(0, 1 - (a - FADE_AT) / 0.8) : 1;
+        el.style.transform =
+          'translate3d(' + (off * g).toFixed(2) + 'px,' + (a * a * DROP).toFixed(2) + 'px,0) ' +
+          'rotate(' + (off * TILT).toFixed(2) + 'deg) scale(' + scale.toFixed(3) + ')';
+        el.style.opacity = (fade * (1 - Math.min(a, 4) * 0.09)).toFixed(3);
+        el.style.zIndex = String(100 - Math.round(a * 10));
+        el.style.filter = 'brightness(' + (1 - Math.min(a, 4) * 0.13).toFixed(2) + ')';
+      });
+      setFront(((Math.round(pos) % N) + N) % N);
+    }
+
+    cards.forEach((el, i) => el.addEventListener('click', () => {
+      if (moved > 6) return;
+      target = Math.round(pos) + wrap(i - Math.round(pos));
+    }));
+
+    stage.addEventListener('pointerdown', e => {
+      dragging = true; moved = 0; lastX = e.clientX; vel = 0;
+      stage.classList.add('dragging');
+      stage.setPointerCapture(e.pointerId);
+    });
+    stage.addEventListener('pointermove', e => {
+      if (!dragging) return;
+      const dx = e.clientX - lastX; lastX = e.clientX;
+      moved += Math.abs(dx); pos -= dx / gap(); vel = -dx / gap();
+    });
+    ['pointerup','pointercancel'].forEach(ev => stage.addEventListener(ev, () => {
+      if (!dragging) return;
+      dragging = false; stage.classList.remove('dragging');
+      target = Math.round(pos + vel * 6);
+    }));
+
+    const api = {
+      step(d){ target = Math.round(pos) + d; },
+      tick(){
+        if (!dragging) pos += (target - pos) * 0.12;
+        render();
+      },
+      reset(){ pos = target = 0; front = -1; render(); }
+    };
+    carousels.push(api);
+    render();
+  });
+
+  (function carouselLoop(){
+    requestAnimationFrame(carouselLoop);
+    if (!projMode) return;
+    const c = carousels[projIdx];
+    if (c) c.tick();
+  })();
+
   function projWarm(){
     projBg.muted = true;
     projBg.preload = 'auto';
@@ -1937,11 +2174,17 @@
     projGesture(e.deltaY);
   }, { passive: false });
 
-  let projTouchY = null;
-  projWrap.addEventListener('touchstart', e => { projTouchY = e.touches[0].clientY; }, { passive: true });
+  let projTouchY = null, projTouchX = null;
+  projWrap.addEventListener('touchstart', e => {
+    projTouchY = e.touches[0].clientY; projTouchX = e.touches[0].clientX;
+  }, { passive: true });
   projWrap.addEventListener('touchmove', e => {
     if (projTouchY === null) return;
     const d = projTouchY - e.touches[0].clientY;
+    const dx = projTouchX - e.touches[0].clientX;
+    /* a sideways swipe belongs to the carousel, which has its own pointer
+       handlers — stepping sections on it too would fight the drag */
+    if (Math.abs(dx) > Math.abs(d)){ projTouchY = null; return; }
     if (ownScroll(d)){ projTouchY = null; return; }
     if (Math.abs(d) > 40){ projGesture(d); projTouchY = null; }
     else e.preventDefault();
