@@ -595,6 +595,12 @@
   #pf-close::after{transform:rotate(-45deg)}
   #pf-close:hover{background:rgba(255,255,255,.2)}
   .pf-card.is-front{cursor:zoom-in}
+  /* decorative artwork must not answer a long press with the browser's own
+     save/copy image sheet */
+  #menu-overlay img,.proj-section img,.pf-poster,#hero img,.pane img{
+    -webkit-touch-callout:none;-webkit-user-select:none;user-select:none;
+  }
+  .proj-section[data-proj="4"] img{pointer-events:none}
 
   .pf-copy{
     /* pinned by its bottom edge - the button always lands on 950px of the
@@ -1045,10 +1051,10 @@
       padding:0;border-radius:0;transform:none;
     }
     .proj-section[data-proj="4"] > div:first-of-type{
-      width:100%!important;margin:0 0 30px!important;
+      width:100%!important;margin:0 0 60px!important;
     }
     .proj-section[data-proj="4"] > div:first-of-type img{
-      width:78%!important;height:auto!important;max-width:none;
+      width:70%!important;height:auto!important;max-width:none;
       display:block;margin:0 auto;
     }
     .proj-section[data-proj="4"] h2{
