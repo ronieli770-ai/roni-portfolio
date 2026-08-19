@@ -784,19 +784,17 @@
     #menu-overlay .mo-dots{margin-top:18px;gap:23px}
     #menu-overlay .mo-dots a{width:44px;height:44px}
 
+    /* the nav block runs 19.8% + three 61px lines + 18px + the 44px icon row,
+       so this lands her exactly 20px under the icons on any screen height */
     #menu-overlay .mo-portraits{
-      left:0;right:0;top:51.6%;bottom:auto;width:100%;height:auto;z-index:2;
+      left:0;right:0;top:calc(19.8% + 265px);bottom:auto;width:100%;height:auto;z-index:2;
     }
     #menu-overlay .mo-dark{
-      position:relative;left:auto;top:auto;width:95%;max-width:none;
+      position:relative;left:auto;top:auto;width:82%;max-width:none;
       margin:0 auto;display:block;
     }
     #menu-overlay .mo-light{display:none}
-    /* only a shallow arc of the globe breaks the bottom edge */
-    #menu-overlay .mo-earth{
-      left:50%;top:auto;bottom:-60.5%;transform:translateX(-50%);
-      width:150vw;max-width:none;z-index:3;
-    }
+    #menu-overlay .mo-earth{display:none}
   }
 
   /* ================= MOBILE ================= */
