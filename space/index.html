@@ -546,8 +546,8 @@
     -webkit-background-clip:text;background-clip:text;
     color:transparent;-webkit-text-fill-color:transparent;
   }
-  .pf-body{margin-top:23px;color:#fff;font-size:min(16px,.93vw);line-height:normal}
-  .pf-body strong{display:block;font-weight:700}
+  .pf-body{margin-top:23px;color:#fff;font-size:min(16px,.93vw);line-height:1.75}
+  .pf-body strong{display:block;font-weight:700;margin-bottom:11px}
   .pf-cta{
     margin:35px 0 0 auto;width:min(280px,16.2vw);aspect-ratio:280/65;border-radius:10px;
     background:linear-gradient(to left,#E0783C 0%,#FA9154 100%);
@@ -808,7 +808,7 @@
     }
     .pf-brand{font-size:18px;line-height:.85}
     .pf-title{font-size:34px;line-height:.93;margin-top:13px}
-    .pf-body{font-size:16px;line-height:1.35;margin-top:17px}
+    .pf-body{font-size:16px;line-height:1.65;margin-top:17px}
     .pf-cta{
       position:static;margin:24px 0 0 auto;width:157px;aspect-ratio:auto;height:38px;
       font-size:18px;font-weight:600;
@@ -1832,22 +1832,29 @@
   const PROJECTS = [
     {
       format:'landing',                 // 'landing' → phone frame, 'site' → browser frame
-      brand:'HITBOX',
+      brand:'HITBOX · רשת מכוני אגרוף',
       title:'דף נחיתה',
       url:'https://hitbox.co.il/hitbox-lp/',
       host:'hitbox.co.il',
       dir:'work/hitbox/',
+      /* each slide may override the orange line and the heading — the first
+         one introduces the business, the rest each present one feature */
       slides:[
-        { v:'s1', title:'סטודיו אגרוף לגברים בשנות ה־30+',
-          body:'HITBOX מאמנים בקבוצות של עד 12 איש, בשלושה סניפים, בלי ניסיון קודם. הדף מוביל את הגולש במסלול אחד רציף — מהכאב שהוא מכיר, דרך תוכנית 90 הימים, עד קביעת אימון ניסיון.' },
-        { v:'s2', title:'תהליך 90 הימים נפתח בגלילה',
-          body:'שלוש תחנות — 30, 60 ו־90 יום — נחשפות אחת אחרי השנייה. הגולש רואה מה קורה לו בכל שלב במקום לקרוא פסקה ארוכה.' },
-        { v:'s3', title:'תוצאות במקום הבטחות',
-          body:'קיר של מתאמנים אמיתיים עם המספרים שלהם. מי שמתלבט מוצא שם מישהו שהתחיל בדיוק מאיפה שהוא נמצא.' },
-        { v:'s4', title:'טופס שמרגיש כמו שיחה',
-          body:'ארבע שאלות, אחת בכל מסך, במקום טופס אחד מאיים. הגולש עונה כמעט בלי לשים לב ומגיע לצוות עם התאמה מוכנה.' },
-        { v:'s5', title:'מענה להתנגדויות ברגע הנכון',
-          body:'״אין לי זמן״, ״אני לא בכושר״ — כל תירוץ מקבל תשובה בדיוק במקום שבו הוא עולה לגולש בראש, רגע לפני הכפתור.' }
+        { v:'s1',
+          lead:'הסטודיו פונה בעיקר לגברים בשנות ה־30+',
+          body:'הדף מוביל אותם במסלול אחד רציף: מהתסכול שהם מכירים, דרך תוכנית 90 הימים, אל ההוכחות של מי שכבר עבר אותה — ומשם לקביעת אימון ניסיון. אין תפריט ואין הסחות, רק צעד אחד בכל פעם.' },
+        { v:'s2', title:'פיצ׳ר · ציר אינטראקטיבי',
+          lead:'הציר נצבע תוך כדי הגלילה',
+          body:'כל תחנה בתוכנית נדלקת ברגע שהגולש מגיע אליה, וההתקדמות הופכת למשהו שרואים במקום לקרוא. התוכן מרגיש חי, והתנועה מושכת את העין לתחנה הבאה — כך שהגולש ממשיך לגלול כדי לראות מה קורה בהמשך.' },
+        { v:'s3', title:'פיצ׳ר · ביקורות בווידאו',
+          lead:'פנים שמדברות משכנעות יותר מציטוט',
+          body:'הסקשן מונפש בגלילה, והדמויות זזות ומדברות גם בלי סאונד — זה מה שנותן לו חיות ואמינות שטקסט לבדו לא מייצר. לחיצה פותחת את הסרטון המלא, והגולש נשאר מול מישהו שהוא מזדהה איתו.' },
+        { v:'s4', title:'פיצ׳ר · שאלון אינטראקטיבי',
+          lead:'הגולש מדייק לעצמו את המטרה',
+          body:'השאלון מוביל אותו להגדיר מה הוא רוצה להשיג ולאן הוא מכוון. במקביל נאסף מידע שמגיע לאיש המכירות עוד לפני השיחה — כך שהיא נפתחת כבר מנקודה מדויקת במקום מהתחלה.' },
+        { v:'s5', title:'פיצ׳ר · מענה להתנגדויות',
+          lead:'כל תירוץ מקבל תשובה בתוך הדף',
+          body:'״אין לי זמן״, ״אני לא בכושר״, ״זה לא בשבילי״ — ההתנגדויות הנפוצות נענות בדיוק במקום שבו הן עולות לגולש בראש. הוא מגיע לשיחת המכירה כשהוא כבר מחומם, ובלי השאלות שהיו עוצרות אותו.' }
       ]
     },
     {
@@ -1892,8 +1899,6 @@
     if (!stage) return;
 
     stage.dataset.format = proj.format;
-    copy.querySelector('.pf-brand').textContent = proj.brand;
-    copy.querySelector('.pf-title').textContent = proj.title;
     copy.querySelector('.pf-cta').href = proj.url || '#';
 
     const N = proj.slides.length;
@@ -1937,8 +1942,10 @@
       if (!sl) return;
       copy.classList.add('swap');
       setTimeout(() => {
+        copy.querySelector('.pf-brand').textContent = sl.brand || proj.brand;
+        copy.querySelector('.pf-title').textContent = sl.title || proj.title;
         copy.querySelector('.pf-body').innerHTML =
-          '<strong>' + sl.title + '</strong>' + sl.body;
+          '<strong>' + (sl.lead || sl.title || '') + '</strong>' + sl.body;
         copy.classList.remove('swap');
       }, 220);
     }
