@@ -790,8 +790,14 @@
     .pf-glow{background:radial-gradient(circle 78vh at 86% 6.8%,rgba(247,225,186,.40) 0%,rgba(247,225,186,.30) 22%,rgba(247,225,186,.14) 45%,rgba(247,225,186,.04) 70%,rgba(247,225,186,0) 100%)}
     /* the card starts on the 123px line under the header either way, and the
        dots sit just under it — the copy owns the bottom of the screen */
+    /* the fan is wider than the screen on purpose. clipping it here — bled out
+       to the screen edges over the section's padding — means the section has no
+       horizontal overflow at all, so a drag cannot pan it and take the copy and
+       the dots along with it. overflow-x:clip would have done the same on new
+       browsers only; this works everywhere. */
     .pf-stage{
-      position:relative;left:auto;top:auto;width:100%;height:var(--ch);margin:0 auto;
+      position:relative;left:auto;top:auto;width:auto;
+      margin:0 -44px 0 -14px;height:var(--ch);overflow:hidden;
     }
     .pf-card{top:50%;left:50%}
     /* the content does not fit a phone screen at a usable size, so these
@@ -799,8 +805,7 @@
        stacked in flow instead of pinned to the frame. */
     .proj-section[data-proj="0"],.proj-section[data-proj="1"],.proj-section[data-proj="2"]{
       display:block!important;padding:119px 44px 130px 14px;
-      overflow-y:auto!important;overflow-x:clip!important;
-      -webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+      overflow-y:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
     }
     .proj-section[data-proj="0"]::-webkit-scrollbar,
     .proj-section[data-proj="1"]::-webkit-scrollbar,
@@ -1881,18 +1886,29 @@
     },
     {
       format:'site',
-      name:'פרויקט 2',
-      brand:'Business name',
+      name:'טויל גרופ',
+      brand:'טויל גרופ · עבודות גמר למשרדים',
       title:'אתר תדמית',
-      url:'#',
-      host:'business.com',
+      url:'https://www.twill-group.co.il/',
+      host:'twill-group.co.il',
       slides:[
-        { lead:'עמוד בית שמדבר בגובה העיניים',
-          body:'מבנה ברור, היררכיה נכונה, וכל סקשן עונה על שאלה אחת של הגולש. בלי עומס ובלי ניחושים.' },
-        { lead:'תיק עבודות שנעים לדפדף בו',
-          body:'הפרויקטים נפרסים בגריד שנושם, וכל אחד נפתח לתצוגה מלאה בלי לטעון עמוד חדש.' },
-        { lead:'מיקרו־אנימציות שמחזיקות קצב',
-          body:'תנועות קטנות במעברים ובריחוף — מספיק כדי שהאתר ירגיש חי, לא מספיק כדי להסיח.' }
+        { lead:'האתר פונה למשקיעים, בעלי חברות ואדריכלים',
+          body:'טויל גרופ מנהלת ומבצעת עבודות גמר למשרדים בלבד, משלב המעטפת ועד המפתח. האתר מוביל את המבקר מהבנת התהליך, דרך המשרדים שכבר נמסרו, אל האנשים שמאחוריהם — ומשם להשארת פרטים.' },
+        { title:'עמוד · בית',
+          lead:'ההבטחה, ההוכחה והתהליך במסך אחד',
+          body:'העמוד נפתח בהתחייבות — ניהול, ביצוע ואחריות עד המפתח — וממשיך למספרים, לארבעה משרדים נבחרים ולשלבי העבודה. טופס קצר יושב כבר למעלה, למי שהגיע מוכן ולא צריך לקרוא הכל.' },
+        { title:'עמוד · אודות',
+          lead:'ההבדל בין קבלן שמבצע לגוף שמנהל',
+          body:'העמוד מספר את סיפור החברה מ־2016 ומסביר למה פרויקט משרדים נופל או עומד על הניהול: תיאום אדריכלים, יועצי בטיחות, רגולציה וצוותי ביצוע פנימיים. המסר הוא כתובת אחת לאורך כל הדרך, והצוות סוגר את העמוד בפנים.' },
+        { title:'עמוד · פרויקטים',
+          lead:'הוכחה במקום הצהרה',
+          body:'חמישה משרדים שנמסרו, כל אחד עם השטח, האדריכל והאתגר שלו. הגלריה בנויה כך שמשקיע שמחפש נכס להשכרה ובעל חברה שעובר משרד ימצאו כל אחד את המקרה שדומה לשלו.' },
+        { title:'עמוד · פרויקט בודד',
+          lead:'כל משרד נפתח לעומק',
+          body:'עמוד ייעודי לכל פרויקט — מיקום, שטח, שם האדריכל ותיאור התכנון לצד תמונות מהמסירה. הטופס מחכה בסוף העמוד, כך שההתעניינות שנוצרה מהפרויקט עצמו לא הולכת לאיבוד.' },
+        { title:'עמוד · צרו קשר',
+          lead:'שתי דרכים לפתוח פנייה',
+          body:'טלפון ישיר לצד טופס קצר, עם משפט שממסגר את מה שיקרה אחריו — נשמח להכיר את הפרויקט ולהציע תהליך עבודה ברור. המבקר יודע בדיוק לאן הוא נכנס.' }
       ]
     },
     {
