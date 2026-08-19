@@ -392,7 +392,13 @@
     opacity:0;pointer-events:none;transition:opacity .6s ease;
   }
   .proj-section.active{opacity:1;pointer-events:auto}
-  .proj-section .proj-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+  .proj-section .proj-video,#proj-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+  #proj-bg{z-index:0;opacity:0;transition:opacity .6s ease}
+  #proj-bg.on{opacity:1}
+  #proj-bg.flip{transform:scaleX(-1)}
+  /* the first three sections let the shared clip show through; the rest keep
+     their own opaque backgrounds and simply cover it */
+  .proj-section[data-proj="0"],.proj-section[data-proj="1"],.proj-section[data-proj="2"]{background:transparent}
   .proj-section .proj-scrim{position:absolute;inset:0;pointer-events:none}
   /* a hair of grain over the clip — dark gradients in an h.264 file band into
      visible steps, and noise this faint dissolves the steps without reading
@@ -672,7 +678,7 @@
     .proj-bplanet{display:none!important}
     /* the whole clip is shifted down so its planet only rises into the lower
        third; the top edge fades into the black sky so no seam shows */
-    .proj-section .proj-video{
+    .proj-section .proj-video,#proj-bg{
       top:18%!important;height:100%!important;
       -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14%);
       mask-image:linear-gradient(to bottom,transparent 0,#000 14%);
@@ -926,10 +932,10 @@
 
 <div id="menu-overlay">
   <div class="mo-portraits">
-    <img class="mo-dark" src="roni-portrait.png" alt="">
+    <img class="mo-dark" src="roni-portrait.png" alt="" loading="lazy" decoding="async">
     <img class="mo-light" data-src="roni-portrait-light.png" alt="">
   </div>
-  <img class="mo-earth" src="earth-globe.png" alt="">
+  <img class="mo-earth" src="earth-globe.png" alt="" loading="lazy" decoding="async">
   <nav class="mo-nav">
     <a class="glitch" href="#" data-text="פרויקטים">פרויקטים</a>
     <a class="glitch" href="graphic-design.html" data-text="עיצוב גרפי">עיצוב גרפי</a>
@@ -1025,9 +1031,12 @@
 </div>
 
 <div id="projects-wrap">
+  <!-- one clip behind the three project sections. three <video> elements on the
+       same url do not share a buffer — the browser fetched the file once per
+       element, three times over. -->
+  <video id="proj-bg" class="proj-video" src="space-bg.mp4" preload="none" muted loop playsinline></video>
   <section class="proj-section active" data-proj="0">
     <div style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1.6px 1.6px at 12% 22%,#fff,transparent),radial-gradient(1.2px 1.2px at 78% 12%,#fff,transparent),radial-gradient(1.8px 1.8px at 62% 38%,#fff,transparent),radial-gradient(1.2px 1.2px at 88% 62%,#fff,transparent),radial-gradient(1.4px 1.4px at 42% 8%,#fff,transparent),radial-gradient(1.1px 1.1px at 92% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 20% 68%,#fff,transparent),radial-gradient(1.2px 1.2px at 70% 78%,#fff,transparent);opacity:.5"></div>
-    <video class="proj-video" src="space-bg.mp4" preload="none" muted loop playsinline></video>
     <div class="proj-grain"></div>
     <img class="proj-bplanet" src="planet-bottom-m.png" srcset="planet-bottom-m.png 520w, planet-bottom.png 1280w" sizes="(max-width:768px) 170px, 60vw" alt="">
     <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 30%,rgba(5,5,10,.5) 56%,rgba(5,5,10,.85) 76%,rgba(5,5,10,.94) 100%)"></div>
@@ -1046,7 +1055,6 @@
   </section>
 
   <section class="proj-section" data-proj="1">
-    <video class="proj-video" src="space-bg.mp4" preload="none" muted loop playsinline style="transform:scaleX(-1)"></video>
     <div class="proj-grain"></div>
     <img class="proj-bplanet" src="planet-bottom-m.png" srcset="planet-bottom-m.png 520w, planet-bottom.png 1280w" sizes="(max-width:768px) 170px, 60vw" alt="">
     <div class="proj-scrim" style="background:linear-gradient(to left,rgba(5,5,10,0) 30%,rgba(5,5,10,.5) 56%,rgba(5,5,10,.85) 76%,rgba(5,5,10,.94) 100%)"></div>
@@ -1066,7 +1074,6 @@
 
   <section class="proj-section" data-proj="2">
     <div style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1.6px 1.6px at 12% 22%,#fff,transparent),radial-gradient(1.2px 1.2px at 78% 12%,#fff,transparent),radial-gradient(1.8px 1.8px at 62% 38%,#fff,transparent),radial-gradient(1.2px 1.2px at 88% 62%,#fff,transparent),radial-gradient(1.4px 1.4px at 42% 8%,#fff,transparent),radial-gradient(1.1px 1.1px at 92% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 20% 68%,#fff,transparent),radial-gradient(1.2px 1.2px at 70% 78%,#fff,transparent);opacity:.5"></div>
-    <video class="proj-video" src="space-bg.mp4" preload="none" muted loop playsinline></video>
     <div class="proj-grain"></div>
     <img class="proj-bplanet" src="planet-bottom-m.png" srcset="planet-bottom-m.png 520w, planet-bottom.png 1280w" sizes="(max-width:768px) 170px, 60vw" alt="">
     <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 38%,rgba(5,5,10,.38) 62%,rgba(5,5,10,.62) 80%,rgba(5,5,10,.72) 100%)"></div>
@@ -1137,7 +1144,7 @@
 
   <section class="proj-section" data-proj="5" style="background:#000">
     <img src="form-glow.svg" alt="" style="position:absolute;left:-48.87%;top:-29.58%;width:128.75%;aspect-ratio:1;pointer-events:none">
-    <img src="form-moon.png" alt="" style="position:absolute;right:0;bottom:0;width:41%;height:64%;object-fit:contain;object-position:right bottom">
+    <img src="form-moon.png" alt="" loading="lazy" decoding="async" style="position:absolute;right:0;bottom:0;width:41%;height:64%;object-fit:contain;object-position:right bottom">
 
     <h2 style="position:absolute;right:3.82%;top:14.77%;margin:0;text-align:right;font-weight:400;font-size:min(80px,4.63vw);line-height:.9625;background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent">מוכנים להמריא?</h2>
 
@@ -1708,22 +1715,14 @@
     if (heavyDone) return;
     heavyDone = true;
     warmMars();
-    /* the moon comes first — it is the next thing on screen. the portfolio clip
-       waits for it rather than competing with it for the same connection. */
-    /* the three portfolio sections play the same file. only the first one was
-       being warmed, so arriving at the other two started a cold fetch and the
-       section sat frozen on black until it landed. */
-    const after = () => {
-      document.querySelectorAll('video.proj-video').forEach(v => {
-        v.preload = 'auto';
-        v.load();
-        /* decode the opening frame so the section has a picture the moment it
-           becomes visible, then hold it there until its turn */
-        v.play().then(() => { if (!v.closest('.proj-section').classList.contains('active')) v.pause(); })
-                .catch(() => {});
-      });
-    };
-    fetch('moon.glb', { cache:'force-cache' }).then(after, after);
+    /* warmMars() already pulls moon.glb through the loader — the hand-rolled
+       fetch that used to sit here downloaded the same 1.5MB a second time.
+       the portfolio clip follows a beat later so the two do not overlap. */
+    setTimeout(() => {
+      projBg.preload = 'auto';
+      projBg.load();
+      projBg.play().then(() => projBg.pause()).catch(() => {});
+    }, 1200);
   });
   /* the chapter clips come first; the moon and the portfolio clip follow */
   vp.addEventListener('canplaythrough', heavy, { once:true });
@@ -1745,6 +1744,7 @@
 
   /* ---------- projects mode ---------- */
   const projWrap = document.getElementById('projects-wrap');
+  const projBg = document.getElementById('proj-bg');
   const projSections = [...projWrap.querySelectorAll('.proj-section')];
   let projMode = false;
   let projIdx = 0;
@@ -1778,6 +1778,13 @@
         if (i === n) v.play().catch(() => {}); else v.pause();
       });
     });
+    /* the shared clip only runs under the first three, and project 2 shows it
+       mirrored the way its own copy used to */
+    const onBg = n <= 2;
+    projBg.classList.toggle('on', onBg);
+    projBg.classList.toggle('flip', n === 1);
+    if (onBg){ projBg.preload = 'auto'; projBg.play().catch(() => {}); }
+    else projBg.pause();
     const sec = projSections[n];
     sec.scrollTop = 0;
     hdrGlass.classList.remove('on');
@@ -1787,13 +1794,9 @@
   }
 
   function projWarm(){
-    /* every portfolio clip, not just the first — they are one file, so this is
-       one download and three decoded first frames */
-    projWrap.querySelectorAll('video').forEach(v => {
-      v.muted = true;
-      if (v.preload === 'none') v.preload = 'auto';
-      v.play().then(() => v.pause()).catch(() => {});
-    });
+    projBg.muted = true;
+    projBg.preload = 'auto';
+    projBg.play().then(() => projBg.pause()).catch(() => {});
   }
 
   function projPrepBehind(){
