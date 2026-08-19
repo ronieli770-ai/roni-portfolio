@@ -760,6 +760,40 @@
     .wa-fab{--wa:56px;right:14px;bottom:clamp(24px,4vh,50px)}
   }
 
+  /* ---------- menu overlay on a phone ----------
+     logo, the three links, the icon row, then the portrait standing on the
+     earth - one centred column instead of the desktop's split layout */
+  @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px), (max-aspect-ratio:3/4) and (max-width:1400px){
+    body.menu-open .logo{opacity:0;pointer-events:none}
+    #menu-overlay .mo-logo{
+      position:absolute;left:50%;top:9.2%;transform:translateX(-50%);
+      width:36%;max-width:170px;height:auto;z-index:5;
+    }
+    #menu-overlay .mo-nav{
+      left:50%;top:22.8%;transform:translateX(-50%);width:100%;
+      gap:20px;align-items:center;
+    }
+    #menu-overlay .mo-nav a{font-size:30px;line-height:1.18}
+    #menu-overlay .mo-nav a.glitch::before,
+    #menu-overlay .mo-nav a.glitch::after{display:none}
+    #menu-overlay .mo-dots{margin-top:16px;gap:22px}
+    #menu-overlay .mo-dots a{width:42px;height:42px}
+
+    #menu-overlay .mo-portraits{
+      left:0;right:0;top:auto;bottom:0;width:100%;height:auto;z-index:2;
+    }
+    #menu-overlay .mo-dark{
+      position:relative;left:auto;top:auto;width:74%;max-width:none;
+      margin:0 auto;display:block;
+    }
+    #menu-overlay .mo-light{display:none}
+    /* the globe sits on the bottom edge and its curve crosses her waist */
+    #menu-overlay .mo-earth{
+      left:50%;top:auto;bottom:-55%;transform:translateX(-50%);
+      width:150vw;max-width:none;z-index:3;
+    }
+  }
+
   /* ================= MOBILE ================= */
   /* the desktop layout is built from percentages of a wide frame - on a phone
      each section is re-laid out as a column instead of being squeezed.
@@ -1108,6 +1142,7 @@
 <div class="menu"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
 <div id="menu-overlay">
+  <img class="mo-logo" src="assets/logo.png" alt="סטודיו רוני">
   <div class="mo-portraits">
     <img class="mo-dark" src="roni-portrait.png" alt="" loading="lazy" decoding="async">
     <img class="mo-light" data-src="roni-portrait-light.png" alt="">
@@ -2395,6 +2430,7 @@
     const lazy = menuOv.querySelector('img[data-src]');
     if (lazy){ lazy.src = lazy.dataset.src; lazy.removeAttribute('data-src'); }
     menuOv.classList.toggle('open');
+    document.body.classList.toggle('menu-open', menuOv.classList.contains('open'));
   });
 
   /* anything carrying data-nav flies to that section - the menu links and the
@@ -2403,6 +2439,7 @@
     a.addEventListener('click', e => {
       e.preventDefault();
       menuOv.classList.remove('open');
+      document.body.classList.remove('menu-open');
       goSection(+a.dataset.nav);
     });
   });
