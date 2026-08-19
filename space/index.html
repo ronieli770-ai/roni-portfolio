@@ -502,6 +502,9 @@
   .pf-screen video,.pf-screen img{
     display:block;width:100%;height:100%;object-fit:cover;object-position:top center;
   }
+  /* the clip is layered over the still it was cut from, so there is no flash
+     when it arrives */
+  .pf-screen video{position:absolute;inset:0}
   /* until a recording is dropped in, the slide shows its own name instead of a
      broken frame */
   .pf-blank{
@@ -1827,19 +1830,22 @@
   const PROJECTS = [
     {
       format:'landing',                 // 'landing' → phone frame, 'site' → browser frame
-      brand:'Business name',
-      title:'אתר / דף נחיתה',
-      url:'#',
-      host:'business.co.il',
+      brand:'HITBOX',
+      title:'דף נחיתה',
+      url:'https://hitbox.co.il/hitbox-lp/',
+      host:'hitbox.co.il',
+      dir:'work/hitbox/',
       slides:[
-        { title:'עיצוב פרימיום שיגרום להם להגיד וואו',
-          body:'לא עוד תבנית גנרית שכולם מכירים. כל פרויקט מקבל שפה ויזואלית ייחודית, קומפוזיציה מדויקת ותשומת לב לכל פיקסל - כזה שגורם לגולשים להבין מיד שאתם בטופ.' },
-        { title:'הסקשן שעוצר את הגלילה',
-          body:'הכותרת נחשפת מילה־מילה והרקע זז לאט מאחוריה. הגולש מבין תוך שנייה מה אתם עושים, ונשאר לקרוא את השאר.' },
-        { title:'אינטראקציה שמסבירה את המוצר',
-          body:'במקום פסקה שאף אחד לא קורא, הכרטיסיות נפתחות בגלילה ומספרות את הסיפור בקצב שלו.' },
-        { title:'טופס שממיר',
-          body:'שדות קצרים, כפתור אחד ברור, ואישור מיידי. כל חיכוך מיותר בדרך לליד פשוט הוסר.' }
+        { v:'s1', title:'סטודיו אגרוף לגברים בשנות ה־30+',
+          body:'HITBOX מאמנים בקבוצות של עד 12 איש, בשלושה סניפים, בלי ניסיון קודם. הדף מוביל את הגולש במסלול אחד רציף — מהכאב שהוא מכיר, דרך תוכנית 90 הימים, עד קביעת אימון ניסיון.' },
+        { v:'s2', title:'תהליך 90 הימים נפתח בגלילה',
+          body:'שלוש תחנות — 30, 60 ו־90 יום — נחשפות אחת אחרי השנייה. הגולש רואה מה קורה לו בכל שלב במקום לקרוא פסקה ארוכה.' },
+        { v:'s3', title:'תוצאות במקום הבטחות',
+          body:'קיר של מתאמנים אמיתיים עם המספרים שלהם. מי שמתלבט מוצא שם מישהו שהתחיל בדיוק מאיפה שהוא נמצא.' },
+        { v:'s4', title:'טופס שמרגיש כמו שיחה',
+          body:'ארבע שאלות, אחת בכל מסך, במקום טופס אחד מאיים. הגולש עונה כמעט בלי לשים לב ומגיע לצוות עם התאמה מוכנה.' },
+        { v:'s5', title:'מענה להתנגדויות ברגע הנכון',
+          body:'״אין לי זמן״, ״אני לא בכושר״ — כל תירוץ מקבל תשובה בדיוק במקום שבו הוא עולה לגולש בראש, רגע לפני הכפתור.' }
       ]
     },
     {
@@ -1892,14 +1898,18 @@
     const cards = proj.slides.map(sl => {
       const el = document.createElement('article');
       el.className = 'pf-card';
-      const media = sl.src
-        ? '<video src="' + sl.src + '" muted loop playsinline preload="none"></video>'
-        : (sl.img ? '<img src="' + sl.img + '" alt="">' : '<div class="pf-blank">' + sl.title + '</div>');
+      /* a still costs ~80KB and the fan shows four of them at once; the clip
+         itself is fetched only by the card that reaches the front */
+      const base = (proj.dir || '') + (sl.v || '');
+      const media = sl.v
+        ? '<img class="pf-poster" src="' + base + '.jpg" alt="" loading="lazy" decoding="async">'
+        : '<div class="pf-blank">' + sl.title + '</div>';
       el.innerHTML =
         (proj.format === 'site'
           ? '<div class="pf-bar"><i></i><i></i><i></i><span>' + (proj.host || '') + '</span></div>'
           : '<div class="pf-notch"></div>') +
         '<div class="pf-screen">' + media + '<div class="pf-glare"></div></div>';
+      if (sl.v) el.dataset.clip = base + '.mp4';
       stage.appendChild(el);
       return el;
     });
@@ -1935,11 +1945,17 @@
       if (i === front) return;
       front = i;
       cards.forEach((c, k) => {
-        const v = c.querySelector('video');
-        if (!v) return;
-        /* only the card in front decodes — the rest hold their first frame */
-        if (k === i){ v.preload = 'auto'; v.play().catch(() => {}); }
-        else v.pause();
+        let v = c.querySelector('video');
+        if (k !== i){ if (v) v.pause(); return; }
+        if (!v && c.dataset.clip){
+          v = document.createElement('video');
+          v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
+          v.setAttribute('playsinline', '');
+          v.poster = c.dataset.clip.replace('.mp4', '.jpg');
+          v.src = c.dataset.clip;
+          c.querySelector('.pf-screen').insertBefore(v, c.querySelector('.pf-glare'));
+        }
+        if (v) v.play().catch(() => {});
       });
       dots.forEach((d, k) => d.classList.toggle('on', k === i));
       paintCopy(i);
