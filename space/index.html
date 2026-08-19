@@ -457,7 +457,9 @@
       rgba(247,225,186,0) 100%);
   }
   .pf-stage{
-    position:absolute;left:32%;top:50%;width:0;height:0;
+    /* figma: the front card is 512x642 on the 1728x1117 frame, centred on
+       (552,533) — 31.9% / 47.7% — and the fan runs off the left edge */
+    position:absolute;left:31.9%;top:47.7%;width:0;height:0;
     touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;z-index:2;
   }
   .pf-stage.dragging{cursor:grabbing}
@@ -471,8 +473,10 @@
   }
   /* a project that is a site rides in a browser frame; a landing page rides in
      a phone. the format is a property of the project, not of the slide. */
-  .pf-stage[data-format="site"]{--cw:min(460px,27vw);--ch:calc(var(--cw) * 0.625);--cr:12px}
-  .pf-stage[data-format="landing"]{--cw:min(258px,15vw);--ch:calc(var(--cw) * 2.1);--cr:26px}
+  /* both formats are sized off the frame height, so the fan keeps the figma's
+     scale instead of shrinking on a short window */
+  .pf-stage[data-format="site"]{--ch:min(430px,38.5vh);--cw:calc(var(--ch) / 0.625);--cr:14px}
+  .pf-stage[data-format="landing"]{--ch:min(642px,57.5vh);--cw:calc(var(--ch) / 2.1);--cr:30px}
   .pf-bar{
     height:30px;display:flex;align-items:center;gap:7px;padding:0 12px;
     background:#232327;border-bottom:1px solid rgba(255,255,255,.07);direction:ltr;flex:none;
@@ -505,11 +509,13 @@
   .pf-glare{position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,0) 42%)}
 
   .pf-dots{
-    position:absolute;left:32%;top:calc(50% + min(300px,20vw));transform:translateX(-50%);
+    position:absolute;left:31.9%;transform:translateX(-50%);
     display:flex;align-items:center;gap:9px;z-index:3;
     /* the fan runs left-to-right by index, so the dots must too */
     direction:ltr;
   }
+  .proj-section:has(.pf-stage[data-format="landing"]) .pf-dots{top:calc(47.7% + min(321px,28.75vh) + 26px)}
+  .proj-section:has(.pf-stage[data-format="site"]) .pf-dots{top:calc(47.7% + min(215px,19.25vh) + 26px)}
   .pf-dots b{
     display:block;width:9px;height:9px;border-radius:99px;background:rgba(255,255,255,.26);
     cursor:pointer;transition:width .3s ease,background .3s ease;
@@ -1900,7 +1906,7 @@
     });
 
     /* the fan: cards step sideways, tilt, drop and shrink with distance */
-    const GAPU = 0.55, DROP = 14, TILT = 6, SHRINK = 0.10, FADE_AT = 2.4;
+    const GAPU = 0.60, DROP = 14, TILT = 6, SHRINK = 0.10, FADE_AT = 2.4;
     const gap = () => cards[0].offsetWidth * GAPU || 240;
     let pos = 0, target = 0, front = -1;
     let dragging = false, lastX = 0, moved = 0, vel = 0;
