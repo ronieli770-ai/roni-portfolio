@@ -283,7 +283,12 @@
     font-size:20px;font-weight:600;text-decoration:none;
     transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s, filter .3s;
   }
-  .btn.solid{background:var(--btn-grad);color:#fff;box-shadow:0 10px 34px rgba(224,120,60,.28)}
+  .btn.solid{background:var(--btn-grad);color:#fff;box-shadow:0 10px 34px rgba(224,120,60,.28);gap:.5em}
+  .btn .wa-ic{
+    width:1.1em;height:1.1em;flex:none;background:#fff;
+    -webkit-mask:url(assets/wa-glyph.svg) center/contain no-repeat;
+    mask:url(assets/wa-glyph.svg) center/contain no-repeat;
+  }
   .btn.solid:hover{transform:translateY(-2px);box-shadow:0 16px 44px rgba(224,120,60,.44)}
   .btn.line{border:1px solid var(--orange);color:var(--orange-lt);background:transparent}
   .btn.line:hover{background:rgba(224,120,60,.12);transform:translateY(-2px)}
@@ -295,6 +300,9 @@
     padding:clamp(24px,5vw,90px);pointer-events:none;
   }
   .pane.active{pointer-events:auto}
+  /* the hero pane is empty copy-wise, but as the active pane it sat above the
+     hero (deck z6 > hero z5) and swallowed the two buttons' clicks */
+  .pane:first-of-type{pointer-events:none!important}
   .copy{max-width:min(900px,90vw);text-align:center}
   .copy > *{
     opacity:0;transform:translateY(30px);
@@ -1188,7 +1196,7 @@
   <video class="hero-bg" autoplay loop muted playsinline preload="auto" fetchpriority="high"></video>
   <h1 class="title anim-glitch" data-text="אתרים שגורמים לעסק שלכם להיראות ראשון בתחום"><span class="l1">אתרים שגורמים לעסק שלכם</span> <span class="l2">להיראות ראשון <span class="l3">בתחום</span></span></h1>
   <div class="btns">
-    <a class="btn solid" href="#" data-nav="10">בואו נדבר</a>
+    <a class="btn solid" href="https://wa.me/972502463500" target="_blank" rel="noopener"><i class="wa-ic"></i>בואו נדבר</a>
     <a class="btn line" href="#" data-nav="5">לתיק עבודות</a>
   </div>
   <div class="status-box">
