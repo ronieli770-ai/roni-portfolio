@@ -4,7 +4,7 @@
    glow, exactly like the design; the 0.75s Hold is stretched so the whole
    run lasts 5s. Shown on every load. */
 (function () {
-  var DUR = 5000;                    // total run, ms
+  var DUR = 3000;                    // total run, ms
   var el = document.getElementById('rl-loader');
   if (!el) return;
   var mark = el.querySelector('.rl-mark');
@@ -60,16 +60,13 @@
 
   /* design cues: Signal 0.55 | Lock 0.8 | Hold (0.75 -> stretched) | Exit 0.4.
      the hold carries extra micro-glitches at the design's cadence */
-  var LOCK = 0.55, HOLD = 1.35, EXIT = 4.6, GAIN = 0.88;
+  var LOCK = 0.55, HOLD = 1.35, EXIT = 2.6, GAIN = 0.88;
   var SPIKES = [
     { at: 0.66, len: 0.12, amp: 0.8 },
     { at: 1.02, len: 0.08, amp: 0.5 },
     { at: 1.52, len: 0.09, amp: 0.6 },
     { at: 1.88, len: 0.06, amp: 0.4 },
-    { at: 2.45, len: 0.08, amp: 0.5 },
-    { at: 3.10, len: 0.09, amp: 0.55 },
-    { at: 3.72, len: 0.06, amp: 0.4 },
-    { at: 4.22, len: 0.08, amp: 0.5 }
+    { at: 2.28, len: 0.08, amp: 0.5 }
   ];
 
   function glitchAmount(T) {
