@@ -296,7 +296,6 @@
   .ct-saturn img,.ct-earth img{width:100%;height:100%;object-fit:contain;display:block}
 
   /* ---------- image lightbox ---------- */
-  .gd-sec:not([data-gd="9"]) .gd-stage img{cursor:zoom-in}
   #gd-lightbox{
     position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;
     background:rgba(0,0,0,.92);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
@@ -304,10 +303,16 @@
   }
   #gd-lightbox.on{display:flex}
   #gd-lightbox.vis{opacity:1}
-  #gd-lightbox img{
-    max-width:92vw;max-height:88vh;object-fit:contain;border-radius:14px;
+  /* the frame carries the clicked card's own background, so a transparent
+     png opens on its white card rather than floating on the black scrim */
+  #gd-lightbox .lb-frame{
+    max-width:92vw;max-height:88vh;border-radius:14px;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
     box-shadow:0 24px 90px rgba(0,0,0,.65);
   }
+  #gd-lightbox .lb-frame.boxed{padding:5vmin}
+  #gd-lightbox img{max-width:88vw;max-height:82vh;object-fit:contain;display:block}
+  #gd-lightbox .lb-frame.boxed img{max-width:78vw;max-height:72vh}
   #gd-lb-close{
     position:absolute;top:22px;left:22px;width:44px;height:44px;border:0;border-radius:50%;
     background:rgba(255,255,255,.12);cursor:pointer;
@@ -722,7 +727,7 @@
 </section>
 
 <div id="gd-lightbox" role="dialog" aria-modal="true">
-  <img alt="">
+  <div class="lb-frame"><img alt=""></div>
   <button id="gd-lb-close" aria-label="סגירה"></button>
 </div>
 
@@ -730,9 +735,16 @@
 /* every mockup image opens full-screen; the dome gallery keeps its own viewer */
 (() => {
   const lb = document.getElementById('gd-lightbox');
+  const frame = lb.querySelector('.lb-frame');
   const pic = lb.querySelector('img');
-  const open = src => {
-    pic.src = src;
+  const open = img => {
+    pic.src = img.currentSrc || img.src;
+    /* an image on a painted card opens inside that card's background */
+    const card = img.closest('.mb-card') || img.parentElement;
+    const bg = card ? getComputedStyle(card).backgroundColor : '';
+    const painted = bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent';
+    frame.style.background = painted ? bg : 'none';
+    frame.classList.toggle('boxed', painted);
     lb.classList.add('on');
     requestAnimationFrame(() => lb.classList.add('vis'));
     document.documentElement.style.overflow = 'hidden';
@@ -743,7 +755,7 @@
     setTimeout(() => { lb.classList.remove('on'); pic.src = ''; }, 300);
   };
   document.querySelectorAll('.gd-sec:not([data-gd="9"]) .gd-stage img').forEach(img => {
-    img.addEventListener('click', () => open(img.currentSrc || img.src));
+    img.addEventListener('click', () => open(img));
   });
   lb.addEventListener('click', close);
   addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('on')) close(); });
