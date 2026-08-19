@@ -460,8 +460,9 @@
     .gd-sec[data-gd="2"] .gd-stage,
     .gd-sec[data-gd="3"] .gd-stage,
     .gd-sec[data-gd="8"] .gd-stage{
-      /* the Figma frame itself, inset from the rail on both sides */
-      aspect-ratio:402/874;width:calc(100% - 68px);height:auto;
+      /* the home page's mobile grid: 44px on the rail side, 14px on the other */
+      aspect-ratio:402/874;width:calc(100% - 58px);height:auto;
+      margin-right:44px;margin-left:14px;
       max-height:calc(100% - 16px);overflow:visible;
     }
 
@@ -525,7 +526,7 @@
     /* Drive-In - no mobile frame in Figma, so it keeps the bento grid */
     .gd-sec[data-gd="4"] .gd-stage{
       aspect-ratio:auto;width:100%;height:100%;
-      display:grid;gap:12px;padding:74px 32px 16px 14px;overflow:visible;
+      display:grid;gap:12px;padding:74px 44px 16px 14px;overflow:visible;
       direction:ltr;align-content:center;
       grid-template-columns:1fr 1fr;
     }
@@ -585,13 +586,17 @@
        percentage of it (cqw = stage width), so the composition holds on any
        screen height instead of drifting with the viewport */
     .gd-sec[data-gd="9"]{display:flex;align-items:center;justify-content:center}
+    /* the same stage formula as sections 2/3/8, so the panel rides the page
+       grid; inside it everything keeps the figma composition relative to the
+       panel (figma panel px / 332- or 663-panel * panel share of the stage) */
     .gd-sec[data-gd="9"] .gd-stage{
-      position:relative;aspect-ratio:402/874;height:100%;width:auto;
-      max-width:100%;container-type:inline-size;
+      position:relative;aspect-ratio:402/874;width:calc(100% - 58px);height:auto;
+      margin-right:44px;margin-left:14px;
+      max-height:calc(100% - 16px);container-type:inline-size;overflow:visible;
     }
     .ct-panel{
-      left:8.71%;right:8.71%;top:12.13%;bottom:12.01%;             /* 35 / 106 / 105 */
-      width:auto;height:auto;transform:none;border-radius:7.46cqw; /* 30 */
+      left:3.73%;right:3.73%;top:12.13%;height:75.86%;bottom:auto;  /* grid-aligned, 106/663 */
+      width:auto;transform:none;border-radius:8.36cqw;              /* 30 */
     }
     /* the figma pans the wide texture rather than cover-cropping it */
     .ct-panel img{
@@ -600,21 +605,21 @@
     }
     /* planets at their figma spots; the galaxy's right edge lands exactly on
        the panel's right edge */
-    .ct-saturn{left:11.96%;top:17.97%;width:40.58%;height:auto;aspect-ratio:1;overflow:visible}
-    .ct-earth{left:auto;right:8.71%;top:62.7%;bottom:auto;width:42.64%;height:auto;aspect-ratio:1;overflow:visible}
+    .ct-saturn{left:7.38%;top:17.98%;width:45.47%;height:auto;aspect-ratio:1;overflow:visible}
+    .ct-earth{left:auto;right:3.73%;top:62.7%;bottom:auto;width:47.78%;height:auto;aspect-ratio:1;overflow:visible}
     .ct-saturn div{width:100%;height:100%;transform:rotate(10.14deg)}
     .ct-earth div{width:100%;height:100%;transform:rotate(127.94deg)}
-    .ct-kicker{top:44.16%;width:auto;font-size:4.48cqw}             /* 386 centre, 18px */
+    .ct-kicker{top:44.16%;width:auto;font-size:5.02cqw}             /* 386 centre, 18px */
     .ct-title{
       top:48.11%;transform:translate(-50%,-50%);                    /* 420.5 centre */
-      width:auto;font-size:8.46cqw;line-height:1;white-space:nowrap; /* 34px */
+      width:auto;font-size:9.48cqw;line-height:1;white-space:nowrap; /* 34px */
     }
     .ct-cta{
       left:50%;transform:translateX(-50%);top:52.86%;               /* 462 top */
-      width:40.05cqw;height:9.7cqw;font-size:4.48cqw;border-radius:2.49cqw; /* 161x39, 18, r10 */
-      gap:1cqw;line-height:1;
+      width:44.88cqw;height:10.87cqw;font-size:5.02cqw;border-radius:2.79cqw; /* 161x39, 18, r10 */
+      gap:1.12cqw;line-height:1;
     }
-    .ct-cta img{width:3.73cqw;height:3.73cqw}                       /* 15px glyph */
+    .ct-cta img{width:4.18cqw;height:4.18cqw}                       /* 15px glyph */
   }
 
   /* ---------- floating whatsapp button ---------- */
