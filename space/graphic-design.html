@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>עיצוב גרפי · סטודיו רוני</title>
-<meta name="description" content="עיצוב גרפי ומיתוג — סטודיו רוני אליהו.">
+<meta name="description" content="עיצוב גרפי ומיתוג - סטודיו רוני אליהו.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
     font-weight:400;-webkit-font-smoothing:antialiased;
   }
 
-  /* static background watermark — stays put while the page scrolls */
+  /* static background watermark - stays put while the page scrolls */
   .bg-mark{
     position:fixed;z-index:0;pointer-events:none;overflow:hidden;opacity:.07;
     width:51.56vw;height:132.59vh;
@@ -28,7 +28,7 @@
   /* every section is exactly one screen tall, page scrolls normally */
   .gd-sec{position:relative;z-index:1;width:100%;height:100vh;height:100svh;overflow:hidden;background:transparent}
 
-  /* ---------- section 1 — מיתוג ---------- */
+  /* ---------- section 1 - מיתוג ---------- */
   .gd-mark{
     position:absolute;left:calc(50% + 5.874vw);top:calc(50% + 0.045%);
     transform:translate(-50%,-50%);
@@ -44,7 +44,7 @@
     font-size:min(80px,4.63vw);font-weight:400;line-height:.85;color:#fff;
   }
 
-  /* ---------- section 5 — מודעות גרפיות ---------- */
+  /* ---------- section 5 - מודעות גרפיות ---------- */
   .ga-mark{
     position:absolute;left:64.67%;top:calc(50% + 0.045%);
     transform:translate(-50%,-50%);
@@ -60,7 +60,7 @@
     font-size:min(80px,4.63vw);font-weight:400;line-height:.85;color:#fff;
   }
 
-  /* ---------- section 6 — dome gallery ---------- */
+  /* ---------- section 6 - dome gallery ---------- */
   .sphere-root{
     position:relative;width:100%;height:100%;
     --radius:520px;--viewer-pad:72px;
@@ -116,7 +116,7 @@
   .edge-fade--bottom{bottom:0}
   .gd-sec[data-gd="6"] dome-gallery{position:absolute;inset:0}
 
-  /* ---------- section 8 — גרפיקה לדפוס ---------- */
+  /* ---------- section 8 - גרפיקה לדפוס ---------- */
   .gd-sec[data-gd="8"]{display:flex;align-items:center;justify-content:center}
   .pr-rollup{position:absolute;left:10.36%;top:20.59%;width:24.36%;height:73.14%;border-radius:min(30px,1.74vw);overflow:hidden}
   .pr-rollup img{position:absolute;left:-38.6%;top:.04%;width:194.06%;height:100%;max-width:none;display:block}
@@ -167,7 +167,7 @@
     direction:rtl;line-height:1.18;white-space:nowrap;
   }
   .glitch{
-    --glitch-bg:transparent; /* בלי רקע — תזוזה בלבד */
+    --glitch-bg:transparent; /* בלי רקע - תזוזה בלבד */
     --glitch-dur:.7s;        /* אורך הפרץ */
     --glitch-shift:3px;      /* עוצמת ההזזה לצדדים */
 
@@ -191,7 +191,7 @@
     opacity:0;
     pointer-events:none;
   }
-  /* הכפתורים בתפריט צבועים בגרדיאנט — הרצועות יורשות אותו בדיוק */
+  /* הכפתורים בתפריט צבועים בגרדיאנט - הרצועות יורשות אותו בדיוק */
   #menu-overlay .mo-nav a.glitch::before,
   #menu-overlay .mo-nav a.glitch::after{
     background:linear-gradient(to left,#8da8cb,#ffffff);
@@ -250,11 +250,11 @@
     transition:transform .3s ease,opacity .3s ease;
   }
   #menu-overlay .mo-dots a:hover{transform:translateY(-4px);opacity:.85}
-  /* height:auto — the mail glyph is 30x24 and must not be forced into a square */
+  /* height:auto - the mail glyph is 30x24 and must not be forced into a square */
   #menu-overlay .mo-dots a img{width:44%;height:auto;display:block}
 
 
-  /* ---------- section 9 — צרו קשר ---------- */
+  /* ---------- section 9 - צרו קשר ---------- */
   .gd-sec[data-gd="9"]{display:flex;align-items:center;justify-content:center}
   .ct-panel{
     position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
@@ -307,9 +307,9 @@
   .menu i:nth-child(5){left:53.2%;top:29.1%}
   .menu i:nth-child(6){left:53.2%;top:48.5%}
 
-  /* ---------- section 2 — מדריכים ב+ ---------- */
+  /* ---------- section 2 - מדריכים ב+ ---------- */
   /* the whole composition keeps the figma aspect ratio, so nothing stretches
-     and no image inside a container gets cropped — it just letterboxes */
+     and no image inside a container gets cropped - it just letterboxes */
   .gd-sec[data-gd="2"],.gd-sec[data-gd="3"]{display:flex;align-items:center;justify-content:center}
   .gd-stage{
     position:relative;overflow:hidden;
@@ -333,21 +333,21 @@
   .gp-sw3{background:#00c05f}
   .gp-sw4{background:#03ff7f}
 
-  /* ---------- magic bento — spotlight + border glow + tilt + magnetism ---------- */
+  /* ---------- magic bento - spotlight + border glow + tilt + magnetism ---------- */
   .mb-card{
     --glow-x:50%;--glow-y:50%;--glow-intensity:0;--glow-radius:390px;
     transition:transform .18s ease-out,box-shadow .3s ease;
     transform-style:preserve-3d;
   }
   .mb-card{z-index:2}
-  /* glow lives behind the card and bleeds outwards only — nothing inside */
+  /* glow lives behind the card and bleeds outwards only - nothing inside */
   .mb-glow{
     position:absolute;pointer-events:none;z-index:1;
     border-radius:min(28px,1.6vw);
     filter:blur(16px);
     opacity:0;transition:opacity .3s ease;
   }
-  /* ---------- section 3 — Xplore ---------- */
+  /* ---------- section 3 - Xplore ---------- */
   .xp-login{position:absolute;left:8.808%;top:17.10%;width:35.94%;height:33.66%;border-radius:min(20px,1.16vw);overflow:hidden;background:#fff}
   .xp-login img{width:100%;height:100%;object-fit:contain;display:block}
   .xp-home{position:absolute;left:8.808%;top:54.07%;width:35.94%;height:36.62%;border-radius:min(20px,1.16vw);overflow:hidden;background:#fff}
@@ -360,7 +360,7 @@
   .xp-markcard{position:absolute;left:67.35%;top:54.05%;width:23.68%;height:36.63%;border-radius:min(20px,1.16vw);overflow:hidden}
   .xp-markcard img{width:100%;height:100%;display:block}
 
-  /* ---------- section 4 — Drive-In ---------- */
+  /* ---------- section 4 - Drive-In ---------- */
   .gd-sec[data-gd="4"]{display:flex;align-items:center;justify-content:center}
   .di-devices{position:absolute;left:5.96%;top:14.5%;width:47.28%;height:40.55%;pointer-events:none;z-index:3}
   .di-devices img{width:100%;height:100%;object-fit:contain;display:block}
@@ -406,16 +406,16 @@
     transition:opacity .25s ease-out;
   }
   /* ================= MOBILE ================= */
-  /* a phone in "request desktop site" reports ~980px — match on the
+  /* a phone in "request desktop site" reports ~980px - match on the
      pointer too so the mobile layout still applies there */
   @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px){
-    /* header — a touch larger than standard, optically aligned to each other */
+    /* header - a touch larger than standard, optically aligned to each other */
     .logo{top:16px;left:14px;width:128px}
-    /* the logo png carries transparent padding — these offsets line the
+    /* the logo png carries transparent padding - these offsets line the
        burger's bars up with the wordmark's ink, not with its box */
     .menu{top:32px;right:28px;width:54px}
 
-    /* title cards — mark sits beside the 35px heading */
+    /* title cards - mark sits beside the 35px heading */
     .gd-sec[data-gd="1"],.gd-sec[data-gd="5"],.gd-sec[data-gd="7"]{
       display:flex;align-items:center;justify-content:center;gap:12px;
     }
@@ -425,7 +425,7 @@
       font-size:35px;line-height:1;text-align:center;
     }
 
-    /* sections 2, 3, 8 — the mobile grid comes straight from the Figma
+    /* sections 2, 3, 8 - the mobile grid comes straight from the Figma
        iPhone frames (402x874), every rect converted to a percentage */
     .gd-sec[data-gd="2"] .gd-stage,
     .gd-sec[data-gd="3"] .gd-stage,
@@ -435,7 +435,7 @@
       max-height:calc(100% - 16px);overflow:visible;
     }
 
-    /* Guides+ — logo grid, palette + icon, folder with the bottle on its left */
+    /* Guides+ - logo grid, palette + icon, folder with the bottle on its left */
     .gd-sec[data-gd="2"] .gd-stage .gp-grid{
       left:3.98%;top:12.93%;width:92.04%;height:29.98%;border-radius:20px;
     }
@@ -446,7 +446,7 @@
     .gd-sec[data-gd="2"] .gd-stage .gp-card{
       left:74.38%;top:44.74%;width:21.64%;height:9.95%;border-radius:20px;
     }
-    /* the folder keeps its own 1200x1800 proportion — height follows the width */
+    /* the folder keeps its own 1200x1800 proportion - height follows the width */
     .gd-sec[data-gd="2"] .gd-stage .gp-board{
       left:38.47%;top:56.41%;width:57.46%;height:39.65%;border-radius:20px;
     }
@@ -457,7 +457,7 @@
       left:-8.21%;top:56.29%;width:74.83%;height:42.78%;
     }
 
-    /* Xplore — login, home, logo card + mark, colour strip */
+    /* Xplore - login, home, logo card + mark, colour strip */
     .gd-sec[data-gd="3"] .gd-stage .xp-login{
       left:3.73%;top:7.44%;width:92.29%;height:25.63%;border-radius:20px;
     }
@@ -478,7 +478,7 @@
     .gd-sec[data-gd="3"] .gd-stage .xp-h1{background:#95d65e}
     .gd-sec[data-gd="3"] .gd-stage .xp-h2{background:#eff8cf}
 
-    /* print — flyer, billboard, roll-up with the invite laid over it */
+    /* print - flyer, billboard, roll-up with the invite laid over it */
     .gd-sec[data-gd="8"] .gd-stage .pr-flyer{
       left:3.73%;top:9.38%;width:59.70%;height:19.11%;border-radius:30px;
     }
@@ -492,7 +492,7 @@
       left:35.07%;top:53.55%;width:78.86%;height:46.45%;
     }
 
-    /* Drive-In — no mobile frame in Figma, so it keeps the bento grid */
+    /* Drive-In - no mobile frame in Figma, so it keeps the bento grid */
     .gd-sec[data-gd="4"] .gd-stage{
       aspect-ratio:auto;width:100%;height:100%;
       display:grid;gap:12px;padding:74px 32px 16px 14px;overflow:visible;
@@ -509,16 +509,16 @@
       width:100%;height:100%;object-fit:contain;display:block;
     }
     .gd-sec[data-gd="4"] .gd-stage .di-devices{grid-area:1/1/2/3;aspect-ratio:2776/1538;background:none;padding:0}
-    /* the source photo carries its own white margin — trim it, keep the ratio */
+    /* the source photo carries its own white margin - trim it, keep the ratio */
     .gd-sec[data-gd="4"] .gd-stage .di-stationery{grid-area:2/1/3/3;aspect-ratio:1264/690}
     .gd-sec[data-gd="4"] .gd-stage .di-stationery img{object-fit:cover}
     .gd-sec[data-gd="4"] .gd-stage .di-grid{grid-area:3/1/4/2;aspect-ratio:1}
     .gd-sec[data-gd="4"] .gd-stage .di-colors{grid-area:3/2/4/3;background:#fff;padding:10px}
 
-    /* המבורגר — nav centred on top, portrait under it, earth over the portrait */
+    /* המבורגר - nav centred on top, portrait under it, earth over the portrait */
     #menu-overlay{height:100vh;height:100svh;overflow:hidden}
     #menu-overlay .mo-portraits{
-      /* she runs to the bottom edge — the globe band hides where she ends */
+      /* she runs to the bottom edge - the globe band hides where she ends */
       left:50%;top:auto;bottom:0;transform:translateX(-50%);
       width:74%;height:auto;z-index:2;
     }
@@ -534,13 +534,13 @@
     #menu-overlay .mo-dots{gap:30px;margin-top:26px}
     #menu-overlay .mo-dots a{width:66px;height:66px}
 
-    /* rail — bigger dots inside a 44px tap target, no sticky hover pill */
+    /* rail - bigger dots inside a 44px tap target, no sticky hover pill */
     .rail b .tip{display:none}
     .rail{right:12px;gap:20px}
     .rail b{width:10px;height:10px}
     .rail b::after{content:'';position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%)}
 
-    /* contact — panel clears the sticky header by 20px */
+    /* contact - panel clears the sticky header by 20px */
     .gd-sec[data-gd="9"] .gd-stage{aspect-ratio:auto;width:100%;height:100%}
     .ct-panel{
       left:30px;right:30px;top:98px;bottom:30px;
