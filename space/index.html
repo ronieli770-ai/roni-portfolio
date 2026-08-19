@@ -790,24 +790,37 @@
     .pf-glow{background:radial-gradient(circle 78vh at 86% 6.8%,rgba(247,225,186,.40) 0%,rgba(247,225,186,.30) 22%,rgba(247,225,186,.14) 45%,rgba(247,225,186,.04) 70%,rgba(247,225,186,0) 100%)}
     /* the card starts on the 123px line under the header either way, and the
        dots sit just under it — the copy owns the bottom of the screen */
-    .pf-stage{left:50%}
-    /* both formats fill the same band, 118 (the header line) down to 412, so a
-       browser frame is no longer a stamp next to a phone */
-    .pf-stage[data-format="site"]{--ch:min(258px,32vh);--cw:calc(var(--ch) / 0.625);--cr:10px;top:248px}
-    .pf-stage[data-format="landing"]{--ch:min(258px,32vh);--cw:calc(var(--ch) / 2.1);--cr:20px;top:248px}
+    .pf-stage{
+      position:relative;left:auto;top:auto;width:100%;height:var(--ch);margin:0 auto;
+    }
+    .pf-card{top:50%;left:50%}
+    /* the content does not fit a phone screen at a usable size, so these
+       sections scroll like the two after them: carousel, dots, then the copy,
+       stacked in flow instead of pinned to the frame. */
+    .proj-section[data-proj="0"],.proj-section[data-proj="1"],.proj-section[data-proj="2"]{
+      display:block!important;padding:119px 44px 130px 14px;
+      overflow-y:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+    }
+    .proj-section[data-proj="0"]::-webkit-scrollbar,
+    .proj-section[data-proj="1"]::-webkit-scrollbar,
+    .proj-section[data-proj="2"]::-webkit-scrollbar{width:0;height:0}
+    .pf-stage[data-format="site"]{--ch:min(420px,52vh);--cw:calc(var(--ch) / 0.625);--cr:14px}
+    .pf-stage[data-format="landing"]{--ch:min(420px,52vh);--cw:calc(var(--ch) / 2.1);--cr:26px}
     .pf-bar{height:22px}
     .pf-bar i{width:7px;height:7px}
     .pf-bar span{height:14px;font-size:8.5px}
     .pf-stage[data-format="site"] .pf-screen{height:calc(100% - 22px)}
     .pf-blank{font-size:11px}
-    .pf-dots{left:50%;bottom:auto;transform:translateX(-50%)}
-    .pf-dots{top:397px}
+    .pf-dots{
+      position:relative;left:auto;top:auto;bottom:auto;transform:none;
+      width:100%;justify-content:center;margin-top:22px;
+    }
     .pf-dots b{width:7px;height:7px}
     .pf-dots b.on{width:20px}
-    /* the column is anchored so its last element — the button — ends on the
-       same line as the whatsapp bubble */
+    /* well clear of the carousel above it */
     .pf-copy{
-      right:44px;left:14px;width:auto;top:auto;bottom:32px;text-align:right;
+      position:relative;right:auto;left:auto;top:auto;bottom:auto;
+      width:auto;margin-top:46px;text-align:right;
     }
     .pf-brand{font-size:18px;line-height:.85}
     .pf-title{font-size:34px;line-height:.93;margin-top:11px}
@@ -1927,7 +1940,7 @@
       const base = (proj.dir || '') + (sl.v || '');
       const media = sl.v
         ? '<img class="pf-poster" src="' + base + '.jpg" alt="" loading="lazy" decoding="async">'
-        : '<div class="pf-blank">' + sl.title + '</div>';
+        : '<div class="pf-blank">' + (sl.lead || sl.title || '') + '</div>';
       el.innerHTML =
         (proj.format === 'site'
           ? '<div class="pf-bar"><i></i><i></i><i></i><span>' + (proj.host || '') + '</span></div>'
@@ -1946,7 +1959,11 @@
     });
 
     /* the fan: cards step sideways, tilt, drop and shrink with distance */
-    const DROP = 14, TILT = 6, SHRINK = 0.10, FADE_AT = 2.4;
+    const DROP = 14, TILT = 6, SHRINK = 0.10;
+    /* a phone has room for the front card and one on each side; a wide screen
+       lets the fan run out to the edges */
+    const narrow = matchMedia('(max-width:768px),(hover:none) and (pointer:coarse) and (max-width:1024px),(max-aspect-ratio:3/4) and (max-width:1400px)');
+    const fadeAt = () => narrow.matches ? 1 : 2.4;
     const gapu = () => parseFloat(getComputedStyle(stage).getPropertyValue('--gapu')) || 0.6;
     const gap = () => cards[0].offsetWidth * gapu() || 240;
     let pos = 0, target = 0, front = -1;
@@ -1992,7 +2009,8 @@
       cards.forEach((el, i) => {
         const off = wrap(i - pos), a = Math.abs(off);
         const scale = Math.max(0.4, 1 - a * SHRINK);
-        const fade = a > FADE_AT ? Math.max(0, 1 - (a - FADE_AT) / 0.8) : 1;
+        const F = fadeAt();
+        const fade = a > F ? Math.max(0, 1 - (a - F) / 0.55) : 1;
         el.style.transform =
           'translate3d(' + (off * g).toFixed(2) + 'px,' + (a * a * DROP).toFixed(2) + 'px,0) ' +
           'rotate(' + (off * TILT).toFixed(2) + 'deg) scale(' + scale.toFixed(3) + ')';
