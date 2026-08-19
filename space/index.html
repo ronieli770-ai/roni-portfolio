@@ -392,13 +392,11 @@
     opacity:0;pointer-events:none;transition:opacity .6s ease;
   }
   .proj-section.active{opacity:1;pointer-events:auto}
-  .proj-section .proj-video,#proj-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
-  #proj-bg{z-index:0;opacity:0;transition:opacity .6s ease}
-  #proj-bg.on{opacity:1}
-  #proj-bg.flip{transform:scaleX(-1)}
-  /* the first three sections let the shared clip show through; the rest keep
-     their own opaque backgrounds and simply cover it */
-  .proj-section[data-proj="0"],.proj-section[data-proj="1"],.proj-section[data-proj="2"]{background:transparent}
+  .proj-section .proj-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+  /* the portfolio frames are black with one warm glow — figma node 330:28,
+     a 403px circle of #F7E1BA blurred by 377.2, centred on (1486,76) of the
+     1728x1117 frame. the blur flattens its peak to about 43% alpha. */
+  .proj-section[data-proj="0"],.proj-section[data-proj="1"],.proj-section[data-proj="2"]{background:#000}
   .proj-section .proj-scrim{position:absolute;inset:0;pointer-events:none}
   /* a hair of grain over the clip — dark gradients in an h.264 file band into
      visible steps, and noise this faint dissolves the steps without reading
@@ -450,8 +448,13 @@
      with its right edge on 1616px (6.48%) and is 349px wide (20.2%); the fan
      sits to its left, centred on 32% of the viewport. */
   .pf-glow{
-    position:absolute;left:8%;top:8%;width:52%;height:84%;pointer-events:none;
-    background:radial-gradient(56% 52% at 50% 46%,rgba(224,150,96,.12) 0%,rgba(224,150,96,.04) 46%,rgba(5,5,10,0) 74%);
+    position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(circle 67vw at 86% 6.8%,
+      rgba(247,225,186,.43) 0%,
+      rgba(247,225,186,.34) 22%,
+      rgba(247,225,186,.16) 45%,
+      rgba(247,225,186,.05) 70%,
+      rgba(247,225,186,0) 100%);
   }
   .pf-stage{
     position:absolute;left:32%;top:50%;width:0;height:0;
@@ -766,12 +769,8 @@
     /* projects — the carousel takes the top of the screen and the copy sits
        under it, on the same 14/44 margins as the rest of the mobile site */
     .proj-section .proj-scrim{display:none!important}
-    #proj-bg{
-      top:18%!important;height:100%!important;
-      -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14%);
-      mask-image:linear-gradient(to bottom,transparent 0,#000 14%);
-    }
-    .pf-glow{left:0;top:60px;width:100%;height:46%}
+    /* the glow keeps its shape on a narrow screen by sizing off the height */
+    .pf-glow{background:radial-gradient(circle 78vh at 86% 6.8%,rgba(247,225,186,.40) 0%,rgba(247,225,186,.30) 22%,rgba(247,225,186,.14) 45%,rgba(247,225,186,.04) 70%,rgba(247,225,186,0) 100%)}
     /* the card starts on the 123px line under the header either way, and the
        dots sit just under it — the copy owns the bottom of the screen */
     .pf-stage{left:50%}
@@ -1101,13 +1100,8 @@
 </div>
 
 <div id="projects-wrap">
-  <!-- one clip behind the three project sections. three <video> elements on the
-       same url do not share a buffer — the browser fetched the file once per
-       element, three times over. -->
-  <video id="proj-bg" class="proj-video" src="space-bg.mp4" preload="none" muted loop playsinline></video>
   <section class="proj-section active" data-proj="0">
     <div class="proj-grain"></div>
-    <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 24%,rgba(5,5,10,.52) 52%,rgba(5,5,10,.86) 76%,rgba(5,5,10,.95) 100%)"></div>
     <div class="pf-glow"></div>
     <div class="pf-stage"></div>
     <div class="pf-dots"></div>
@@ -1121,7 +1115,6 @@
 
   <section class="proj-section" data-proj="1">
     <div class="proj-grain"></div>
-    <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 24%,rgba(5,5,10,.52) 52%,rgba(5,5,10,.86) 76%,rgba(5,5,10,.95) 100%)"></div>
     <div class="pf-glow"></div>
     <div class="pf-stage"></div>
     <div class="pf-dots"></div>
@@ -1135,7 +1128,6 @@
 
   <section class="proj-section" data-proj="2">
     <div class="proj-grain"></div>
-    <div class="proj-scrim" style="background:linear-gradient(to right,rgba(5,5,10,0) 24%,rgba(5,5,10,.52) 52%,rgba(5,5,10,.86) 76%,rgba(5,5,10,.95) 100%)"></div>
     <div class="pf-glow"></div>
     <div class="pf-stage"></div>
     <div class="pf-dots"></div>
@@ -1710,31 +1702,6 @@
   dots.forEach((b, k) => b.addEventListener('click', () => goSection(k)));
 
 
-  /* ---------- background clip: pick the lightest file that still looks sharp ----------
-     the variants are optional — a missing file falls straight back to space-bg.mp4,
-     so the site keeps working until they are exported. */
-  (function pickBgClip(){
-    const BASE = 'space-bg.mp4';
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    const portrait = window.innerHeight > window.innerWidth;
-    const devW = window.innerWidth * dpr;
-    /* the master is 2560x1440 and 13MB — nine times what a phone can show, and
-       it used to arrive right when the portfolio sections did. a 720p/24fps
-       version of the same clip is 1.5MB. */
-    const want = (portrait || devW <= 1400) ? 'space-bg-m.mp4' : BASE;
-    if (want === BASE) return;
-    document.querySelectorAll('video.proj-video').forEach(v => {
-      const keep = v.getAttribute('src');
-      v.addEventListener('error', () => {
-        if (v.getAttribute('src') !== keep){ v.setAttribute('src', keep); v.load(); }
-      }, { once:true });
-      v.setAttribute('src', want);
-      /* preload="none" — swapping the src is enough; calling load() here would
-         put three copies of the clip on the wire during the hero */
-      if (v.preload !== 'none') v.load();
-    });
-  })();
-
   /* ---------- boot ---------- */
   marks();
 
@@ -1774,11 +1741,7 @@
     /* warmMars() already pulls moon.glb through the loader — the hand-rolled
        fetch that used to sit here downloaded the same 1.5MB a second time.
        the portfolio clip follows a beat later so the two do not overlap. */
-    setTimeout(() => {
-      projBg.preload = 'auto';
-      projBg.load();
-      projBg.play().then(() => projBg.pause()).catch(() => {});
-    }, 1200);
+
   });
   /* the chapter clips come first; the moon and the portfolio clip follow */
   vp.addEventListener('canplaythrough', heavy, { once:true });
@@ -1800,7 +1763,6 @@
 
   /* ---------- projects mode ---------- */
   const projWrap = document.getElementById('projects-wrap');
-  const projBg = document.getElementById('proj-bg');
   const projSections = [...projWrap.querySelectorAll('.proj-section')];
   let projMode = false;
   let projIdx = 0;
@@ -1834,13 +1796,9 @@
         if (i === n) v.play().catch(() => {}); else v.pause();
       });
     });
-    /* the shared clip only runs under the first three, and project 2 shows it
-       mirrored the way its own copy used to */
-    const onBg = n <= 2;
-    projBg.classList.toggle('on', onBg);
-    projBg.classList.toggle('flip', n === 1);
-    if (onBg){ projBg.preload = 'auto'; projBg.play().catch(() => {}); }
-    else projBg.pause();
+    /* entering a project puts its carousel back on the first slide */
+    const car = carousels[n];
+    if (car) car.reset();
     const sec = projSections[n];
     sec.scrollTop = 0;
     hdrGlass.classList.remove('on');
@@ -2030,11 +1988,7 @@
     if (c) c.tick();
   })();
 
-  function projWarm(){
-    projBg.muted = true;
-    projBg.preload = 'auto';
-    projBg.play().then(() => projBg.pause()).catch(() => {});
-  }
+  function projWarm(){}
 
   function projPrepBehind(){
     projWrap.classList.add('on');
