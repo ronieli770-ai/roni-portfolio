@@ -305,6 +305,10 @@
     -webkit-background-clip:text;background-clip:text;
     -webkit-text-fill-color:transparent;color:transparent;
   }
+  /* the glitch ghosts carry data-text as one flat string, so they wrap onto
+     different lines than the real copy and read as duplicated text. the burst
+     keeps its shake and glow through glitchMain — only the split copies go. */
+  .landing-copy .anim-glitch::before,.landing-copy .anim-glitch::after{display:none}
   .pane.show .landing-copy{opacity:1}
   .pane.show .hint{opacity:1!important}
   .pane.show .status-box{opacity:1;transform:none}
@@ -757,8 +761,6 @@
 
     /* pane 4 — נעים להכיר */
     .landing-copy{top:118px;right:44px;left:14px}
-    /* the glitch copies are one flat string — they wrap differently here */
-    .landing-copy .anim-glitch::before,.landing-copy .anim-glitch::after{display:none}
     .landing-copy p:nth-of-type(1){font-size:40px!important}
     .landing-copy p:nth-of-type(2){font-size:58px!important}
     .landing-copy p:nth-of-type(3){font-size:22px!important;margin-top:10px!important}
