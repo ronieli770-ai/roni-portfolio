@@ -91,6 +91,9 @@
   #menu-overlay.open{opacity:1;visibility:visible}
   #menu-overlay.open ~ #rail{display:none}
   #menu-overlay.open ~ .wa-fab{display:none}
+  /* only the phone layout centres a logo inside the overlay; on desktop the
+     fixed one in the corner is the logo */
+  #menu-overlay .mo-logo{display:none}
   #menu-overlay .mo-portraits{
     position:absolute;left:0;top:0;width:55%;height:100%;z-index:2;
   }
@@ -766,6 +769,7 @@
   @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px), (max-aspect-ratio:3/4) and (max-width:1400px){
     body.menu-open .logo{opacity:0;pointer-events:none}
     #menu-overlay .mo-logo{
+      display:block;
       position:absolute;left:50%;top:9.2%;transform:translateX(-50%);
       width:36%;max-width:170px;height:auto;z-index:5;
     }
