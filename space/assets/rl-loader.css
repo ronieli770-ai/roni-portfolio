@@ -1,4 +1,4 @@
-/* ===== Roni glitch intro loader — 5s, black, mono glitch ===== */
+/* ===== Roni glitch intro loader — layers driven by rl-loader.js ===== */
 html.rl-lock { overflow: hidden; }
 
 .rl-loader {
@@ -15,21 +15,8 @@ html.rl-lock { overflow: hidden; }
   position: relative;
   width: min(46vw, 400px);
   aspect-ratio: 4000 / 1926;
-  animation: rlJitter 5s steps(1, end) forwards;
+  opacity: 0;
   will-change: transform, opacity;
-}
-
-/* the glow lives on a wrapper with NO background of its own — a drop-shadow
-   applied straight to a masked element paints the image's rectangle instead
-   of the letter shapes. the filter itself is static: animating a drop-shadow
-   repaints the whole mark every frame and stutters while the page boots, so
-   the pulse rides on the layer's opacity instead */
-.rl-glow {
-  position: absolute;
-  inset: 0;
-  filter: drop-shadow(0 0 24px rgba(141, 168, 203, .9));
-  animation: rlGlow 5s ease-out forwards;
-  will-change: opacity;
 }
 
 .rl-l {
@@ -48,120 +35,14 @@ html.rl-lock { overflow: hidden; }
   will-change: transform, opacity;
   transform: translateZ(0);
 }
-.rl-base { animation: rlFlicker 5s steps(1, end) forwards; }
-.rl-top  { clip-path: inset(0 0 50% 0); animation: rlTearTop 5s steps(1, end) forwards; }
-.rl-bot  { clip-path: inset(50% 0 0 0); animation: rlTearBot 5s steps(1, end) forwards; }
 
-/* 5s timeline, but every burst keeps the original 2.5s design's absolute
-   tempo (a step still lasts ~100ms). Signal 0–11% | Lock 11–27% | Hold with
-   two extra pulses | Exit 93–100%. Tear travel is scaled ~0.65 to match the
-   400px mark. */
-
-@keyframes rlJitter {
-  0%    { transform: translate(7px, -2px) scale(1.045); opacity: 1; }
-  2%    { transform: translate(-6px, 2px) scale(1.040); }
-  4%    { transform: translate(5px, 1px)  scale(1.034); }
-  6%    { transform: translate(-4px, -1px) scale(1.028); }
-  8%    { transform: translate(4px, 1px)  scale(1.022); }
-  11%   { transform: translate(-3px, 0)   scale(1.014); }
-  17%   { transform: translate(2px, 0)    scale(1.006); }
-  27%   { transform: none; }
-  30.5% { transform: translate(3px, 0); }
-  31%   { transform: translate(-2px, 0); }
-  32%   { transform: none; }
-  37.5% { transform: translate(-2px, 0); }
-  38%   { transform: translate(2px, 0); }
-  39%   { transform: none; }
-  55%   { transform: translate(3px, 0); }
-  55.5% { transform: translate(-2px, 0); }
-  56.5% { transform: none; }
-  72%   { transform: translate(-2px, 0); }
-  72.5% { transform: translate(2px, 0); }
-  73.5% { transform: none; }
-  93%   { transform: translate(5px, 0)  scale(1.008); }
-  94.5% { transform: translate(-5px, 0) scale(1.014); }
-  96%   { transform: translate(4px, 0)  scale(1.022); }
-  98%   { transform: none; scale: 1.03; opacity: 1; }
-  100%  { transform: none; opacity: 0; }
+/* the glow: two blurred periwinkle copies under the crisp mark. the blur is
+   static so the layers stay cached — the js swells the glow by opacity only,
+   which composites without repainting (animating a drop-shadow repainted the
+   whole mark every frame and stuttered while the page booted) */
+.rl-glow-t, .rl-glow-w {
+  background: rgb(141, 168, 203);
+  will-change: opacity;
 }
-
-@keyframes rlFlicker {
-  0%    { opacity: 0; }
-  1%    { opacity: 1; }
-  2%    { opacity: .18; }
-  3%    { opacity: 1; }
-  4.5%  { opacity: .18; }
-  5.5%  { opacity: 1; }
-  100%  { opacity: 1; }
-}
-
-@keyframes rlTearTop {
-  0%    { opacity: 1; transform: translate(17px, 0); }
-  2%    { opacity: 1; transform: translate(-14px, 0); }
-  4%    { opacity: 1; transform: translate(12px, 0); }
-  6%    { opacity: 1; transform: translate(-9px, 0); }
-  8%    { opacity: 1; transform: translate(8px, 0); }
-  11%   { opacity: .9; transform: translate(-5px, 0); }
-  17%   { opacity: .6; transform: translate(3px, 0); }
-  23%   { opacity: .3; transform: translate(-1px, 0); }
-  27%   { opacity: 0; transform: none; }
-  30.5% { opacity: 1; transform: translate(-6px, 0); }
-  31.5% { opacity: 0; transform: none; }
-  37.5% { opacity: 1; transform: translate(4px, 0); }
-  38.5% { opacity: 0; transform: none; }
-  55%   { opacity: 1; transform: translate(-6px, 0); }
-  56%   { opacity: 0; transform: none; }
-  72%   { opacity: 1; transform: translate(4px, 0); }
-  73%   { opacity: 0; transform: none; }
-  93%   { opacity: 1; transform: translate(-13px, 0); }
-  94.5% { opacity: 1; transform: translate(10px, 0); }
-  96%   { opacity: 1; transform: translate(-8px, 0); }
-  98%   { opacity: 0; transform: none; }
-  100%  { opacity: 0; }
-}
-
-@keyframes rlTearBot {
-  0%    { opacity: 1; transform: translate(-16px, 0); }
-  2%    { opacity: 1; transform: translate(13px, 0); }
-  4%    { opacity: 1; transform: translate(-10px, 0); }
-  6%    { opacity: 1; transform: translate(8px, 0); }
-  8%    { opacity: 1; transform: translate(-7px, 0); }
-  11%   { opacity: .9; transform: translate(5px, 0); }
-  17%   { opacity: .6; transform: translate(-3px, 0); }
-  23%   { opacity: .3; transform: translate(1px, 0); }
-  27%   { opacity: 0; transform: none; }
-  30.5% { opacity: 1; transform: translate(5px, 0); }
-  31.5% { opacity: 0; transform: none; }
-  37.5% { opacity: 1; transform: translate(-4px, 0); }
-  38.5% { opacity: 0; transform: none; }
-  55%   { opacity: 1; transform: translate(5px, 0); }
-  56%   { opacity: 0; transform: none; }
-  72%   { opacity: 1; transform: translate(-4px, 0); }
-  73%   { opacity: 0; transform: none; }
-  93%   { opacity: 1; transform: translate(12px, 0); }
-  94.5% { opacity: 1; transform: translate(-10px, 0); }
-  96%   { opacity: 1; transform: translate(7px, 0); }
-  98%   { opacity: 0; transform: none; }
-  100%  { opacity: 0; }
-}
-
-@keyframes rlGlow {
-  0%    { opacity: .85; }
-  11%   { opacity: .95; }
-  27%   { opacity: .18; }
-  30.5% { opacity: .6; }
-  34%   { opacity: .18; }
-  37.5% { opacity: .5; }
-  41%   { opacity: .12; }
-  55%   { opacity: .5; }
-  58%   { opacity: .15; }
-  72%   { opacity: .45; }
-  75%   { opacity: .12; }
-  96%   { opacity: 1; }
-  100%  { opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .rl-mark, .rl-glow, .rl-l { animation: none !important; }
-  .rl-top, .rl-bot { opacity: 0; }
-}
+.rl-glow-t { filter: blur(8px); }
+.rl-glow-w { filter: blur(24px); }
