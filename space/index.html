@@ -482,7 +482,10 @@
      a phone. the format is a property of the project, not of the slide. */
   /* both formats are sized off the frame height, so the fan keeps the figma's
      scale instead of shrinking on a short window */
-  .pf-stage[data-format="site"]{--ch:min(642px,57.5vh);--cw:calc(var(--ch) / 0.625);--cr:14px;--gapu:.37}
+  /* a browser frame is 1027px wide at this height, so its fan sits further left
+     than the phone's and keeps a tighter spread - otherwise the card on the
+     right lands under the copy column, which starts at 1267px */
+  .pf-stage[data-format="site"]{--ch:min(642px,57.5vh);--cw:calc(var(--ch) / 0.625);--cr:14px;--gapu:.28;left:26%}
   .pf-stage[data-format="landing"]{--ch:min(642px,57.5vh);--cw:calc(var(--ch) / 2.1);--cr:30px;--gapu:.60}
   .pf-bar{
     height:30px;display:flex;align-items:center;gap:7px;padding:0 12px;
@@ -526,6 +529,7 @@
   }
   /* the row of dots ends on the button's bottom edge - 950px on the frame */
   .pf-dots{top:85.05%}
+  .proj-section:has(.pf-stage[data-format="site"]) .pf-dots{left:26%}
   .pf-dots b{
     display:block;width:9px;height:9px;border-radius:99px;background:rgba(255,255,255,.26);
     cursor:pointer;transition:width .3s ease,background .3s ease;
@@ -1982,7 +1986,9 @@
     /* a phone has room for the front card and one on each side; a wide screen
        lets the fan run out to the edges */
     const narrow = matchMedia('(max-width:768px),(hover:none) and (pointer:coarse) and (max-width:1024px),(max-aspect-ratio:3/4) and (max-width:1400px)');
-    const fadeAt = () => narrow.matches ? 1 : 2.4;
+    /* a browser frame is wide enough that a fan of five runs under the copy
+       column, so the web format shows three everywhere */
+    const fadeAt = () => (narrow.matches || proj.format === 'site') ? 1 : 2.4;
     const gapu = () => parseFloat(getComputedStyle(stage).getPropertyValue('--gapu')) || 0.6;
     const gap = () => cards[0].offsetWidth * gapu() || 240;
     let pos = 0, target = 0, front = -1;
