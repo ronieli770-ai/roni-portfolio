@@ -459,7 +459,10 @@
   .pf-stage{
     /* figma: the front card is 512x642 on the 1728x1117 frame, centred on
        (552,533) — 31.9% / 47.7% — and the fan runs off the left edge */
-    position:absolute;left:31.9%;top:47.7%;width:0;height:0;
+    position:absolute;left:31.9%;width:0;height:0;
+    /* the stage marks the card's centre, so anchoring every format to the same
+       top edge (212px on the figma frame) means offsetting by half its height */
+    top:calc(18.98% + var(--ch) / 2);
     touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;z-index:2;
   }
   .pf-stage.dragging{cursor:grabbing}
@@ -509,13 +512,13 @@
   .pf-glare{position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,0) 42%)}
 
   .pf-dots{
-    position:absolute;left:31.9%;transform:translateX(-50%);
+    position:absolute;left:31.9%;transform:translate(-50%,-100%);
     display:flex;align-items:center;gap:9px;z-index:3;
     /* the fan runs left-to-right by index, so the dots must too */
     direction:ltr;
   }
-  .proj-section:has(.pf-stage[data-format="landing"]) .pf-dots{top:calc(47.7% + min(321px,28.75vh) + 26px)}
-  .proj-section:has(.pf-stage[data-format="site"]) .pf-dots{top:calc(47.7% + min(215px,19.25vh) + 26px)}
+  /* the row of dots ends on the button's bottom edge — 950px on the frame */
+  .pf-dots{top:85.05%}
   .pf-dots b{
     display:block;width:9px;height:9px;border-radius:99px;background:rgba(255,255,255,.26);
     cursor:pointer;transition:width .3s ease,background .3s ease;
@@ -536,10 +539,14 @@
   .pf-body{margin-top:23px;color:#fff;font-size:min(16px,.93vw);line-height:normal}
   .pf-body strong{display:block;font-weight:700}
   .pf-cta{
-    margin-top:35px;width:min(280px,16.2vw);aspect-ratio:280/65;border-radius:10px;
+    /* pinned rather than flowed: the body text changes with every slide, and a
+       button that slid up and down with it would never line up with anything.
+       figma has it at 885px on the frame, 295px below the copy's own top. */
+    position:absolute;top:min(295px,26.4vh);right:0;margin:0;
+    width:min(280px,16.2vw);aspect-ratio:280/65;border-radius:10px;
     background:linear-gradient(to left,#E0783C 0%,#FA9154 100%);
     color:#fff;font-weight:600;font-size:min(24px,1.39vw);text-decoration:none;
-    display:flex;align-items:center;justify-content:center;margin-left:auto;margin-right:0;
+    display:flex;align-items:center;justify-content:center;
   }
   /* the copy is swapped out on every slide, so it fades rather than snapping */
   .pf-copy.swap .pf-brand,.pf-copy.swap .pf-title,.pf-copy.swap .pf-body{opacity:0}
@@ -787,7 +794,7 @@
     .pf-bar span{height:14px;font-size:8.5px}
     .pf-stage[data-format="site"] .pf-screen{height:calc(100% - 22px)}
     .pf-blank{font-size:11px}
-    .pf-dots{left:50%;bottom:auto}
+    .pf-dots{left:50%;bottom:auto;transform:translateX(-50%)}
     .proj-section:has(.pf-stage[data-format="site"]) .pf-dots{top:331px}
     .proj-section:has(.pf-stage[data-format="landing"]) .pf-dots{top:437px}
     .pf-dots b{width:7px;height:7px}
@@ -799,8 +806,8 @@
     .pf-title{font-size:34px;line-height:.93;margin-top:13px}
     .pf-body{font-size:16px;line-height:1.35;margin-top:17px}
     .pf-cta{
-      margin-top:24px;width:157px;aspect-ratio:auto;height:38px;
-      font-size:18px;font-weight:600;margin-left:auto;margin-right:0;
+      position:static;margin:24px 0 0 auto;width:157px;aspect-ratio:auto;height:38px;
+      font-size:18px;font-weight:600;
     }
 
     /* למה אתם צריכים את זה — the deck stacks into a column */
