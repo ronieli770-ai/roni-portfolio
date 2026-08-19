@@ -140,6 +140,7 @@
   #menu-overlay.open{opacity:1;visibility:visible}
   #menu-overlay.open ~ .rail{display:none}
   #menu-overlay.open ~ .wa-fab{display:none}
+  #menu-overlay .mo-logo{display:none}
   #menu-overlay .mo-portraits{
     position:absolute;left:0;top:0;width:55%;height:100%;z-index:2;
   }
@@ -544,24 +545,34 @@
     .gd-sec[data-gd="4"] .gd-stage .di-grid{grid-area:3/1/4/2;aspect-ratio:1}
     .gd-sec[data-gd="4"] .gd-stage .di-colors{grid-area:3/2/4/3;background:#fff;padding:10px}
 
-    /* המבורגר - nav centred on top, portrait under it, earth over the portrait */
+    /* המבורגר - synced 1:1 with index.html's build of figma node 337:47:
+       logo on top, three 34px links on 61px lines, 44px icon row, the
+       portrait under them, no earth */
     #menu-overlay{height:100vh;height:100svh;overflow:hidden}
-    #menu-overlay .mo-portraits{
-      /* she runs to the bottom edge - the globe band hides where she ends */
-      left:50%;top:auto;bottom:0;transform:translateX(-50%);
-      width:74%;height:auto;z-index:2;
-    }
-    #menu-overlay .mo-dark{position:relative;left:auto;top:auto;width:100%}
-    #menu-overlay .mo-light{display:none}
-    #menu-overlay .mo-earth{
-      left:50%;top:auto;bottom:-221vw;width:260vw;z-index:3;
+    body.menu-open .logo{opacity:0;pointer-events:none}
+    #menu-overlay .mo-logo{
+      display:block;
+      position:absolute;left:50%;top:9.61%;transform:translateX(-50%);
+      width:33.3%;max-width:none;height:auto;z-index:5;
     }
     #menu-overlay .mo-nav{
-      left:50%;top:27%;transform:translate(-50%,-50%);gap:10px;z-index:6;
+      left:50%;top:19.8%;transform:translateX(-50%);width:100%;
+      gap:0;align-items:center;z-index:4;
     }
-    #menu-overlay .mo-nav a{font-size:45px;line-height:1.3}
-    #menu-overlay .mo-dots{gap:30px;margin-top:26px}
-    #menu-overlay .mo-dots a{width:66px;height:66px}
+    #menu-overlay .mo-nav a{font-size:34px;line-height:61px}
+    #menu-overlay .mo-nav a.glitch::before,
+    #menu-overlay .mo-nav a.glitch::after{display:none}
+    #menu-overlay .mo-dots{margin-top:18px;gap:23px}
+    #menu-overlay .mo-dots a{width:44px;height:44px}
+    #menu-overlay .mo-portraits{
+      left:0;right:0;top:calc(19.8% + 265px);bottom:auto;width:100%;height:auto;z-index:2;
+    }
+    #menu-overlay .mo-dark{
+      position:relative;left:auto;top:auto;width:82%;max-width:none;
+      margin:0 auto;display:block;
+    }
+    #menu-overlay .mo-light{display:none}
+    #menu-overlay .mo-earth{display:none}
 
     /* rail - bigger dots inside a 44px tap target, no sticky hover pill */
     .rail b .tip{display:none}
@@ -570,32 +581,40 @@
     .rail b::after{content:'';position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%)}
 
     /* contact - built 1:1 off the 402x874 figma frame (node 341:75).
-       every value below is figma_px / frame_dimension */
-    .gd-sec[data-gd="9"] .gd-stage{aspect-ratio:auto;width:100%;height:100%}
+       the stage keeps the frame's aspect ratio and every value inside is a
+       percentage of it (cqw = stage width), so the composition holds on any
+       screen height instead of drifting with the viewport */
+    .gd-sec[data-gd="9"]{display:flex;align-items:center;justify-content:center}
+    .gd-sec[data-gd="9"] .gd-stage{
+      position:relative;aspect-ratio:402/874;height:100%;width:auto;
+      max-width:100%;container-type:inline-size;
+    }
     .ct-panel{
       left:8.71%;right:8.71%;top:12.13%;bottom:12.01%;             /* 35 / 106 / 105 */
-      width:auto;height:auto;transform:none;border-radius:30px;
+      width:auto;height:auto;transform:none;border-radius:7.46cqw; /* 30 */
     }
-    /* the figma pans the wide panel texture rather than cover-cropping it */
+    /* the figma pans the wide texture rather than cover-cropping it */
     .ct-panel img{
       position:absolute;left:-120.27%;top:0;width:334.85%;height:100%;
       max-width:none;object-fit:fill;
     }
-    /* the planets sit at their figma spots inside the panel; the galaxy's
-       right edge lands exactly on the panel's right edge */
+    /* planets at their figma spots; the galaxy's right edge lands exactly on
+       the panel's right edge */
     .ct-saturn{left:11.96%;top:17.97%;width:40.58%;height:auto;aspect-ratio:1;overflow:visible}
-    .ct-earth{left:auto;right:8.71%;top:65.17%;bottom:auto;width:42.64%;height:auto;aspect-ratio:1;overflow:visible}
+    .ct-earth{left:auto;right:8.71%;top:62.7%;bottom:auto;width:42.64%;height:auto;aspect-ratio:1;overflow:visible}
     .ct-saturn div{width:100%;height:100%;transform:rotate(10.14deg)}
     .ct-earth div{width:100%;height:100%;transform:rotate(127.94deg)}
-    .ct-kicker{top:44.16%;width:auto;font-size:18px}                /* 386 centre */
+    .ct-kicker{top:44.16%;width:auto;font-size:4.48cqw}             /* 386 centre, 18px */
     .ct-title{
       top:48.11%;transform:translate(-50%,-50%);                    /* 420.5 centre */
-      width:auto;font-size:34px;line-height:1;white-space:nowrap;
+      width:auto;font-size:8.46cqw;line-height:1;white-space:nowrap; /* 34px */
     }
     .ct-cta{
       left:50%;transform:translateX(-50%);top:52.86%;               /* 462 top */
-      width:161px;height:39px;font-size:18px;border-radius:10px;
+      width:40.05cqw;height:9.7cqw;font-size:4.48cqw;border-radius:2.49cqw; /* 161x39, 18, r10 */
+      gap:1cqw;line-height:1;
     }
+    .ct-cta img{width:3.73cqw;height:3.73cqw}                       /* 15px glyph */
   }
 
   /* ---------- floating whatsapp button ---------- */
@@ -632,6 +651,7 @@
 <div class="menu"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
 <div id="menu-overlay">
+  <img class="mo-logo" src="assets/logo.webp" alt="סטודיו רוני">
   <div class="mo-portraits">
     <img class="mo-dark" src="roni-portrait.webp" alt="">
     <img class="mo-light" data-src="roni-portrait-light.webp" alt="">
@@ -727,7 +747,7 @@
 
 <section class="gd-sec" id="g-contact" data-gd="9">
   <div class="gd-stage">
-    <div class="ct-panel"><img src="assets/ct-panel.webp" alt=""></div>
+    <div class="ct-panel"><picture><source media="(max-width:768px)" srcset="assets/ct-panel-m.webp"><img src="assets/ct-panel.webp" alt=""></picture></div>
     <div class="ct-saturn"><div><img src="assets/ct-saturn.webp" alt=""></div></div>
     <div class="ct-earth"><div><img src="assets/ct-earth.webp" alt=""></div></div>
     <p class="ct-kicker">יש לכם פרוייקט בראש?</p>
