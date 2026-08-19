@@ -11,11 +11,19 @@
   var root = document.documentElement;
   root.classList.add('rl-lock');
 
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   function remove() {
     el.classList.add('rl-out');
+    /* hand the stage to the hero: its "settle" entrance runs while the
+       loader fades. the class comes off once the entrance is done so its
+       fill never blocks the hero's own .off transition later */
+    root.classList.remove('rl-lock');
+    if (!reduced) {
+      root.classList.add('rl-enter');
+      setTimeout(function () { root.classList.remove('rl-enter'); }, 2100);
+    }
     setTimeout(function () {
       if (el.parentNode) el.parentNode.removeChild(el);
-      root.classList.remove('rl-lock');
     }, 400);
   }
 
