@@ -569,22 +569,32 @@
     .rail b{width:10px;height:10px}
     .rail b::after{content:'';position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%)}
 
-    /* contact - panel clears the sticky header by 20px */
+    /* contact - built 1:1 off the 402x874 figma frame (node 341:75).
+       every value below is figma_px / frame_dimension */
     .gd-sec[data-gd="9"] .gd-stage{aspect-ratio:auto;width:100%;height:100%}
     .ct-panel{
-      left:30px;right:30px;top:98px;bottom:30px;
-      width:auto;height:auto;transform:none;border-radius:20px;
+      left:8.71%;right:8.71%;top:12.13%;bottom:12.01%;             /* 35 / 106 / 105 */
+      width:auto;height:auto;transform:none;border-radius:30px;
     }
-    /* planets hug the panel corners and are clipped by it */
-    .ct-saturn{left:6px;top:98px;width:24%;height:auto;aspect-ratio:1;overflow:hidden}
-    .ct-earth{left:auto;right:36px;top:auto;bottom:32px;width:23%;height:auto;aspect-ratio:1;overflow:hidden}
-    .ct-saturn div,.ct-earth div{width:122%;height:122%}
-    /* 15px between the two headings, double that (30px) down to the button */
-    .ct-kicker{top:45.5%;width:80%;font-size:16px}
-    .ct-title{top:48.15%;width:86%;font-size:35px;line-height:1.15;white-space:normal}
+    /* the figma pans the wide panel texture rather than cover-cropping it */
+    .ct-panel img{
+      position:absolute;left:-120.27%;top:0;width:334.85%;height:100%;
+      max-width:none;object-fit:fill;
+    }
+    /* the planets sit at their figma spots inside the panel; the galaxy's
+       right edge lands exactly on the panel's right edge */
+    .ct-saturn{left:11.96%;top:17.97%;width:40.58%;height:auto;aspect-ratio:1;overflow:visible}
+    .ct-earth{left:auto;right:8.71%;top:65.17%;bottom:auto;width:42.64%;height:auto;aspect-ratio:1;overflow:visible}
+    .ct-saturn div{width:100%;height:100%;transform:rotate(10.14deg)}
+    .ct-earth div{width:100%;height:100%;transform:rotate(127.94deg)}
+    .ct-kicker{top:44.16%;width:auto;font-size:18px}                /* 386 centre */
+    .ct-title{
+      top:48.11%;transform:translate(-50%,-50%);                    /* 420.5 centre */
+      width:auto;font-size:34px;line-height:1;white-space:nowrap;
+    }
     .ct-cta{
-      left:50%;transform:translateX(-50%);top:56.8%;
-      width:170px;height:48px;font-size:17px;border-radius:10px;
+      left:50%;transform:translateX(-50%);top:52.86%;               /* 462 top */
+      width:161px;height:39px;font-size:18px;border-radius:10px;
     }
   }
 
