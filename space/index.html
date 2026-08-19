@@ -831,9 +831,13 @@
        browsers only; this works everywhere. */
     .pf-stage{
       position:relative;left:auto;top:auto;width:auto;
-      margin:0 -44px 0 -14px;height:var(--ch);overflow:hidden;
+      margin:0 -44px 0 -14px;overflow:hidden;
+      /* the side cards are pushed down 14px and tilted 6deg, so they reach
+         below the front card's box - without this room the clip cut them off
+         in a straight line across the bottom */
+      height:calc(var(--ch) + 44px);
     }
-    .pf-card{top:50%;left:50%}
+    .pf-card{top:calc(50% - 22px);left:50%}
     /* the content does not fit a phone screen at a usable size, so these
        sections scroll like the two after them: carousel, dots, then the copy,
        stacked in flow instead of pinned to the frame. */
@@ -854,7 +858,7 @@
     .pf-dots,
     .proj-section:has(.pf-stage[data-format="site"]) .pf-dots{
       position:relative;left:auto;top:auto;bottom:auto;transform:none;
-      width:100%;justify-content:center;margin-top:22px;
+      width:100%;justify-content:center;margin-top:-22px;
     }
     .pf-dots b{width:7px;height:7px}
     .pf-dots b.on{width:20px}
