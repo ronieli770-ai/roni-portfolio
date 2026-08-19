@@ -837,7 +837,9 @@
          in a straight line across the bottom */
       height:calc(var(--ch) + 44px);
     }
-    .pf-card{top:calc(50% - 22px);left:50%}
+    /* the 70px drop shadow of the cards that sit off-screen pools inside the
+       clipped stage and reads as a black block behind the carousel */
+    .pf-card{top:calc(50% - 22px);left:50%;box-shadow:none}
     /* the content does not fit a phone screen at a usable size, so these
        sections scroll like the two after them: carousel, dots, then the copy,
        stacked in flow instead of pinned to the frame. */
