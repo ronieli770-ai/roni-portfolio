@@ -1,4 +1,4 @@
-/* ===== Roni glitch intro loader — 2.5s, black, mono glitch ===== */
+/* ===== Roni glitch intro loader — 5s, black, mono glitch ===== */
 html.rl-lock { overflow: hidden; }
 
 .rl-loader {
@@ -13,9 +13,9 @@ html.rl-lock { overflow: hidden; }
 
 .rl-mark {
   position: relative;
-  width: min(46vw, 620px);
+  width: min(46vw, 400px);
   aspect-ratio: 4000 / 1926;
-  animation: rlJitter 2.5s steps(1, end) forwards;
+  animation: rlJitter 5s steps(1, end) forwards;
   will-change: transform, opacity;
 }
 
@@ -28,7 +28,7 @@ html.rl-lock { overflow: hidden; }
   position: absolute;
   inset: 0;
   filter: drop-shadow(0 0 24px rgba(141, 168, 203, .9));
-  animation: rlGlow 2.5s ease-out forwards;
+  animation: rlGlow 5s ease-out forwards;
   will-change: opacity;
 }
 
@@ -48,9 +48,9 @@ html.rl-lock { overflow: hidden; }
   will-change: transform, opacity;
   transform: translateZ(0);
 }
-.rl-base { animation: rlFlicker 2.5s steps(1, end) forwards; }
-.rl-top  { clip-path: inset(0 0 50% 0); animation: rlTearTop 2.5s steps(1, end) forwards; }
-.rl-bot  { clip-path: inset(50% 0 0 0); animation: rlTearBot 2.5s steps(1, end) forwards; }
+.rl-base { animation: rlFlicker 5s steps(1, end) forwards; }
+.rl-top  { clip-path: inset(0 0 50% 0); animation: rlTearTop 5s steps(1, end) forwards; }
+.rl-bot  { clip-path: inset(50% 0 0 0); animation: rlTearBot 5s steps(1, end) forwards; }
 
 /* Signal 0–22%  |  Lock 22–54%  |  Hold 54–84%  |  Exit 84–100% */
 

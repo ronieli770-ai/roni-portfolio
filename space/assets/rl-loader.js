@@ -2,8 +2,7 @@
    Shows once per browser session; hides when the page is loaded,
    never before MIN ms (so it can't flash) and never after DUR ms. */
 (function () {
-  var DUR = 2500;   // full animation length
-  var MIN = 1200;   // minimum time on screen
+  var DUR = 5000;   // full animation length - always plays out in full
   var el = document.getElementById('rl-loader');
   if (!el) return;
 
@@ -23,7 +22,7 @@
   var start = Date.now();
   function done() {
     var elapsed = Date.now() - start;
-    setTimeout(remove, Math.min(Math.max(MIN - elapsed, 0), DUR));
+    setTimeout(remove, Math.max(DUR - elapsed, 0));
   }
 
   if (document.readyState === 'complete') done();
