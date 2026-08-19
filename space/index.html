@@ -860,8 +860,10 @@
     .proj-section[data-proj="0"]::-webkit-scrollbar,
     .proj-section[data-proj="1"]::-webkit-scrollbar,
     .proj-section[data-proj="2"]::-webkit-scrollbar{width:0;height:0}
-    .pf-stage[data-format="site"]{--cw:min(300px,80vw);--ch:calc(var(--cw) * 0.625);--cr:12px;left:auto}
-    .pf-stage[data-format="landing"]{--ch:min(420px,52vh);--cw:calc(var(--ch) / 2.1);--cr:26px;left:auto}
+    /* the desktop rule hangs this format from a bottom line; here the stage is
+       a block in flow, so both offsets have to be handed back */
+    .pf-stage[data-format="site"]{--cw:min(300px,80vw);--ch:calc(var(--cw) * 0.625);--cr:12px;left:auto;top:auto}
+    .pf-stage[data-format="landing"]{--ch:min(420px,52vh);--cw:calc(var(--ch) / 2.1);--cr:26px;left:auto;top:auto}
     .pf-bar{height:22px}
     .pf-bar i{width:7px;height:7px}
     .pf-bar span{height:14px;font-size:8.5px}
