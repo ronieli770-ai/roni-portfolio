@@ -791,26 +791,32 @@
     /* the card starts on the 123px line under the header either way, and the
        dots sit just under it — the copy owns the bottom of the screen */
     .pf-stage{left:50%}
-    .pf-stage[data-format="site"]{--cw:min(300px,80vw);--ch:calc(var(--cw) * 0.625);--cr:10px;top:217px}
-    .pf-stage[data-format="landing"]{--cw:min(140px,38vw);--ch:calc(var(--cw) * 2.1);--cr:20px;top:270px}
+    /* both formats fill the same band, 118 (the header line) down to 412, so a
+       browser frame is no longer a stamp next to a phone */
+    .pf-stage[data-format="site"]{--ch:min(294px,36vh);--cw:calc(var(--ch) / 0.625);--cr:10px;top:265px}
+    .pf-stage[data-format="landing"]{--ch:min(294px,36vh);--cw:calc(var(--ch) / 2.1);--cr:20px;top:265px}
     .pf-bar{height:22px}
     .pf-bar i{width:7px;height:7px}
     .pf-bar span{height:14px;font-size:8.5px}
     .pf-stage[data-format="site"] .pf-screen{height:calc(100% - 22px)}
     .pf-blank{font-size:11px}
     .pf-dots{left:50%;bottom:auto;transform:translateX(-50%)}
-    .proj-section:has(.pf-stage[data-format="site"]) .pf-dots{top:331px}
-    .proj-section:has(.pf-stage[data-format="landing"]) .pf-dots{top:437px}
+    .pf-dots{top:432px}
     .pf-dots b{width:7px;height:7px}
     .pf-dots b.on{width:20px}
+    /* the column is anchored so its last element — the button — ends on the
+       same line as the whatsapp bubble */
     .pf-copy{
-      right:44px;left:14px;width:auto;top:auto;bottom:96px;text-align:right;
+      right:44px;left:14px;width:auto;top:auto;bottom:32px;text-align:right;
     }
     .pf-brand{font-size:18px;line-height:.85}
-    .pf-title{font-size:34px;line-height:.93;margin-top:13px}
-    .pf-body{font-size:16px;line-height:1.65;margin-top:17px}
+    .pf-title{font-size:34px;line-height:.93;margin-top:11px}
+    .pf-body{font-size:16px;line-height:1.5;margin-top:14px}
+    .pf-body strong{margin-bottom:8px}
     .pf-cta{
-      position:static;margin:24px 0 0 auto;width:157px;aspect-ratio:auto;height:38px;
+      /* left edge on the site's grid line, in RTL that is an auto margin on the
+         start side */
+      position:static;margin:24px auto 0 0;width:157px;aspect-ratio:auto;height:38px;
       font-size:18px;font-weight:600;
     }
 
@@ -1832,6 +1838,7 @@
   const PROJECTS = [
     {
       format:'landing',                 // 'landing' → phone frame, 'site' → browser frame
+      name:'היטבוקס',
       brand:'HITBOX · רשת מכוני אגרוף',
       title:'דף נחיתה',
       url:'https://hitbox.co.il/hitbox-lp/',
@@ -1859,31 +1866,33 @@
     },
     {
       format:'site',
+      name:'פרויקט 2',
       brand:'Business name',
       title:'אתר תדמית',
       url:'#',
       host:'business.com',
       slides:[
-        { title:'עמוד בית שמדבר בגובה העיניים',
+        { lead:'עמוד בית שמדבר בגובה העיניים',
           body:'מבנה ברור, היררכיה נכונה, וכל סקשן עונה על שאלה אחת של הגולש. בלי עומס ובלי ניחושים.' },
-        { title:'תיק עבודות שנעים לדפדף בו',
+        { lead:'תיק עבודות שנעים לדפדף בו',
           body:'הפרויקטים נפרסים בגריד שנושם, וכל אחד נפתח לתצוגה מלאה בלי לטעון עמוד חדש.' },
-        { title:'מיקרו־אנימציות שמחזיקות קצב',
+        { lead:'מיקרו־אנימציות שמחזיקות קצב',
           body:'תנועות קטנות במעברים ובריחוף — מספיק כדי שהאתר ירגיש חי, לא מספיק כדי להסיח.' }
       ]
     },
     {
       format:'site',
+      name:'פרויקט 3',
       brand:'Business name',
       title:'חנות אונליין',
       url:'#',
       host:'business.store',
       slides:[
-        { title:'קטלוג שקל למצוא בו',
+        { lead:'קטלוג שקל למצוא בו',
           body:'סינון מהיר, תמונות גדולות ומחיר ברור. הלקוח מגיע למוצר הנכון בשלוש קליקים.' },
-        { title:'עמוד מוצר שמוכר',
+        { lead:'עמוד מוצר שמוכר',
           body:'גלריה, מפרט קצר וכפתור קנייה שנשאר על המסך. כל מה שצריך כדי להחליט, במקום אחד.' },
-        { title:'צ׳קאאוט בלי נטישות',
+        { lead:'צ׳קאאוט בלי נטישות',
           body:'שלב אחד, תשלום מהיר ואישור ברור. הדרך מהעגלה להזמנה קצרה ככל האפשר.' }
       ]
     }
@@ -1899,6 +1908,11 @@
     if (!stage) return;
 
     stage.dataset.format = proj.format;
+    /* the rail names each project by its business rather than by a number */
+    /* `dots` is the carousel's own array further down this block, so the rail
+       is reached through the dom rather than through the outer binding */
+    const tip = document.querySelector('#rail b:nth-child(' + (6 + si) + ') .tip');
+    if (tip && proj.name) tip.textContent = 'פרוייקטים · ' + proj.name;
     copy.querySelector('.pf-cta').href = proj.url || '#';
 
     const N = proj.slides.length;
