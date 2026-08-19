@@ -600,7 +600,9 @@
   #menu-overlay img,.proj-section img,.pf-poster,#hero img,.pane img{
     -webkit-touch-callout:none;-webkit-user-select:none;user-select:none;
   }
-  .proj-section[data-proj="4"] img{pointer-events:none}
+  .proj-section[data-proj="4"] img,.proj-section[data-proj="4"] > div:first-of-type{
+    pointer-events:none;-webkit-touch-callout:none;
+  }
 
   .pf-copy{
     /* pinned by its bottom edge - the button always lands on 950px of the
@@ -1050,23 +1052,29 @@
       background:none;backdrop-filter:none;-webkit-backdrop-filter:none;
       padding:0;border-radius:0;transform:none;
     }
+    /* the mockup: the astronaut runs nearly full width and the copy sits under
+       her, centred. everything is normal flow - the copy physically cannot
+       land on her, whatever her rendered height is. the float animation lifts
+       the wrapper 16px, so the wrapper carries that much padding to keep the
+       peak off the header and the dip off the title. */
     .proj-section[data-proj="4"] > div:first-of-type{
-      width:100%!important;margin:0 0 60px!important;
+      width:100%!important;margin:0 0 34px!important;padding:16px 0;
     }
     .proj-section[data-proj="4"] > div:first-of-type img{
-      width:70%!important;height:auto!important;max-width:none;
+      width:92%!important;height:auto!important;max-width:none;
       display:block;margin:0 auto;
     }
     .proj-section[data-proj="4"] h2{
       position:relative!important;right:auto!important;top:auto!important;
       font-size:27px!important;line-height:1.15!important;
+      text-align:center!important;
     }
     /* the desktop heading breaks after the greeting; here it runs as one line */
     .proj-section[data-proj="4"] h2 br{display:none}
     .proj-section[data-proj="4"] .ab-name{font-weight:inherit}
-    .proj-section[data-proj="4"] > div:last-of-type{margin-top:18px!important}
+    .proj-section[data-proj="4"] > div:last-of-type{margin-top:18px!important;text-align:center!important}
     /* the heading sits the same 14px above its copy as everywhere else */
-    .proj-section[data-proj="4"] .ab-card > div{margin-top:14px!important}
+    .proj-section[data-proj="4"] .ab-card > div{margin-top:14px!important;text-align:center!important}
     .proj-section[data-proj="4"] > div:last-of-type p{
       font-size:16px!important;line-height:1.55!important;margin:0 0 16px!important;
     }
