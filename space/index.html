@@ -1148,7 +1148,8 @@
 
 <div class="rl-loader" id="rl-loader">
   <div class="rl-mark">
-    <div class="rl-glow"><div class="rl-l rl-base"></div></div>
+    <div class="rl-glow"><div class="rl-l"></div></div>
+    <div class="rl-l rl-base"></div>
     <div class="rl-l rl-top"></div>
     <div class="rl-l rl-bot"></div>
   </div>
@@ -1419,10 +1420,26 @@
      them again mid-clip - which is why the clips froze and the first one took
      so long to appear. they are h.264 files now: 4.5MB instead of 44MB, played
      by the video decoder, streamed rather than downloaded whole. */
+  /* a phone ignores preload="auto" to save data, so setting src ahead of time
+     never actually buffered anything there - the download began mid-scroll and
+     the clip froze. the next chapter's clips are now pulled with fetch into a
+     blob, which the phone cannot defer, and the player is handed the local copy. */
+  const clipCache = {};              // src -> blob: URL, or a promise while in flight
+  function prime(src){
+    if (!src || clipCache[src]) return;
+    clipCache[src] = fetch(src)
+      .then(r => { if (!r.ok) throw 0; return r.blob(); })
+      .then(b => { clipCache[src] = URL.createObjectURL(b); })
+      .catch(() => { delete clipCache[src]; });
+  }
   function arm(v, src){
-    if (!src || v.dataset.src === src) return;
+    if (!src) return;
+    const c = clipCache[src];
+    const use = (typeof c === 'string') ? c : src;
+    if (v.dataset.use === use) return;
     v.dataset.src = src;
-    v.src = src;
+    v.dataset.use = use;
+    v.src = use;
     v.load();
   }
   const show = v => { v.classList.add('on'); };
@@ -1476,10 +1493,10 @@
     busy = false;
     flush();
     showCopy(idx);
-    /* the next chapter's opening clip is fetched while this one loops, so the
-       scroll into it starts on a file that is already there */
+    /* the next chapter's clips are fetched while this one loops, so the
+       scroll into it starts on files that are already here */
     const nx = CH[idx + 1];
-    if (nx && nx.play) arm(vp, nx.play);
+    if (nx && nx.play){ prime(nx.play); prime(nx.loop); }
     if (idx >= LAST - 1) warmMars();
   }
 
@@ -1502,6 +1519,8 @@
     mode = 'play';
     arm(vp, CH[n].play);
     arm(vl, CH[n].loop);               // have the loop ready before the clip ends
+    const nx2 = CH[n + 1];             // fast scrolling can outrun the loop's prefetch
+    if (nx2 && nx2.play){ prime(nx2.play); prime(nx2.loop); }
     vp.playbackRate = 1;
     vp.currentTime = 0;
     run(vp);
@@ -1916,7 +1935,7 @@
   /* the chapter clips come first; the moon and the portfolio clip follow */
   vp.addEventListener('canplaythrough', heavy, { once:true });
   setTimeout(heavy, 5000);
-  const queue = () => { arm(vp, CH[1].play); arm(vl, CH[1].loop); };
+  const queue = () => { prime(CH[1].play); prime(CH[1].loop); arm(vp, CH[1].play); arm(vl, CH[1].loop); };
   if (heroV.readyState >= 3) queue();
   else {
     heroV.addEventListener('canplaythrough', queue, { once:true });

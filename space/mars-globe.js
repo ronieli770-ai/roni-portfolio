@@ -6,8 +6,8 @@
   /* vendored: one same-origin file instead of a cross-origin module chain -
      esm.sh resolved three.mjs behind two redirects, which held the moon back
      by a full second on a phone connection */
-  const THREE_URL = 'vendor/three.module.min.js';
-  const GLTF_URL = 'vendor/GLTFLoader.js';
+  const THREE_URL = './vendor/three.module.min.js';
+  const GLTF_URL = './vendor/GLTFLoader.js';
   let threeP = null;
   const loadThree = () => (threeP = threeP || Promise.all([import(THREE_URL), import(GLTF_URL)]));
   const num = (el, name, dflt) => {
