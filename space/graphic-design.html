@@ -526,7 +526,9 @@
     /* Drive-In - no mobile frame in Figma, so it keeps the bento grid */
     .gd-sec[data-gd="4"] .gd-stage{
       aspect-ratio:auto;width:100%;height:100%;
-      display:grid;gap:12px;padding:74px 44px 16px 14px;overflow:visible;
+      /* the other sections' cards sit 3.73% inside their stage - 13px on a
+         402 screen - so the bento is inset to that same card line: 57/27 */
+      display:grid;gap:12px;padding:74px 57px 16px 27px;overflow:visible;
       direction:ltr;align-content:center;
       grid-template-columns:1fr 1fr;
     }
