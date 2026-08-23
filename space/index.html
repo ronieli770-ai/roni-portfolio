@@ -1390,9 +1390,9 @@
     <div class="ab-card">
     <h2 style="margin:0;text-align:right;font-weight:400;font-size:min(80px,4.63vw);line-height:.9625;background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent">נעים להכיר,<br> <span class="ab-name">רוני אליהו</span></h2>
     <div style="margin-top:min(48px,4.3vh);text-align:right;color:#fff;font-size:24px;line-height:normal">
-      <p style="margin:0 0 23px;font-weight:600">כשאנשים מגיעים לאתר שלכם, יש לכם בדיוק 3 שניות להוכיח להם שהם הגיעו למקום הנכון.</p>
-      <p style="margin:0 0 23px;font-weight:400">המטרה שלי היא לקחת עסקים מעולים ולהעניק להם נוכחות דיגיטלית <b>בסטנדרט הגבוה ביותר.</b> כל פרויקט אצלי נבנה מאפס מתוך שילוב של סטוריטלינג ויזואלי סוחף, אנימציות דינמיות ותשומת לב לכל פיקסל.</p>
-      <p style="margin:0;font-weight:400">כשעיצוב חדשני פוגש חשיבה חדה, התוצאה היא אתר עוצמתי מעורר השראה, כזה שגורם לכל לקוח מתעניין <b>להבין מיד שאתם הבחירה הנכונה.</b></p>
+      <p style="margin:0 0 23px;font-weight:600">רוב מי שבונה אתרים לא מגיע מעיצוב ומכתיבת תוכן. אני הגעתי משניהם.</p>
+      <p style="margin:0 0 23px;font-weight:400">נכנסתי לתחום מאהבה לעיצוב, והבנתי מהר שעסק שנראה רציני גם נתפס ככזה. שלוש שנים במשרד פרסום לימדו אותי שהעבודה לא מתחילה בעיצוב, אלא <b>באפיון העסק ובהבנה מה הלקוחות שלו באמת מחפשים.</b> רק כשהמסרים ברורים אפשר לדעת איפה למקם כל אחד מהם ואיך להבליט אותו.</p>
+      <p style="margin:0;font-weight:400">מהמפגש בין שני העולמות נולד עיצוב שהוא גם מכירתי, ואתר שנשאר בזיכרון. אני בונה אתרים שמביאים תוצאות, <b>וכשאני אומרת תוצאות אני מתכוונת למכירות.</b></p>
     </div>
     </div>
   </section>
@@ -2502,6 +2502,18 @@
     menuOv.classList.toggle('open');
     document.body.classList.toggle('menu-open', menuOv.classList.contains('open'));
   });
+
+  /* arriving from another page with #projects or #contact - the menu there
+     cannot call goSection, so it hands the target over in the url */
+  const HASH_NAV = { '#projects': 5, '#contact': 10 };
+  function navFromHash(){
+    const n = HASH_NAV[location.hash];
+    if (n === undefined) return;
+    /* wait for the loader to hand over, so the flight is not cut short */
+    setTimeout(() => goSection(n), 400);
+  }
+  addEventListener('hashchange', navFromHash);
+  navFromHash();
 
   /* anything carrying data-nav flies to that section - the menu links and the
      two buttons in the hero */
