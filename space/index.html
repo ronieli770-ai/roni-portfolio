@@ -898,22 +898,45 @@
     /* the copy sits at the top of the screen, 20px clear of the nav dots and
        the same distance from the left edge so the block reads as centred */
     /* three stacked blocks have to clear the moon's top edge */
-    .mars-sum{
-      top:auto;bottom:26px;white-space:normal;width:calc(100% - 58px);
-      padding:9px 16px;font-size:19px;border-radius:10px;
+    /* the section stops being a sticky stage here and becomes one centred
+       column that scrolls inside itself, with all three reasons and the
+       summary already visible. the moon is pinned low behind it. */
+    [data-mars-section]{height:auto!important}
+    [data-mars-section] > div{
+      position:relative!important;height:auto!important;overflow:visible!important;
+      padding:118px 44px 104px 14px;
     }
+    [data-mars-section] [data-mars-bg],
+    [data-mars-section] [data-scrim]{position:fixed!important}
+    [data-mars-section] mars-globe{
+      position:fixed!important;left:0!important;right:0!important;
+      top:auto!important;bottom:-20vh!important;height:72vh!important;width:100%!important;
+      z-index:0;
+    }
+    [data-mars-section] [data-intro]{
+      position:relative!important;inset:auto!important;
+      display:block!important;padding:0!important;z-index:2;
+    }
+    [data-mars-section] [data-intro] h2{font-size:27px!important;text-align:center!important}
     .mars-stops{
-      left:14px;right:44px;top:160px;flex-direction:column;gap:26px;
+      position:relative!important;left:auto!important;right:auto!important;top:auto!important;
+      margin-top:96px;flex-direction:column;gap:80px;z-index:2;
     }
-    [data-mars-section] [data-stop]{max-height:none!important}
-    /* the same left/right margins the rest of the mobile content sits in, so
-       the title is centred on the same axis as the method section */
-    [data-mars-section] [data-intro]{padding:118px 44px 0 14px!important}
-    [data-mars-section] [data-intro] h2{font-size:27px!important}
-    /* same treatment as the long copy in the portfolio sections */
-    [data-mars-section] [data-stop] span{width:64px!important;margin-bottom:13px!important}
+    /* the reveal is scroll-driven on a desktop; on a phone the whole column
+       arrives together, so the inline opacity the controller writes is undone */
+    [data-mars-section] [data-stop]{
+      max-height:none!important;text-align:center!important;
+      opacity:1!important;transform:none!important;
+    }
+    [data-mars-section] [data-stop] span{width:64px!important;margin:0 auto 13px!important}
     [data-mars-section] [data-stop] h3{font-size:19px!important;line-height:1.15!important;margin-bottom:10px!important}
     [data-mars-section] [data-stop] p{font-size:16px!important;line-height:1.4!important}
+    .mars-sum{
+      position:relative!important;left:auto!important;top:auto!important;bottom:auto!important;
+      transform:none!important;opacity:1!important;
+      margin:96px auto 0;white-space:normal;width:fit-content;max-width:100%;
+      padding:9px 16px;font-size:19px;border-radius:10px;
+    }
 
     /* projects - the carousel takes the top of the screen and the copy sits
        under it, on the same 14/44 margins as the rest of the mobile site */
@@ -1351,7 +1374,7 @@
     <div style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1.5px 1.5px at 16% 18%,#fff,transparent),radial-gradient(1.2px 1.2px at 74% 10%,#fff,transparent),radial-gradient(1.6px 1.6px at 56% 32%,#fff,transparent),radial-gradient(1.1px 1.1px at 88% 58%,#fff,transparent),radial-gradient(1.3px 1.3px at 34% 76%,#fff,transparent),radial-gradient(1.2px 1.2px at 66% 88%,#fff,transparent);opacity:.38"></div>
     <div class="why-reveal"></div>
 
-    <h2 class="why-title" style="position:relative;margin:0;background:linear-gradient(270deg,#FFFFFF 0%,#AFC9E4 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;font-size:clamp(38px,4.6vw,76px);font-weight:300;line-height:1.1;letter-spacing:-.015em;text-align:center">איך אני הופכת אתר לנכס מכירתי</h2>
+    <h2 class="why-title" style="position:relative;margin:0;background:linear-gradient(270deg,#FFFFFF 0%,#AFC9E4 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;font-size:clamp(38px,4.6vw,76px);font-weight:300;line-height:1.1;letter-spacing:-.015em;text-align:center">איך הופכים אתר לנכס מכירתי</h2>
 
     <div style="position:relative;display:flex;align-items:stretch;justify-content:center;gap:clamp(14px,2.2vw,42px);width:100%;max-width:1500px;flex-wrap:nowrap">
 
@@ -1359,7 +1382,7 @@
         <div style="width:clamp(120px,10.5vw,200px);aspect-ratio:1;border-radius:50%;overflow:hidden;flex:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%);mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%)">
           <img src="avatar-heart-m.webp" srcset="avatar-heart-m.webp 320w, avatar-heart.webp 1024w" sizes="(max-width:768px) 84px, 200px" alt="" style="display:block;width:100%;height:100%;object-fit:cover">
         </div>
-        <h3 style="margin:0;color:#EDF1F6;font-size:35px;font-weight:400;line-height:1.22;overflow-wrap:break-word;text-align:center">תוכן ומסרים<br> שנוגעים בכאב</h3>
+        <h3 style="margin:0;color:#EDF1F6;font-size:45px;font-weight:400;line-height:1.15;overflow-wrap:break-word;text-align:center">תוכן ומסרים<br> שנוגעים בכאב</h3>
         <p style="margin:0;color:#ffffff;font-size:18px;line-height:1.7;text-align:center;text-wrap:pretty">התהליך מתחיל באפיון העסק ובדיוק הכאב של הלקוחות שלכם. מהמסקנות נבנים המסרים שמלווים את הדף לאורכו, כך שהגולש מזהה את עצמו בכאב, רואה את התוצאה שהוא רוצה, ומבין איך אתם מביאים אותו אליה.</p>
       </article>
 
@@ -1367,7 +1390,7 @@
         <div style="width:clamp(132px,11.5vw,218px);aspect-ratio:1;border-radius:50%;overflow:hidden;flex:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%);mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%)">
           <img src="avatar-point-m.webp" srcset="avatar-point-m.webp 320w, avatar-point.webp 1024w" sizes="(max-width:768px) 84px, 200px" alt="" style="display:block;width:100%;height:100%;object-fit:cover">
         </div>
-        <h3 style="margin:0;color:#EDF1F6;font-size:35px;font-weight:400;line-height:1.22;overflow-wrap:break-word;text-align:center">עיצוב שממצב אתכם<br> בליגה אחרת</h3>
+        <h3 style="margin:0;color:#EDF1F6;font-size:45px;font-weight:400;line-height:1.15;overflow-wrap:break-word;text-align:center">עיצוב שממצב אתכם<br> בליגה אחרת</h3>
         <p style="margin:0;color:#ffffff;font-size:18px;line-height:1.7;text-align:center;text-wrap:pretty">הבחירות העיצוביות לא נועדו רק להיות יפות, הן נועדו לשדר שאתם הגוף הרציני בתחום. כשמשווים אתכם למתחרה, ההבדל הזה הוא מה שמכריע לטובתכם.</p>
       </article>
 
@@ -1375,7 +1398,7 @@
         <div style="width:clamp(120px,10.5vw,200px);aspect-ratio:1;border-radius:50%;overflow:hidden;flex:none;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%);mask-image:radial-gradient(circle at 50% 50%,#000 62%,rgba(0,0,0,0) 96%)">
           <img src="avatar-shekel-m.webp" srcset="avatar-shekel-m.webp 320w, avatar-shekel.webp 1024w" sizes="(max-width:768px) 84px, 200px" alt="" style="display:block;width:100%;height:100%;object-fit:cover">
         </div>
-        <h3 style="margin:0;color:#EDF1F6;font-size:35px;font-weight:400;line-height:1.22;overflow-wrap:break-word;text-align:center">אינטראקציות שמובילות<br> להשארת פרטים</h3>
+        <h3 style="margin:0;color:#EDF1F6;font-size:45px;font-weight:400;line-height:1.15;overflow-wrap:break-word;text-align:center">אינטראקציות שמובילות<br> להשארת פרטים</h3>
         <p style="margin:0;color:#ffffff;font-size:18px;line-height:1.7;text-align:center;text-wrap:pretty">טפסים שמרגישים כמו שיחה, שאלונים שמדייקים לגולש את המטרה שלו, ותנועה שמושכת את העין לשלב הבא. במקום שהגולש יחפש איפה משאירים פרטים, הדף מביא אותו לשם.</p>
       </article>
 
@@ -1443,7 +1466,7 @@
   const rail = document.getElementById('rail');
   const hint = document.getElementById('hint');
 
-  const SECTIONS = ['פתיחה','המראה','שיוט','נעים להכיר','אתר שנועד למכור','פרויקט 1','פרויקט 2','פרויקט 3','איך אני הופכת אתר לנכס מכירתי','נעים להכיר, רוני אליהו','מוכנים להמריא'];
+  const SECTIONS = ['פתיחה','המראה','שיוט','נעים להכיר','אתר שנועד למכור','פרויקט 1','פרויקט 2','פרויקט 3','איך הופכים אתר לנכס מכירתי','נעים להכיר, רוני אליהו','מוכנים להמריא'];
   SECTIONS.forEach(t => rail.insertAdjacentHTML('beforeend', '<b><span class="tip">' + t + '</span></b>'));
   const dots = [...rail.children];
   const railSet = n => dots.forEach((b, k) => b.classList.toggle('on', k === n));
@@ -1851,7 +1874,19 @@
     showCopy(LAST);
   }
 
+  /* on a phone the section is a plain scrolling column rather than a stage
+     that snaps between stations, so the gestures are left to the browser and
+     only the two ends are handled */
+  const MARS_FREE = matchMedia('(max-width:768px),(hover:none) and (pointer:coarse) and (max-width:1024px),(max-aspect-ratio:3/4) and (max-width:1400px)');
+  function marsEdge(dir){
+    const p = marsProgress();
+    if (dir > 0 && p >= 0.992){ enterProjects(); return true; }
+    if (dir < 0 && p <= 0.008){ exitMars(); return true; }
+    return false;
+  }
+
   marsWrap.addEventListener('wheel', e => {
+    if (MARS_FREE.matches){ marsEdge(e.deltaY); return; }
     e.preventDefault();
     marsGesture(e, e.deltaY);
   }, { passive:false });
@@ -1861,6 +1896,10 @@
   marsWrap.addEventListener('touchmove', e => {
     if (marsTouchY === null) return;
     const d = marsTouchY - e.touches[0].clientY;
+    if (MARS_FREE.matches){
+      if (Math.abs(d) > 12 && marsEdge(d)) marsTouchY = null;
+      return;                      // let the column scroll natively
+    }
     if (Math.abs(d) > 12){ marsGesture(e, d, true); marsTouchY = null; }
     else e.preventDefault();
   }, { passive:false });
