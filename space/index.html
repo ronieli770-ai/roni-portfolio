@@ -413,15 +413,15 @@
   }
   /* the three reasons stand side by side and stack up as you scroll */
   .mars-stops{
-    position:absolute;left:6vw;right:6vw;top:34vh;
+    position:absolute;left:6vw;right:6vw;top:28vh;
     display:flex;align-items:flex-start;gap:clamp(20px,2.6vw,48px);
   }
   .mars-stops [data-stop]{flex:1 1 0;min-width:0}
   /* the line that ties the three reasons together, in the site's cta colours */
   .mars-sum{
     position:absolute;left:50%;transform:translate(-50%,14px);
-    top:calc(34vh + 340px);
-    padding:min(22px,2vh) min(52px,3.4vw);border-radius:10px;
+    top:calc(28vh + 300px);
+    padding:min(13px,1.2vh) min(30px,2vw);border-radius:10px;
     background:linear-gradient(to left,#E0783C 0%,#FA9154 100%);
     box-shadow:0 18px 46px rgba(224,120,60,.32);
     color:#fff;font-family:'IBM Plex Sans Hebrew',sans-serif;
@@ -900,10 +900,10 @@
     /* three stacked blocks have to clear the moon's top edge */
     .mars-sum{
       top:auto;bottom:26px;white-space:normal;width:calc(100% - 58px);
-      padding:14px 22px;font-size:19px;border-radius:10px;
+      padding:9px 16px;font-size:19px;border-radius:10px;
     }
     .mars-stops{
-      left:14px;right:44px;top:187px;flex-direction:column;gap:40px;
+      left:14px;right:44px;top:160px;flex-direction:column;gap:26px;
     }
     [data-mars-section] [data-stop]{max-height:none!important}
     /* the same left/right margins the rest of the mobile content sits in, so
