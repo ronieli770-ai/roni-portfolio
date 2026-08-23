@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>עיצוב גרפי · סטודיו רוני</title>
 <meta name="description" content="עיצוב גרפי ומיתוג - סטודיו רוני אליהו.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -440,10 +440,11 @@
      pointer too so the mobile layout still applies there */
   @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px){
     /* header - a touch larger than standard, optically aligned to each other */
-    .logo{top:16px;left:14px;width:128px}
+    /* clear the notch and the status bar, which cut the wordmark */
+    .logo{top:calc(16px + env(safe-area-inset-top,0px));left:14px;width:128px}
     /* the logo png carries transparent padding - these offsets line the
        burger's bars up with the wordmark's ink, not with its box */
-    .menu{top:32px;right:28px;width:54px}
+    .menu{top:calc(32px + env(safe-area-inset-top,0px));right:28px;width:54px}
 
     /* title cards - mark sits beside the 35px heading */
     .gd-sec[data-gd="1"],.gd-sec[data-gd="5"],.gd-sec[data-gd="7"]{
@@ -648,7 +649,7 @@
   .wa-fab:hover{transform:translateY(-3px);background:#fff}
   .wa-fab:hover::before{background:#FA9154}
   @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px){
-    .wa-fab{--wa:56px;right:14px}
+    .wa-fab{--wa:56px;right:14px;bottom:calc(35px + env(safe-area-inset-bottom,0px))}
   }
 </style>
 </head>
