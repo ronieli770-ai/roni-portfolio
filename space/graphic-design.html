@@ -925,7 +925,14 @@
   const btn = document.querySelector('.menu');
   const ov = document.getElementById('menu-overlay');
   if (!btn || !ov) return;
-  btn.addEventListener('click', () => ov.classList.toggle('open'));
+  btn.addEventListener('click', () => {
+    /* the hover portrait is held in data-src - without this swap the
+       dark one fades out onto an empty image and she vanishes */
+    const lazy = ov.querySelector('img[data-src]');
+    if (lazy){ lazy.src = lazy.dataset.src; lazy.removeAttribute('data-src'); }
+    ov.classList.toggle('open');
+    document.body.classList.toggle('menu-open', ov.classList.contains('open'));
+  });
   addEventListener('keydown', e => { if (e.key === 'Escape') ov.classList.remove('open'); });
   /* one-shot glitch burst on hover */
   document.querySelectorAll('.glitch').forEach(el => {
