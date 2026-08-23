@@ -417,6 +417,19 @@
     display:flex;align-items:flex-start;gap:clamp(20px,2.6vw,48px);
   }
   .mars-stops [data-stop]{flex:1 1 0;min-width:0}
+  /* the line that ties the three reasons together, in the site's cta colours */
+  .mars-sum{
+    position:absolute;left:50%;transform:translate(-50%,14px);
+    top:calc(34vh + 340px);
+    padding:min(22px,2vh) min(52px,3.4vw);border-radius:999px;
+    background:linear-gradient(to left,#E0783C 0%,#FA9154 100%);
+    box-shadow:0 18px 46px rgba(224,120,60,.32);
+    color:#fff;font-family:'IBM Plex Sans Hebrew',sans-serif;
+    font-weight:600;font-size:min(30px,1.9vw);line-height:1.2;letter-spacing:-.01em;
+    white-space:nowrap;text-align:center;
+    opacity:0;transition:opacity .7s ease,transform .8s cubic-bezier(.2,.8,.2,1);
+  }
+  .mars-sum.on{opacity:1;transform:translate(-50%,0)}
   mars-globe:not(:defined){opacity:0}
 
   /* ---------- project sections ---------- */
@@ -885,6 +898,10 @@
     /* the copy sits at the top of the screen, 20px clear of the nav dots and
        the same distance from the left edge so the block reads as centred */
     /* three stacked blocks have to clear the moon's top edge */
+    .mars-sum{
+      top:auto;bottom:26px;white-space:normal;width:calc(100% - 58px);
+      padding:14px 22px;font-size:17px;border-radius:26px;
+    }
     .mars-stops{
       left:14px;right:44px;top:187px;flex-direction:column;gap:40px;
     }
@@ -1261,22 +1278,24 @@
       <div class="mars-stops">
       <div data-stop="1" style="text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
         <span style="display:block;width:116px;height:2px;margin:0 0 min(26px,2.6vh) auto;background:linear-gradient(to left,#FFB067,rgba(255,176,103,0.15));"></span>
-        <h3 style="margin:0 0 min(26px,2.8vh);font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;text-wrap:balance;">אתר שמצדיק מחיר גבוה יותר</h3>
+        <h3 style="margin:0 0 min(26px,2.8vh);font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;">אתר שמצדיק מחיר גבוה יותר</h3>
         <p style="margin:0;font-weight:400;font-size:18px;line-height:1.6;color:#cfd4da;">כשהאתר נראה כמו של מותג גדול, הלקוח מפסיק להשוות אותך לזול ביותר. אותו שירות בדיוק נתפס כפרימיום - וההצעה שלך עוברת עם פחות מיקוח.</p>
       </div>
 
       <div data-stop="2" style="text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
         <span style="display:block;width:116px;height:2px;margin:0 0 min(26px,2.6vh) auto;background:linear-gradient(to left,#FFB067,rgba(255,176,103,0.15));"></span>
-        <h3 style="margin:0 0 min(26px,2.8vh);font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;text-wrap:balance;">חוויה שמחזיקה אותם עד הכפתור</h3>
+        <h3 style="margin:0 0 min(26px,2.8vh);font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;">חוויה שמחזיקה אותם עד הכפתור</h3>
         <p style="margin:0;font-weight:400;font-size:18px;line-height:1.6;color:#cfd4da;">רוב הגולשים מחליטים בשלוש שניות אם להישאר. תנועה, קצב ומידע שנחשף בגלילה מחזיקים אותם עד הסוף - ומשאירים אותם עם סיבה להשאיר פרטים.</p>
       </div>
 
       <div data-stop="3" style="text-align:right;opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .8s cubic-bezier(.2,.8,.2,1);">
         <span style="display:block;width:116px;height:2px;margin:0 0 min(26px,2.6vh) auto;background:linear-gradient(to left,#FFB067,rgba(255,176,103,0.15));"></span>
-        <h3 style="margin:0 0 min(26px,2.8vh);font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;text-wrap:balance;">ביקור שנשאר איתם גם אחרי שסגרו</h3>
+        <h3 style="margin:0 0 min(26px,2.8vh);font-weight:300;font-size:45px;line-height:1.1;letter-spacing:-.01em;color:#D7DEE8;">ביקור שנשאר איתם גם אחרי שסגרו</h3>
         <p style="margin:0;font-weight:400;font-size:18px;line-height:1.6;color:#cfd4da;">אתר לא צריך רק להציג שירותים - הוא צריך לקחת את הגולש למקום. כשהביקור מרגיש כמו חוויה, זוכרים אותך, מספרים עליך, וחוזרים כשיש תקציב.</p>
       </div>
       </div>
+
+      <div class="mars-sum" data-sum>וכשכל אלה עובדים יחד - נכנס לעסק יותר כסף</div>
     </div>
   </div>
 
@@ -1581,8 +1600,11 @@
     { p:0.860, zoom:1.15, offx:0.00, offy:-0.90, yaw:2.80, idle:-0.075, exp:1.06, haze:0.90, tilt:1.5708, glow:0.6, rim:0.25 , mscale:2 },
     { p:1.00, zoom:1.15, offx:0.00, offy:-2.60, yaw:2.80, idle:-0.075, exp:1.04, haze:0.90, tilt:1.5708, glow:0.6, rim:0.9 , mscale:2 },
   ];
-  const MARS_STOPS = [[0.30,0.458],[0.518,0.668],[0.718,0.800]];
-  const MARS_STATIONS = [0, 0.37, 0.59, 0.79, 1];
+  /* one scroll brings all three reasons in together, the next brings the line
+     that ties them to money, the third hands over to the portfolio */
+  const MARS_REASONS_AT = 0.34;
+  const MARS_SUM_AT = 0.62;
+  const MARS_STATIONS = [0, 0.42, 0.70, 1];
 
   let marsForceP = null;
   let projPrepped = false;
@@ -1667,19 +1689,20 @@
     if (mbg) mbg.style.opacity = p > 0.87 ? '0' : '1';
     if (p > 0.45 && !projWarmed){ projWarmed = true; projWarm(); }
     if (p > 0.84 && !projPrepped){ projPrepped = true; projPrepBehind(); }
-    let stop = 0;
-    for (let i = 0; i < MARS_STOPS.length; i++){
-      if (p >= MARS_STOPS[i][0] && p < MARS_STOPS[i][1]) stop = i+1;
-    }
+    const stop = (p >= MARS_REASONS_AT ? 1 : 0) + (p >= MARS_SUM_AT ? 1 : 0);
     if (stop !== marsStopIdx){
       marsStopIdx = stop;
+      const on = stop >= 1;
       for (let i = 1; i <= 3; i++){
-        const on = i <= stop;
         marsRoot.querySelectorAll('[data-stop="'+i+'"]').forEach(el => {
+          /* a light stagger so the three land one after another, not as a block */
+          el.style.transitionDelay = on ? ((i - 1) * 0.11).toFixed(2) + 's' : '0s';
           el.style.opacity = on ? '1' : '0';
           el.style.transform = 'translateY('+(on ? '0px' : '24px')+')';
         });
       }
+      const sum = marsRoot.querySelector('[data-sum]');
+      if (sum) sum.classList.toggle('on', stop >= 2);
     }
   }
 
