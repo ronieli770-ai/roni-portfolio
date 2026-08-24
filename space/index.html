@@ -906,7 +906,7 @@
     [data-mars-section]{height:auto!important}
     [data-mars-section] > div{
       position:relative!important;height:auto!important;overflow:visible!important;
-      padding:118px 44px 104px 14px;
+      padding:118px 44px 72px 14px;
     }
     [data-mars-section] [data-mars-bg],
     [data-mars-section] [data-scrim]{position:fixed!important}
@@ -922,7 +922,7 @@
     [data-mars-section] [data-intro] h2{font-size:27px!important;text-align:center!important}
     .mars-stops{
       position:relative!important;left:auto!important;right:auto!important;top:auto!important;
-      margin-top:96px;flex-direction:column;gap:80px;z-index:2;
+      margin-top:40px;flex-direction:column;gap:40px;z-index:2;
     }
     /* the reveal is scroll-driven on a desktop; on a phone the whole column
        arrives together, so the inline opacity the controller writes is undone */
@@ -936,7 +936,7 @@
     .mars-sum{
       position:relative!important;left:auto!important;top:auto!important;bottom:auto!important;
       transform:none!important;opacity:1!important;
-      margin:96px auto 0;white-space:normal;width:fit-content;max-width:100%;
+      margin:44px auto 0;white-space:normal;width:fit-content;max-width:100%;
       padding:9px 16px;font-size:19px;border-radius:10px;
     }
 
@@ -1631,6 +1631,9 @@
   const MARS_SUM_AT = 0.62;
   const MARS_STATIONS = [0, 0.42, 0.70, 1];
 
+  /* on a phone the section is a plain scrolling column rather than a stage
+     that snaps between stations */
+  const MARS_FREE = matchMedia('(max-width:768px),(hover:none) and (pointer:coarse) and (max-width:1024px),(max-aspect-ratio:3/4) and (max-width:1400px)');
   let marsForceP = null;
   let projPrepped = false;
   let projWarmed = false;
@@ -1703,7 +1706,8 @@
     /* the headline is the section's title now, so it stays up top the whole way
        and only clears out for the descent */
     const intro = marsRoot.querySelector('[data-intro]');
-    if (intro){ const f2 = Math.min(1, Math.max(0, (p-0.86)/0.06)); intro.style.opacity = String(1-f2); }
+    const free = MARS_FREE.matches;
+    if (intro){ const f2 = free ? 0 : Math.min(1, Math.max(0, (p-0.86)/0.06)); intro.style.opacity = String(1-f2); }
     const scrim = marsRoot.querySelector('[data-scrim]');
     if (scrim){
       if (!scrim.style.transition) scrim.style.transition = 'opacity .6s ease';
@@ -1711,9 +1715,13 @@
       if (scrim.style.opacity !== so) scrim.style.opacity = so;
     }
     const mbg = marsRoot.querySelector('[data-mars-bg]');
-    if (mbg) mbg.style.opacity = p > 0.87 ? '0' : '1';
+    /* the backdrop fades near the end so the projects can cross-fade in
+       behind it. on a phone the column just scrolls, so that would leave two
+       sections stacked on screen - it stays opaque there and enterProjects
+       does the prep itself. */
+    if (mbg) mbg.style.opacity = (!free && p > 0.87) ? '0' : '1';
     if (p > 0.45 && !projWarmed){ projWarmed = true; projWarm(); }
-    if (p > 0.84 && !projPrepped){ projPrepped = true; projPrepBehind(); }
+    if (!free && p > 0.84 && !projPrepped){ projPrepped = true; projPrepBehind(); }
     const stop = (p >= MARS_REASONS_AT ? 1 : 0) + (p >= MARS_SUM_AT ? 1 : 0);
     if (stop !== marsStopIdx){
       marsStopIdx = stop;
@@ -1876,14 +1884,17 @@
     showCopy(LAST);
   }
 
-  /* on a phone the section is a plain scrolling column rather than a stage
-     that snaps between stations, so the gestures are left to the browser and
-     only the two ends are handled */
-  const MARS_FREE = matchMedia('(max-width:768px),(hover:none) and (pointer:coarse) and (max-width:1024px),(max-aspect-ratio:3/4) and (max-width:1400px)');
+  /* the gestures are left to the browser on a phone; only the two ends of
+     the column are handled */
   function marsEdge(dir){
-    const p = marsProgress();
-    if (dir > 0 && p >= 0.992){ enterProjects(); return true; }
-    if (dir < 0 && p <= 0.008){ exitMars(); return true; }
+    /* read the scroller itself rather than the progress fraction - once the
+       column is short enough to fit the screen there is no progress to read,
+       and the section would trap the reader */
+    const room = marsWrap.scrollHeight - marsWrap.clientHeight;
+    const atBottom = marsWrap.scrollTop >= room - 2;
+    const atTop = marsWrap.scrollTop <= 2;
+    if (dir > 0 && atBottom){ enterProjects(); return true; }
+    if (dir < 0 && atTop){ exitMars(); return true; }
     return false;
   }
 

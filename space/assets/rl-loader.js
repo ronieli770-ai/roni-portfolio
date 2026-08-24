@@ -2,13 +2,24 @@
    (Glitch Logo Loader.dc.html / glitch-loader.jsx).
    Frame-quantized (24fps) hash noise drives the tears, slices, jitter and
    glow, exactly like the design; the 0.75s Hold is stretched so the whole
-   run lasts 5s. Shown on every load. */
+   run lasts 5s. Shown once per visit. */
 (function () {
   var DUR = 3000;                    // total run, ms
   var el = document.getElementById('rl-loader');
   if (!el) return;
   var mark = el.querySelector('.rl-mark');
   var root = document.documentElement;
+
+  /* the intro belongs to arriving at the site, not to every page view - a
+     return to the home page from another page must not replay it */
+  try {
+    if (sessionStorage.getItem('rl-intro-shown')){
+      if (el.parentNode) el.parentNode.removeChild(el);
+      return;
+    }
+    sessionStorage.setItem('rl-intro-shown', '1');
+  } catch (e) {}
+
   root.classList.add('rl-lock');
 
   var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
