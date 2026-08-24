@@ -1864,6 +1864,7 @@
 
   function enterMars(){
     marsMode = true;
+    marsSwipes = 0;
     marsWrap.classList.add('on');
     void marsWrap.offsetWidth;
     marsWrap.classList.add('vis');
@@ -1885,32 +1886,50 @@
   }
 
   /* the gestures are left to the browser on a phone; only the two ends of
-     the column are handled */
-  function marsEdge(dir){
-    /* read the scroller itself rather than the progress fraction - once the
-       column is short enough to fit the screen there is no progress to read,
-       and the section would trap the reader */
+     the column are handled. the hand-off needs a gesture of its own: the
+     swipe that carries the reader down to the last line must stop there,
+     and only the next one moves on. so the edge is read when a gesture
+     begins, not while it is running. */
+  function marsAtEdges(){
     const room = marsWrap.scrollHeight - marsWrap.clientHeight;
-    const atBottom = marsWrap.scrollTop >= room - 2;
-    const atTop = marsWrap.scrollTop <= 2;
-    if (dir > 0 && atBottom){ enterProjects(); return true; }
-    if (dir < 0 && atTop){ exitMars(); return true; }
-    return false;
+    return { bottom: marsWrap.scrollTop >= room - 2, top: marsWrap.scrollTop <= 2 };
   }
 
+  /* a column short enough to fit the screen has no scroll room at all, so
+     it reads as "at the bottom" from the very first touch. counting the
+     gestures made since arriving keeps the first one for the section
+     itself and lets only the one after it hand over. */
+  let marsSwipes = 0;
+  let marsWheelEdges = { bottom:false, top:false }, marsWheelTs = 0;
   marsWrap.addEventListener('wheel', e => {
-    if (MARS_FREE.matches){ marsEdge(e.deltaY); return; }
+    if (MARS_FREE.matches){
+      const now = performance.now();
+      if (now - marsWheelTs > 320){ marsWheelEdges = marsAtEdges(); marsSwipes++; }
+      marsWheelTs = now;
+      if (marsSwipes > 1){
+        if (e.deltaY > 0 && marsWheelEdges.bottom) enterProjects();
+        else if (e.deltaY < 0 && marsWheelEdges.top) exitMars();
+      }
+      return;
+    }
     e.preventDefault();
     marsGesture(e, e.deltaY);
   }, { passive:false });
 
-  let marsTouchY = null;
-  marsWrap.addEventListener('touchstart', e => { marsTouchY = e.touches[0].clientY; }, { passive:true });
+  let marsTouchY = null, marsTouchEdges = { bottom:false, top:false };
+  marsWrap.addEventListener('touchstart', e => {
+    marsTouchY = e.touches[0].clientY;
+    marsTouchEdges = marsAtEdges();
+    marsSwipes++;
+  }, { passive:true });
   marsWrap.addEventListener('touchmove', e => {
     if (marsTouchY === null) return;
     const d = marsTouchY - e.touches[0].clientY;
     if (MARS_FREE.matches){
-      if (Math.abs(d) > 12 && marsEdge(d)) marsTouchY = null;
+      if (Math.abs(d) > 12 && marsSwipes > 1){
+        if (d > 0 && marsTouchEdges.bottom){ marsTouchY = null; enterProjects(); }
+        else if (d < 0 && marsTouchEdges.top){ marsTouchY = null; exitMars(); }
+      }
       return;                      // let the column scroll natively
     }
     if (Math.abs(d) > 12){ marsGesture(e, d, true); marsTouchY = null; }
