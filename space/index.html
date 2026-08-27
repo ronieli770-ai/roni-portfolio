@@ -1014,6 +1014,8 @@
        the dots along with it. overflow-x:clip would have done the same on new
        browsers only; this works everywhere. */
     .pf-stage{
+      /* the drag is horizontal; vertical belongs to the column */
+      touch-action:pan-y;
       position:relative;left:auto;top:auto;width:auto;
       margin:0 -44px 0 -14px;overflow:hidden;
       /* the side cards are pushed down 14px and tilted 6deg, so they reach
@@ -1471,7 +1473,7 @@
   <section class="proj-section" data-proj="4" style="background:#000">
     <galaxy-bg style="position:absolute;inset:0;pointer-events:none"></galaxy-bg>
     <div style="position:absolute;left:11.63%;top:14.77%;width:min(33%,60vh);animation:astro-float 7s ease-in-out infinite;will-change:transform">
-      <img src="astronaut.webp" srcset="astronaut-m.webp 507w, astronaut.webp 951w" sizes="(max-width:768px) 92vw, 33vw" alt="" style="display:block;width:100%;transform:scaleX(-1);filter:brightness(.8) contrast(1.04) saturate(.9);image-rendering:auto">
+      <img src="astronaut.webp" srcset="astronaut-m.webp 812w, astronaut.webp 1623w" sizes="(max-width:768px) 92vw, 33vw" alt="" style="display:block;width:100%;transform:scaleX(-1);filter:brightness(.8) contrast(1.04) saturate(.9);image-rendering:auto">
     </div>
     <div class="ab-card">
     <h2 style="margin:0;text-align:right;font-weight:400;font-size:min(80px,4.63vw);line-height:.9625;background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent">נעים להכיר,<br> <span class="ab-name">רוני אליהו</span></h2>
@@ -2449,6 +2451,17 @@
 
   (function carouselLoop(){
     requestAnimationFrame(carouselLoop);
+    /* in the column there is no single active section - any carousel the
+       reader can see has to answer to their finger, so each one on screen
+       gets its frame */
+    if (MARS_FREE.matches){
+      carousels.forEach((c, i) => {
+        if (!c) return;
+        const r = projSections[i].getBoundingClientRect();
+        if (r.bottom > 0 && r.top < innerHeight) c.tick();
+      });
+      return;
+    }
     if (!projMode) return;
     const c = carousels[projIdx];
     if (c) c.tick();
