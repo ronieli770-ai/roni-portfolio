@@ -328,14 +328,12 @@
   /* ---------- sticky site header ---------- */
   .logo{position:fixed;top:clamp(16px,2.8vh,32px);left:2.2vw;width:min(170px,11vw);z-index:20}
   .logo img{width:100%;display:block}
-  .menu{position:fixed;top:clamp(16px,2.8vh,32px);right:2.2vw;z-index:20;width:min(78px,5.2vw);aspect-ratio:78/76;cursor:pointer}
-  .menu i{position:absolute;display:block;background:#fff;width:44.3%;height:9.7%}
+  .menu{position:fixed;top:clamp(16px,2.8vh,32px);right:2.2vw;z-index:20;width:min(78px,5.2vw);aspect-ratio:79/54;cursor:pointer}
+  /* three bars on a 79x54 box, the middle one nudged right by 7 */
+  .menu i{position:absolute;display:block;background:#fff;width:91.14%;height:20.06%}
   .menu i:nth-child(1){left:0;top:0}
-  .menu i:nth-child(2){left:0;top:19.4%}
-  .menu i:nth-child(3){left:0;top:38.8%}
-  .menu i:nth-child(4){left:53.2%;top:9.7%}
-  .menu i:nth-child(5){left:53.2%;top:29.1%}
-  .menu i:nth-child(6){left:53.2%;top:48.5%}
+  .menu i:nth-child(2){left:8.86%;top:40.12%}
+  .menu i:nth-child(3){left:0;top:79.94%}
 
   /* ---------- section 2 - מדריכים ב+ ---------- */
   /* the whole composition keeps the figma aspect ratio, so nothing stretches
@@ -658,7 +656,7 @@
 <div class="bg-mark"><img src="assets/logo.webp" alt=""></div>
 
 <a class="logo" href="index.html"><img src="assets/logo.webp" alt="סטודיו רוני"></a>
-<div class="menu"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<div class="menu"><i></i><i></i><i></i></div>
 
 <div id="menu-overlay">
   <img class="mo-logo" src="assets/logo.webp" alt="סטודיו רוני">

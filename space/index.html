@@ -68,14 +68,12 @@
   #hdr-glass.on{opacity:1}
   .logo{position:fixed;top:clamp(16px,2.8vh,32px);left:2.2vw;width:min(170px,11vw);z-index:12}
   .logo img{width:100%;display:block}
-  .menu{position:fixed;top:clamp(16px,2.8vh,32px);right:2.2vw;z-index:12;width:min(78px,5.2vw);aspect-ratio:78/76;cursor:pointer}
-  .menu i{position:absolute;display:block;background:#fff;width:44.3%;height:9.7%}
+  .menu{position:fixed;top:clamp(16px,2.8vh,32px);right:2.2vw;z-index:12;width:min(78px,5.2vw);aspect-ratio:79/54;cursor:pointer}
+  /* three bars on a 79x54 box, the middle one nudged right by 7 */
+  .menu i{position:absolute;display:block;background:#fff;width:91.14%;height:20.06%}
   .menu i:nth-child(1){left:0;top:0}
-  .menu i:nth-child(2){left:0;top:19.4%}
-  .menu i:nth-child(3){left:0;top:38.8%}
-  .menu i:nth-child(4){left:53.2%;top:9.7%}
-  .menu i:nth-child(5){left:53.2%;top:29.1%}
-  .menu i:nth-child(6){left:53.2%;top:48.5%}
+  .menu i:nth-child(2){left:8.86%;top:40.12%}
+  .menu i:nth-child(3){left:0;top:79.94%}
 
   /* ---------- menu overlay ---------- */
   #menu-overlay{
@@ -940,6 +938,35 @@
       padding:9px 16px;font-size:19px;border-radius:10px;
     }
 
+    /* ---------- one continuous column on a phone ----------
+       the projects sit inside the mars scroller, so everything from
+       "אתר שנועד למכור" down scrolls as an ordinary page. */
+    html.m-flow #mars-wrap{overscroll-behavior:contain}
+    html.m-flow #projects-wrap{
+      position:relative!important;inset:auto!important;
+      display:block!important;z-index:auto!important;
+    }
+    html.m-flow .proj-section{
+      position:relative!important;inset:auto!important;
+      opacity:1!important;pointer-events:auto!important;
+      transition:none!important;
+    }
+    /* the three carousels are built as fixed-height stages, so they keep a
+       screen each; the copy sections take whatever height they need */
+    html.m-flow .proj-section[data-proj="0"],
+    html.m-flow .proj-section[data-proj="1"],
+    html.m-flow .proj-section[data-proj="2"]{height:100svh!important;overflow:hidden!important}
+    html.m-flow .proj-section[data-proj="3"],
+    html.m-flow .proj-section[data-proj="4"],
+    html.m-flow .proj-section[data-proj="5"]{
+      height:auto!important;min-height:100svh;overflow:visible!important;
+    }
+    /* those two carry backdrops that were pinned to the viewport while the
+       section owned the screen - in the column they belong to the section */
+    html.m-flow .proj-section[data-proj="3"] > div:not(:last-of-type){
+      position:absolute!important;inset:0!important;
+    }
+
     /* projects - the carousel takes the top of the screen and the copy sits
        under it, on the same 14/44 margins as the rest of the mobile site */
     .proj-section .proj-scrim{display:none!important}
@@ -1221,7 +1248,7 @@
 
 <div id="hdr-glass"></div>
 <a class="logo" href="#"><img src="assets/logo.webp" alt="סטודיו רוני"></a>
-<div class="menu"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<div class="menu"><i></i><i></i><i></i></div>
 
 <div id="menu-overlay">
   <img class="mo-logo" src="assets/logo.webp" alt="סטודיו רוני">
@@ -1900,16 +1927,15 @@
      gestures made since arriving keeps the first one for the section
      itself and lets only the one after it hand over. */
   let marsSwipes = 0;
+  let marsFlowTop = el => el.offsetTop;   // replaced once the column is built
+  let marsFlowRefresh = () => {};
   let marsWheelEdges = { bottom:false, top:false }, marsWheelTs = 0;
   marsWrap.addEventListener('wheel', e => {
     if (MARS_FREE.matches){
       const now = performance.now();
       if (now - marsWheelTs > 320){ marsWheelEdges = marsAtEdges(); marsSwipes++; }
       marsWheelTs = now;
-      if (marsSwipes > 1){
-        if (e.deltaY > 0 && marsWheelEdges.bottom) enterProjects();
-        else if (e.deltaY < 0 && marsWheelEdges.top) exitMars();
-      }
+      if (marsSwipes > 1 && e.deltaY < 0 && marsWheelEdges.top) exitMars();
       return;
     }
     e.preventDefault();
@@ -1926,9 +1952,8 @@
     if (marsTouchY === null) return;
     const d = marsTouchY - e.touches[0].clientY;
     if (MARS_FREE.matches){
-      if (Math.abs(d) > 12 && marsSwipes > 1){
-        if (d > 0 && marsTouchEdges.bottom){ marsTouchY = null; enterProjects(); }
-        else if (d < 0 && marsTouchEdges.top){ marsTouchY = null; exitMars(); }
+      if (Math.abs(d) > 12 && marsSwipes > 1 && d < 0 && marsTouchEdges.top){
+        marsTouchY = null; exitMars();          // the projects live below now
       }
       return;                      // let the column scroll natively
     }
@@ -2082,6 +2107,12 @@
 
   function projShow(n){
     projIdx = n;
+    if (MARS_FREE.matches){                   // the column holds them all
+      const sec = projSections[n];
+      if (sec) marsWrap.scrollTo({ top: marsFlowTop(sec), behavior:'smooth' });
+      railSet(5 + n);
+      return;
+    }
     projSections.forEach((s, i) => {
       s.classList.toggle('active', i === n);
       s.classList.remove('enter');
@@ -2469,6 +2500,24 @@
       else go(n);
       return;
     }
+    if (MARS_FREE.matches && n >= 4){
+      /* the column is already built - just make sure it is on screen and
+         glide to the block that was asked for */
+      projMode = true;
+      projWrap.classList.add('on');
+      if (!marsMode){
+        hideCopy(idx); hero.classList.add('off');
+        stage.classList.remove('on'); veil.classList.remove('on');
+        document.getElementById('bg').style.display = 'none';
+        hint.style.display = 'none';
+        enterMars();
+      }
+      const target = n === 4 ? marsRoot : projSections[n - 5];
+      if (target) marsWrap.scrollTo({ top: n === 4 ? 0 : marsFlowTop(target), behavior:'smooth' });
+      railSet(n);
+      setTimeout(marsFlowRefresh, 60);
+      return;
+    }
     if (n === 4){
       if (marsMode) return;
       if (projMode){ exitProjects(); return; }
@@ -2522,6 +2571,7 @@
   }
 
   projWrap.addEventListener('wheel', e => {
+    if (MARS_FREE.matches) return;            // one continuous column there
     if (ownScroll(e.deltaY)) return;
     e.preventDefault();
     if (Math.abs(e.deltaY) < 4) return;
@@ -2533,6 +2583,7 @@
     projTouchY = e.touches[0].clientY; projTouchX = e.touches[0].clientX;
   }, { passive: true });
   projWrap.addEventListener('touchmove', e => {
+    if (MARS_FREE.matches) return;            // one continuous column there
     if (projTouchY === null) return;
     const d = projTouchY - e.touches[0].clientY;
     const dx = projTouchX - e.touches[0].clientX;
@@ -2657,6 +2708,53 @@
       if (e.target === el) el.classList.remove('is-glitching');
     });
   });
+  /* ---------- the phone's single scrolling column ----------
+     the projects move inside the mars scroller, so everything from
+     "אתר שנועד למכור" down is one ordinary scroll. the chapters above it
+     keep their cinematic stage. runs last, once every section and carousel
+     it talks to has been built. */
+  if (MARS_FREE.matches){
+    marsWrap.appendChild(projWrap);
+    projWrap.classList.add('on');
+    projMode = true;
+    document.documentElement.classList.add('m-flow');
+
+    /* offsetTop is measured against projWrap, not against the scroller */
+    marsFlowTop = sec => sec.getBoundingClientRect().top
+                       - marsWrap.getBoundingClientRect().top + marsWrap.scrollTop;
+
+    /* an IntersectionObserver built while the column is still display:none
+       never starts reporting, so the scroller is read directly instead */
+    const entered = new WeakSet(), started = new WeakSet();
+    const glass = document.getElementById('hdr-glass');
+    function marsFlowSync(){
+      const vh = marsWrap.clientHeight;
+      const top = marsWrap.scrollTop, mid = top + vh * 0.5;
+      let cur = -1;
+      projSections.forEach((sec, i) => {
+        const t = marsFlowTop(sec), b = t + sec.offsetHeight;
+        const onScreen = b > top && t < top + vh;
+        if (onScreen && !entered.has(sec)){ entered.add(sec); sec.classList.add('enter'); }
+        sec.querySelectorAll('video').forEach(v => {
+          if (onScreen){ if (v.paused) v.play().catch(() => {}); }
+          else if (!v.paused) v.pause();
+        });
+        if (mid >= t && mid < b) cur = i;
+      });
+      if (cur >= 0){
+        if (projIdx !== cur){
+          projIdx = cur;
+          const car = carousels[cur];
+          if (car && !started.has(projSections[cur])){ started.add(projSections[cur]); car.reset(); }
+        }
+        railSet(5 + cur);
+      } else railSet(4);
+      if (glass) glass.classList.toggle('on', top > 8);
+    }
+    marsWrap.addEventListener('scroll', marsFlowSync, { passive:true });
+    marsFlowRefresh = marsFlowSync;
+  }
+
 })();
 </script>
 <script src="dev-review.js"></script>
