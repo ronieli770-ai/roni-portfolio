@@ -1017,6 +1017,14 @@
     html.m-flow .proj-section[data-proj="4"] galaxy-bg{
       position:absolute!important;inset:0!important;z-index:0;border-radius:20px;
     }
+    /* she sits at the head of the card, over the stars */
+    html.m-flow .proj-section[data-proj="4"] .ab-card .astro{
+      position:relative!important;left:auto!important;top:auto!important;
+      width:100%!important;margin:0 0 4px!important;padding:0!important;
+    }
+    html.m-flow .proj-section[data-proj="4"] .ab-card .astro img{
+      width:74%!important;margin:0 auto;display:block;
+    }
     /* the moon under the form belongs to a full-screen section, not a column */
     html.m-flow .proj-section[data-proj="5"] > img:last-of-type{display:none!important}
     /* those two carry backdrops that were pinned to the viewport while the
@@ -1496,7 +1504,7 @@
 
   <section class="proj-section" data-proj="4" style="background:#000">
     <galaxy-bg style="position:absolute;inset:0;pointer-events:none"></galaxy-bg>
-    <div style="position:absolute;left:11.63%;top:14.77%;width:min(33%,60vh);animation:astro-float 7s ease-in-out infinite;will-change:transform">
+    <div class="astro" style="position:absolute;left:11.63%;top:14.77%;width:min(33%,60vh);animation:astro-float 7s ease-in-out infinite;will-change:transform">
       <img src="astronaut.webp" srcset="astronaut-m.webp 812w, astronaut.webp 1623w" sizes="(max-width:768px) 92vw, 33vw" alt="" style="display:block;width:100%;transform:scaleX(-1);filter:brightness(.8) contrast(1.04) saturate(.9);image-rendering:auto">
     </div>
     <div class="ab-card">
@@ -2792,7 +2800,9 @@
       const about = projSections[4];
       const stars = about && about.querySelector('galaxy-bg');
       const card  = about && about.querySelector('.ab-card');
+      const astro = about && about.querySelector('.astro');
       if (stars && card) card.insertBefore(stars, card.firstChild);
+      if (astro && card) card.insertBefore(astro, card.querySelector('h2'));
     })();
     projWrap.classList.add('on');
     projMode = true;
