@@ -934,27 +934,30 @@
     /* the reasons sit in the same glass cards as the method section */
     [data-mars-section] [data-stop]{
       max-height:none!important;text-align:center!important;
-      opacity:.55!important;transform:none!important;
-      transition:opacity .45s ease,background .45s ease,box-shadow .45s ease;
       padding:20px;border-radius:20px;border:1.5px solid transparent;
       background:linear-gradient(135deg,rgba(255,255,255,.095) 0%,rgba(255,255,255,.01) 100%) padding-box,
                  linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.10) 100%) border-box;
       box-shadow:0 24px 60px rgba(0,0,0,.35);
       -webkit-backdrop-filter:blur(40px);backdrop-filter:blur(40px);
     }
-    /* the one in the middle of the screen carries the reader's attention */
-    [data-mars-section] [data-stop].lit{
-      opacity:1!important;
-      background:linear-gradient(135deg,rgba(255,255,255,.14) 0%,rgba(255,255,255,.02) 100%) padding-box,
-                 linear-gradient(180deg,rgba(141,168,203,.35) 0%,rgba(141,168,203,.55) 100%) border-box;
-      box-shadow:0 24px 60px rgba(0,0,0,.35),0 0 34px rgba(141,168,203,.22);
+    /* each card rises into place in turn as the section arrives */
+    [data-mars-section] [data-stop],
+    [data-mars-section] .mars-sum{opacity:0}
+    [data-mars-section].stops-in [data-stop]{animation:mars-rise .7s cubic-bezier(.16,1,.3,1) both}
+    [data-mars-section].stops-in [data-stop]:nth-child(2){animation-delay:.12s}
+    [data-mars-section].stops-in [data-stop]:nth-child(3){animation-delay:.24s}
+    [data-mars-section].stops-in .mars-sum{animation:mars-rise .7s cubic-bezier(.16,1,.3,1) .38s both}
+    @keyframes mars-rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+    /* nothing may depend on the animation actually running to be readable */
+    @media (prefers-reduced-motion: reduce){
+      [data-mars-section] [data-stop],
+      [data-mars-section] .mars-sum{opacity:1;animation:none!important}
     }
     [data-mars-section] [data-stop] span{width:64px!important;margin:0 auto 13px!important}
     [data-mars-section] [data-stop] h3{font-size:19px!important;line-height:1.15!important;margin-bottom:10px!important}
     [data-mars-section] [data-stop] p{font-size:16px!important;line-height:1.4!important}
     .mars-sum{
       position:relative!important;left:auto!important;top:auto!important;bottom:auto!important;
-      transform:none!important;opacity:1!important;
       margin:44px auto 0;white-space:normal;width:fit-content;max-width:100%;
       padding:9px 16px;font-size:19px;border-radius:10px;
     }
@@ -1818,7 +1821,7 @@
     if (p > 0.45 && !projWarmed){ projWarmed = true; projWarm(); }
     if (!free && p > 0.84 && !projPrepped){ projPrepped = true; projPrepBehind(); }
     const stop = (p >= MARS_REASONS_AT ? 1 : 0) + (p >= MARS_SUM_AT ? 1 : 0);
-    if (stop !== marsStopIdx){
+    if (!free && stop !== marsStopIdx){
       marsStopIdx = stop;
       const on = stop >= 1;
       for (let i = 1; i <= 3; i++){
@@ -1960,6 +1963,11 @@
   function enterMars(){
     marsMode = true;
     marsSwipes = 0;
+    if (MARS_FREE.matches){                 // replay the cards' entrance
+      marsRoot.classList.remove('stops-in');
+      void marsRoot.offsetWidth;
+      marsRoot.classList.add('stops-in');
+    }
     marsWrap.classList.add('on');
     void marsWrap.offsetWidth;
     marsWrap.classList.add('vis');
@@ -2815,7 +2823,6 @@
     /* an IntersectionObserver built while the column is still display:none
        never starts reporting, so the scroller is read directly instead */
     const entered = new WeakSet(), started = new WeakSet();
-    const marsStops = [...marsRoot.querySelectorAll('[data-stop]')];
     const glass = document.getElementById('hdr-glass');
     function marsFlowSync(){
       const vh = marsWrap.clientHeight;
@@ -2841,16 +2848,6 @@
       } else railSet(4);
       if (glass) glass.classList.toggle('on', top > 8);
 
-      /* light the reason nearest the middle of the screen, and nothing at all
-         once the reader has left the block behind */
-      const midY = vh / 2;
-      let lit = null, near = 1e9;
-      marsStops.forEach(st => {
-        const r = st.getBoundingClientRect();
-        const d = Math.abs((r.top + r.bottom) / 2 - midY);
-        if (d < near){ near = d; lit = st; }
-      });
-      marsStops.forEach(st => st.classList.toggle('lit', st === lit && near < vh * 0.6));
     }
     marsWrap.addEventListener('scroll', marsFlowSync, { passive:true });
     marsFlowRefresh = marsFlowSync;
