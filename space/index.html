@@ -66,9 +66,13 @@
     opacity:0;transition:opacity .28s ease;
   }
   #hdr-glass.on{opacity:1}
-  .logo{position:fixed;top:clamp(16px,2.8vh,32px);left:2.2vw;width:min(170px,11vw);z-index:12}
+  :root{--logo-w:min(170px,11vw);--hdr-top:clamp(16px,2.8vh,32px)}
+  .logo{position:fixed;top:var(--hdr-top);left:2.2vw;width:var(--logo-w);z-index:12}
   .logo img{width:100%;display:block}
-  .menu{position:fixed;top:clamp(16px,2.8vh,32px);right:2.2vw;z-index:12;width:min(78px,5.2vw);aspect-ratio:79/54;cursor:pointer}
+  /* the wordmark's ink is 57.42% of the logo file and centred in it, so the
+     full-bleed burger is scaled to that ink and hung on the same centre:
+     height = .5742 * .4815 * logo width, top = logo top + .1025 * width */
+  .menu{position:fixed;top:calc(var(--hdr-top) + var(--logo-w) * 0.1025);right:2.2vw;z-index:12;width:calc(var(--logo-w) * 0.4045);aspect-ratio:79/54;cursor:pointer}
   /* three bars on a 79x54 box, the middle one nudged right by 7 */
   .menu i{position:absolute;display:block;background:#fff;width:91.14%;height:20.06%}
   .menu i:nth-child(1){left:0;top:0}
@@ -842,10 +846,11 @@
     }
     /* the notch and the status bar eat the top of the screen on a phone,
        which is what cut the wordmark - the header now clears the safe area */
-    .logo{top:calc(16px + env(safe-area-inset-top,0px));left:14px;width:128px}
+    :root{--logo-w:128px;--hdr-top:calc(16px + env(safe-area-inset-top,0px))}
+    .logo{top:var(--hdr-top);left:14px;width:var(--logo-w)}
     /* the logo png carries transparent padding - these offsets line the
        burger's bars up with the wordmark's ink, not with its box */
-    .menu{top:calc(32px + env(safe-area-inset-top,0px));right:28px;width:54px}
+    .menu{top:calc(var(--hdr-top) + var(--logo-w) * 0.1025);right:28px;width:calc(var(--logo-w) * 0.4045)}
 
     /* hero */
     /* the first line has to hold "אתרים שגורמים לעסק שלכם" on one line - it
