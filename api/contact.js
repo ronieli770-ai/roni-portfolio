@@ -64,7 +64,15 @@ export default async function handler(req, res) {
     if (!r.ok) {
       /* the reason is kept in the function's logs; the browser is told only
          that it failed, so nothing about the account leaks into the page */
-      console.error('resend rejected the message:', r.status, await r.text());
+      /* shape only, never the key: enough to tell a truncated paste from a
+         wrong key, without putting secret material in the logs */
+      console.error('resend rejected the message:', r.status, await r.text(),
+        '| key shape:', JSON.stringify({
+          length: key.length,
+          prefix: key.slice(0, 3),
+          hasWhitespace: /\s/.test(key),
+          hasQuotes: /["']/.test(key),
+        }));
       return res.status(502).json({ error: 'send_failed' });
     }
     return res.status(200).json({ ok: true });
