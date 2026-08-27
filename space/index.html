@@ -71,8 +71,8 @@
   .logo img{width:100%;display:block}
   /* the wordmark's ink is 57.42% of the logo file and centred in it, so the
      full-bleed burger is scaled to that ink and hung on the same centre:
-     height = half that ink, top = logo top + .1717 * logo width */
-  .menu{position:fixed;top:calc(var(--hdr-top) + var(--logo-w) * 0.1717);right:2.2vw;z-index:12;width:calc(var(--logo-w) * 0.2023);aspect-ratio:79/54;cursor:pointer}
+     height = .75 of that ink, top = logo top + .1371 * logo width */
+  .menu{position:fixed;top:calc(var(--hdr-top) + var(--logo-w) * 0.1371);right:2.2vw;z-index:20;width:calc(var(--logo-w) * 0.3034);aspect-ratio:79/54;cursor:pointer}
   /* three bars on a 79x54 box, the middle one nudged right by 7 */
   .menu i{position:absolute;display:block;background:#fff;width:91.14%;height:20.06%}
   .menu i:nth-child(1){left:0;top:0}
@@ -80,8 +80,10 @@
   .menu i:nth-child(3){left:0;top:79.94%}
 
   /* ---------- menu overlay ---------- */
+  /* above #mars-wrap, which shares z-index 11 and would otherwise paint the
+     opened menu out of sight on a phone */
   #menu-overlay{
-    position:fixed;inset:0;z-index:11;
+    position:fixed;inset:0;z-index:13;
     background:
       radial-gradient(ellipse 80% 70% at 85% 40%,rgba(60,95,149,.55) 0%,transparent 70%),
       radial-gradient(ellipse 90% 80% at 20% 90%,rgba(20,35,60,.9) 0%,transparent 60%),
@@ -850,7 +852,7 @@
     .logo{top:var(--hdr-top);left:14px;width:var(--logo-w)}
     /* the logo png carries transparent padding - these offsets line the
        burger's bars up with the wordmark's ink, not with its box */
-    .menu{top:calc(var(--hdr-top) + var(--logo-w) * 0.1717);right:28px;width:calc(var(--logo-w) * 0.2023)}
+    .menu{top:calc(var(--hdr-top) + var(--logo-w) * 0.1371);right:28px;width:calc(var(--logo-w) * 0.3034)}
 
     /* hero */
     /* the first line has to hold "אתרים שגורמים לעסק שלכם" on one line - it
@@ -992,7 +994,21 @@
        gap before the method section */
     html.m-flow .proj-section[data-proj="2"]{min-height:0!important;padding-bottom:64px!important}
     /* pinned to the viewport it ran the whole length of the column */
-    html.m-flow .proj-section[data-proj="4"] galaxy-bg{position:absolute!important}
+    /* the copy sits in the same glass container as everywhere else, and the
+       star field lives inside it - so it has an edge to end on instead of
+       running into the blocks around it */
+    html.m-flow .proj-section[data-proj="4"] .ab-card{
+      position:relative;overflow:hidden;
+      padding:20px!important;border-radius:20px!important;
+      border:1.5px solid transparent;
+      background:linear-gradient(135deg,rgba(255,255,255,.095) 0%,rgba(255,255,255,.01) 100%) padding-box,
+                 linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.10) 100%) border-box;
+      box-shadow:0 24px 60px rgba(0,0,0,.35);
+    }
+    html.m-flow .proj-section[data-proj="4"] .ab-card > *{position:relative;z-index:1}
+    html.m-flow .proj-section[data-proj="4"] galaxy-bg{
+      position:absolute!important;inset:0!important;z-index:0;border-radius:20px;
+    }
     /* the moon under the form belongs to a full-screen section, not a column */
     html.m-flow .proj-section[data-proj="5"] > img:last-of-type{display:none!important}
     /* those two carry backdrops that were pinned to the viewport while the
@@ -2762,6 +2778,14 @@
      it talks to has been built. */
   if (MARS_FREE.matches){
     marsWrap.appendChild(projWrap);
+    /* the star field is a sibling of the copy; inside the card it gets an
+       edge to stop at */
+    (() => {
+      const about = projSections[4];
+      const stars = about && about.querySelector('galaxy-bg');
+      const card  = about && about.querySelector('.ab-card');
+      if (stars && card) card.insertBefore(stars, card.firstChild);
+    })();
     projWrap.classList.add('on');
     projMode = true;
     document.documentElement.classList.add('m-flow');

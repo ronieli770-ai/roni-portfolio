@@ -331,8 +331,8 @@
   .logo img{width:100%;display:block}
   /* the wordmark's ink is 57.42% of the logo file and centred in it, so the
      full-bleed burger is scaled to that ink and hung on the same centre:
-     height = half that ink, top = logo top + .1717 * logo width */
-  .menu{position:fixed;top:calc(var(--hdr-top) + var(--logo-w) * 0.1717);right:2.2vw;z-index:20;width:calc(var(--logo-w) * 0.2023);aspect-ratio:79/54;cursor:pointer}
+     height = .75 of that ink, top = logo top + .1371 * logo width */
+  .menu{position:fixed;top:calc(var(--hdr-top) + var(--logo-w) * 0.1371);right:2.2vw;z-index:20;width:calc(var(--logo-w) * 0.3034);aspect-ratio:79/54;cursor:pointer}
   /* three bars on a 79x54 box, the middle one nudged right by 7 */
   .menu i{position:absolute;display:block;background:#fff;width:91.14%;height:20.06%}
   .menu i:nth-child(1){left:0;top:0}
@@ -447,7 +447,7 @@
     .logo{top:var(--hdr-top);left:14px;width:var(--logo-w)}
     /* the logo png carries transparent padding - these offsets line the
        burger's bars up with the wordmark's ink, not with its box */
-    .menu{top:calc(var(--hdr-top) + var(--logo-w) * 0.1717);right:28px;width:calc(var(--logo-w) * 0.2023)}
+    .menu{top:calc(var(--hdr-top) + var(--logo-w) * 0.1371);right:28px;width:calc(var(--logo-w) * 0.3034)}
 
     /* title cards - mark sits beside the 35px heading */
     .gd-sec[data-gd="1"],.gd-sec[data-gd="5"],.gd-sec[data-gd="7"]{
