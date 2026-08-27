@@ -2555,17 +2555,13 @@
       formBtn.disabled = true;
       formBtn.textContent = 'שולח...';
       try {
-        const r = await fetch('https://formsubmit.co/ajax/ronieli770@gmail.com', {
+        /* our own endpoint, which mails it on through Resend - the key for
+           that lives on the server, never in this page */
+        const r = await fetch('/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({
-            _subject: 'ליד חדש מהאתר - ' + v(0),
-            _template: 'table',
-            'שם מלא': v(0),
-            'טלפון': v(1),
-            'שם העסק או אתר קיים': v(2),
-            'תחום העסק': v(3),
-            'יעד האתר': v(4)
+            name: v(0), phone: v(1), business: v(2), field: v(3), goal: v(4)
           })
         });
         if (!r.ok) throw new Error();
