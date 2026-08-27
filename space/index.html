@@ -925,13 +925,19 @@
     [data-mars-section] [data-intro] h2{font-size:27px!important;text-align:center!important}
     .mars-stops{
       position:relative!important;left:auto!important;right:auto!important;top:auto!important;
-      margin-top:40px;flex-direction:column;gap:40px;z-index:2;
+      margin-top:32px;flex-direction:column;gap:18px;z-index:2;
     }
     /* the reveal is scroll-driven on a desktop; on a phone the whole column
        arrives together, so the inline opacity the controller writes is undone */
+    /* the reasons sit in the same glass cards as the method section */
     [data-mars-section] [data-stop]{
       max-height:none!important;text-align:center!important;
       opacity:1!important;transform:none!important;
+      padding:20px;border-radius:20px;border:1.5px solid transparent;
+      background:linear-gradient(135deg,rgba(255,255,255,.095) 0%,rgba(255,255,255,.01) 100%) padding-box,
+                 linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.10) 100%) border-box;
+      box-shadow:0 24px 60px rgba(0,0,0,.35);
+      -webkit-backdrop-filter:blur(40px);backdrop-filter:blur(40px);
     }
     [data-mars-section] [data-stop] span{width:64px!important;margin:0 auto 13px!important}
     [data-mars-section] [data-stop] h3{font-size:19px!important;line-height:1.15!important;margin-bottom:10px!important}
@@ -951,21 +957,26 @@
       position:relative!important;inset:auto!important;
       display:block!important;z-index:auto!important;
     }
+    /* one black sheet behind the whole column: the sections themselves go
+       transparent, so a soft glow that reaches a section's edge carries on
+       over its neighbour instead of being cut off by an opaque background */
+    html.m-flow #projects-wrap{background:#000}
     html.m-flow .proj-section{
       position:relative!important;inset:auto!important;
       opacity:1!important;pointer-events:auto!important;
       transition:none!important;
-    }
-    /* the three carousels are built as fixed-height stages, so they keep a
-       screen each; the copy sections take whatever height they need */
-    html.m-flow .proj-section[data-proj="0"],
-    html.m-flow .proj-section[data-proj="1"],
-    html.m-flow .proj-section[data-proj="2"]{height:100svh!important;overflow:hidden!important}
-    html.m-flow .proj-section[data-proj="3"],
-    html.m-flow .proj-section[data-proj="4"],
-    html.m-flow .proj-section[data-proj="5"]{
+      background:transparent!important;
       height:auto!important;min-height:100svh;overflow:visible!important;
     }
+    /* each block used to scroll inside itself; in the column the page carries
+       it, and the last line needs room to clear the next block */
+    html.m-flow .proj-section[data-proj="0"],
+    html.m-flow .proj-section[data-proj="1"],
+    html.m-flow .proj-section[data-proj="2"]{padding-bottom:104px!important}
+    /* pinned to the viewport it ran the whole length of the column */
+    html.m-flow .proj-section[data-proj="4"] galaxy-bg{position:absolute!important}
+    /* the moon under the form belongs to a full-screen section, not a column */
+    html.m-flow .proj-section[data-proj="5"] > img:last-of-type{display:none!important}
     /* those two carry backdrops that were pinned to the viewport while the
        section owned the screen - in the column they belong to the section */
     html.m-flow .proj-section[data-proj="3"] > div:not(:last-of-type){
