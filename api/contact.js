@@ -25,7 +25,11 @@ export default async function handler(req, res) {
   }
 
   const key = process.env.RESEND_API_KEY;
-  if (!key) return res.status(500).json({ error: 'missing_api_key' });
+  if (!key) {
+    /* temporary aid while wiring the key up: names only, never any value */
+    const seen = Object.keys(process.env).filter(k => /resend|api_key/i.test(k));
+    return res.status(500).json({ error: 'missing_api_key', lookalikeNames: seen });
+  }
 
   const b = req.body || {};
   const name  = String(b.name  || '').trim();
