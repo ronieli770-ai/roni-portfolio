@@ -71,8 +71,8 @@
   .logo img{width:100%;display:block}
   /* the wordmark's ink is 57.42% of the logo file and centred in it, so the
      full-bleed burger is scaled to that ink and hung on the same centre:
-     height = .5742 * .4815 * logo width, top = logo top + .1025 * width */
-  .menu{position:fixed;top:calc(var(--hdr-top) + var(--logo-w) * 0.1025);right:2.2vw;z-index:12;width:calc(var(--logo-w) * 0.4045);aspect-ratio:79/54;cursor:pointer}
+     height = half that ink, top = logo top + .1717 * logo width */
+  .menu{position:fixed;top:calc(var(--hdr-top) + var(--logo-w) * 0.1717);right:2.2vw;z-index:12;width:calc(var(--logo-w) * 0.2023);aspect-ratio:79/54;cursor:pointer}
   /* three bars on a 79x54 box, the middle one nudged right by 7 */
   .menu i{position:absolute;display:block;background:#fff;width:91.14%;height:20.06%}
   .menu i:nth-child(1){left:0;top:0}
@@ -850,7 +850,7 @@
     .logo{top:var(--hdr-top);left:14px;width:var(--logo-w)}
     /* the logo png carries transparent padding - these offsets line the
        burger's bars up with the wordmark's ink, not with its box */
-    .menu{top:calc(var(--hdr-top) + var(--logo-w) * 0.1025);right:28px;width:calc(var(--logo-w) * 0.4045)}
+    .menu{top:calc(var(--hdr-top) + var(--logo-w) * 0.1717);right:28px;width:calc(var(--logo-w) * 0.2023)}
 
     /* hero */
     /* the first line has to hold "אתרים שגורמים לעסק שלכם" on one line - it
@@ -960,7 +960,22 @@
     /* one black sheet behind the whole column: the sections themselves go
        transparent, so a soft glow that reaches a section's edge carries on
        over its neighbour instead of being cut off by an opaque background */
-    html.m-flow #projects-wrap{background:#000}
+    html.m-flow #mars-wrap{background:#000}
+    html.m-flow #projects-wrap{background:transparent}
+    /* the ambience belongs to the mars block and fades out of it, instead of
+       being a viewport-wide sheet that the projects then cut a line across */
+    html.m-flow [data-mars-section] [data-mars-bg],
+    html.m-flow [data-mars-section] [data-scrim]{
+      position:absolute!important;
+      -webkit-mask-image:linear-gradient(180deg,#000 68%,transparent 100%);
+      mask-image:linear-gradient(180deg,#000 68%,transparent 100%);
+    }
+    /* the carousel glow is brightest right where the section starts, so its
+       top edge read as a hard line against the block above */
+    html.m-flow .pf-glow{
+      -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%);
+      mask-image:linear-gradient(180deg,transparent 0,#000 16%);
+    }
     html.m-flow .proj-section{
       position:relative!important;inset:auto!important;
       opacity:1!important;pointer-events:auto!important;
@@ -973,6 +988,9 @@
     html.m-flow .proj-section[data-proj="0"],
     html.m-flow .proj-section[data-proj="1"],
     html.m-flow .proj-section[data-proj="2"]{padding-bottom:104px!important}
+    /* the last one was holding a full screen it did not fill, which left a
+       gap before the method section */
+    html.m-flow .proj-section[data-proj="2"]{min-height:0!important;padding-bottom:64px!important}
     /* pinned to the viewport it ran the whole length of the column */
     html.m-flow .proj-section[data-proj="4"] galaxy-bg{position:absolute!important}
     /* the moon under the form belongs to a full-screen section, not a column */
@@ -1453,7 +1471,7 @@
   <section class="proj-section" data-proj="4" style="background:#000">
     <galaxy-bg style="position:absolute;inset:0;pointer-events:none"></galaxy-bg>
     <div style="position:absolute;left:11.63%;top:14.77%;width:min(33%,60vh);animation:astro-float 7s ease-in-out infinite;will-change:transform">
-      <img src="astronaut-m.webp" srcset="astronaut-m.webp 640w, astronaut.webp 1600w" sizes="(max-width:768px) 150px, 33vw" alt="" style="display:block;width:100%;transform:scaleX(-1);filter:brightness(.8) contrast(1.04) saturate(.9);image-rendering:auto">
+      <img src="astronaut.webp" srcset="astronaut-m.webp 507w, astronaut.webp 951w" sizes="(max-width:768px) 92vw, 33vw" alt="" style="display:block;width:100%;transform:scaleX(-1);filter:brightness(.8) contrast(1.04) saturate(.9);image-rendering:auto">
     </div>
     <div class="ab-card">
     <h2 style="margin:0;text-align:right;font-weight:400;font-size:min(80px,4.63vw);line-height:.9625;background:linear-gradient(to right,#8DA8CB 0%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent">נעים להכיר,<br> <span class="ab-name">רוני אליהו</span></h2>
