@@ -2871,9 +2871,11 @@
           if (car && !started.has(projSections[cur])){ started.add(projSections[cur]); car.reset(); }
         }
         /* the first sync runs while the hero is still on screen, so the rail
-           is left alone until this column is the one being looked at */
-        if (marsMode || projMode) railSet(5 + cur);
-      } else if (marsMode || projMode) railSet(4);
+           is left alone until this column is the one being looked at. projMode
+           is already true by then - the column is mounted during setup - so
+           marsMode is the flag that means someone actually arrived here. */
+        if (marsMode) railSet(5 + cur);
+      } else if (marsMode) railSet(4);
       if (glass) glass.classList.toggle('on', top > 8);
 
     }
