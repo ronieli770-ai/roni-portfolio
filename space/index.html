@@ -2472,7 +2472,10 @@
         if (k !== i){ if (v) v.pause(); return; }
         if (!v && c.dataset.clip){
           v = document.createElement('video');
-          v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
+          /* the clip is fetched when it is played, which only happens once the
+             card is on screen - asking for the whole file up front put several
+             megabytes on the wire before anyone had scrolled to it */
+          v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata';
           v.setAttribute('playsinline', '');
           v.setAttribute('muted', '');
           v.poster = c.dataset.clip.replace('.mp4', '.jpg');
@@ -2896,7 +2899,11 @@
       let cur = -1;
       projSections.forEach((sec, i) => {
         const t = marsFlowTop(sec), b = t + sec.offsetHeight;
-        const onScreen = b > top && t < top + vh;
+        /* the column is mounted during setup, while the reader is still on the
+           opening chapters, and this ran once right then. treating a section
+           as arrived at that point started a clip of several megabytes
+           downloading behind the hero. */
+        const onScreen = marsMode && b > top && t < top + vh;
         if (onScreen && !entered.has(sec)){ entered.add(sec); sec.classList.add('enter'); }
         sec.querySelectorAll('video').forEach(v => {
           if (onScreen){ if (v.paused) v.play().catch(() => {}); }
@@ -2908,7 +2915,11 @@
         if (projIdx !== cur){
           projIdx = cur;
           const car = carousels[cur];
-          if (car && !started.has(projSections[cur])){ started.add(projSections[cur]); car.reset(); }
+          /* building a carousel creates its front clip, so it waits for a
+             reader to actually be here rather than for the column to exist */
+          if (marsMode && car && !started.has(projSections[cur])){
+            started.add(projSections[cur]); car.reset();
+          }
         }
         /* the first sync runs while the hero is still on screen, so the rail
            is left alone until this column is the one being looked at. projMode
