@@ -584,11 +584,13 @@
     /* the photo's own margin is even now, so the tile takes its proportions */
     .gd-sec[data-gd="4"] .gd-stage .di-stationery{grid-area:2/1/3/3;aspect-ratio:1512/1007}
     .gd-sec[data-gd="4"] .gd-stage .di-stationery img{object-fit:cover}
-    /* fitting it inside left whatever the tile had spare at one edge, which
-       read as the picture sitting low in its frame. it is square and so is
-       the tile, so filling costs nothing and can leave no band at all. */
-    .gd-sec[data-gd="4"] .gd-stage .di-grid img{object-fit:cover}
-    .gd-sec[data-gd="4"] .gd-stage .di-grid{grid-area:3/1/4/2;aspect-ratio:1}
+    /* the tile takes its height from the picture inside it rather than from
+       the grid row, so the white frame is the padding and nothing else - a
+       percentage height here left the spare pixels at one edge only */
+    .gd-sec[data-gd="4"] .gd-stage .di-grid{grid-area:3/1/4/2;aspect-ratio:auto;align-self:start}
+    .gd-sec[data-gd="4"] .gd-stage .di-grid img{
+      width:100%;height:auto;aspect-ratio:1598/1600;object-fit:cover;display:block;
+    }
     .gd-sec[data-gd="4"] .gd-stage .di-colors{grid-area:3/2/4/3;background:#fff;padding:10px}
 
     /* המבורגר - synced 1:1 with index.html's build of figma node 337:47:
