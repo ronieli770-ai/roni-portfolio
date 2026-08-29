@@ -1197,9 +1197,15 @@
       26%{transform:translate3d(0,calc(-200% - 20px),0) rotate(5deg)}
       100%{opacity:1;transform:none}
     }
-    .proj-section.enter .why-card-a{animation:m-deck-a 1.5s cubic-bezier(.22,1,.36,1) .05s both}
-    .proj-section.enter .why-card-b{animation:m-deck-b 1.5s cubic-bezier(.22,1,.36,1) .05s both}
-    .proj-section.enter .why-card-c{animation:m-deck-c 1.5s cubic-bezier(.22,1,.36,1) .05s both}
+    /* the section counts as entered the moment its top edge appears, and the
+       cards are far below that - the deck had finished dealing itself before
+       anyone scrolled down to it. they wait for their own turn instead. */
+    .proj-section[data-proj="3"] .why-card-a,
+    .proj-section[data-proj="3"] .why-card-b,
+    .proj-section[data-proj="3"] .why-card-c{opacity:0}
+    .proj-section.deck-in .why-card-a{animation:m-deck-a 1.5s cubic-bezier(.22,1,.36,1) .05s both}
+    .proj-section.deck-in .why-card-b{animation:m-deck-b 1.5s cubic-bezier(.22,1,.36,1) .05s both}
+    .proj-section.deck-in .why-card-c{animation:m-deck-c 1.5s cubic-bezier(.22,1,.36,1) .05s both}
     /* portrait on the right with the heading beside it, and the paragraph on
        its own row underneath running the full width of both. floating the
        portrait used to let the copy wrap under it and pushed it past the card. */
@@ -2882,6 +2888,8 @@
     const entered = new WeakSet(), started = new WeakSet();
     const glass = document.getElementById('hdr-glass');
     const stopsEl = marsRoot.querySelector('.mars-stops');
+    const deckSec = projSections[3];
+    const deckEl  = deckSec && deckSec.querySelector(':scope > div:last-child');
     function marsFlowSync(){
       const vh = marsWrap.clientHeight;
       const top = marsWrap.scrollTop, mid = top + vh * 0.5;
@@ -2916,6 +2924,12 @@
       if (stopsEl && !marsRoot.classList.contains('stops-in')
           && stopsEl.getBoundingClientRect().top < vh * 1.05){
         marsRoot.classList.add('stops-in');
+      }
+
+      /* the method section's deck deals itself on the same terms */
+      if (deckEl && !deckSec.classList.contains('deck-in')
+          && deckEl.getBoundingClientRect().top < vh * 1.05){
+        deckSec.classList.add('deck-in');
       }
 
     }
