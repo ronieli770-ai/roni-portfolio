@@ -1985,6 +1985,9 @@
     vp.pause(); vl.pause();
     railSet(4);
     marsUpdate();
+    /* the section has landed - now the cards can make their entrance. arming
+       it at the top of the slide spent most of it behind the move. */
+    armStops();
   }
 
   /* the closing screen slides up while the moon rises into its place - both are
@@ -2004,7 +2007,6 @@
   function slideToMars(){
     if (marsMode) return;
     marsMode = true;
-    armStops();
     marsWrap.classList.add('on', 'vis', 'sliding');
     marsWrap.style.setProperty('--mo', '100vh');
     openLayers.forEach(el => el.classList.add('handoff'));
@@ -2032,7 +2034,6 @@
   function enterMars(){
     marsMode = true;
     marsSwipes = 0;
-    armStops();                           // replay the cards' entrance
     marsWrap.classList.add('on');
     void marsWrap.offsetWidth;
     marsWrap.classList.add('vis');
