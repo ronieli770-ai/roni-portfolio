@@ -1067,8 +1067,9 @@
        the dots along with it. overflow-x:clip would have done the same on new
        browsers only; this works everywhere. */
     .pf-stage{
-      /* the drag is horizontal; vertical belongs to the column */
-      touch-action:pan-y;
+      /* a finger here belongs to the carousel alone. while the column also
+         claimed the vertical, one drag moved the slides and the page at once. */
+      touch-action:none;
       position:relative;left:auto;top:auto;width:auto;
       margin:0 -44px 0 -14px;overflow:hidden;
       /* the side cards are pushed down 14px and tilted 6deg, so they reach
@@ -1098,6 +1099,8 @@
     .pf-bar span{height:14px;font-size:8.5px}
     .pf-stage[data-format="site"] .pf-screen{height:calc(100% - 22px)}
     .pf-blank{font-size:11px}
+    /* the same goes for the row of dots under it */
+    .pf-dots{touch-action:none}
     .pf-dots,
     .proj-section:has(.pf-stage[data-format="site"]) .pf-dots{
       position:relative;left:auto;top:auto;bottom:auto;transform:none;
