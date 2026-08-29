@@ -380,7 +380,7 @@
   }
   .gp-card{position:absolute;left:79.21%;top:74.93%;width:11.86%;height:18.26%;border-radius:min(20px,1.16vw);background:#fff}
   .gp-mark{position:absolute;left:5.37%;top:0;width:88.78%;height:99.02%;object-fit:contain;display:block}
-  .gp-board{position:absolute;left:7.685%;top:16.38%;width:30.73%;height:65.17%;border-radius:min(20px,1.16vw);overflow:hidden}
+  .gp-board{position:absolute;left:7.685%;top:16.38%;width:30.73%;height:65.17%;border-radius:min(20px,1.16vw);overflow:hidden;isolation:isolate}
   .gp-board img{position:absolute;left:0;top:-8.34%;width:100%;height:109.54%;max-width:none;display:block}
   .gp-bottle{position:absolute;left:-5.486%;top:28.75%;width:40.02%;height:76.97%;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:3}
   .gp-bottle div{width:85.32%;height:91.51%;transform:rotate(-7.82deg)}
@@ -514,8 +514,12 @@
     .gd-sec[data-gd="2"] .gd-stage .gp-board{
       left:38.47%;top:56.41%;width:57.46%;height:39.65%;border-radius:20px;
     }
+    /* every other tile holds its picture in the ordinary flow; this one held
+       it absolutely, and safari will not clip such a child to a rounded
+       corner - which is why this card alone came out square. */
     .gd-sec[data-gd="2"] .gd-stage .gp-board img{
-      position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain;
+      position:relative;left:auto;top:auto;width:100%;height:100%;
+      object-fit:cover;display:block;
     }
     .gd-sec[data-gd="2"] .gd-stage .gp-bottle{
       left:-8.21%;top:56.29%;width:74.83%;height:42.78%;
@@ -580,6 +584,10 @@
     /* the photo's own margin is even now, so the tile takes its proportions */
     .gd-sec[data-gd="4"] .gd-stage .di-stationery{grid-area:2/1/3/3;aspect-ratio:1512/1007}
     .gd-sec[data-gd="4"] .gd-stage .di-stationery img{object-fit:cover}
+    /* fitting it inside left whatever the tile had spare at one edge, which
+       read as the picture sitting low in its frame. it is square and so is
+       the tile, so filling costs nothing and can leave no band at all. */
+    .gd-sec[data-gd="4"] .gd-stage .di-grid img{object-fit:cover}
     .gd-sec[data-gd="4"] .gd-stage .di-grid{grid-area:3/1/4/2;aspect-ratio:1}
     .gd-sec[data-gd="4"] .gd-stage .di-colors{grid-area:3/2/4/3;background:#fff;padding:10px}
 
