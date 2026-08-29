@@ -1395,7 +1395,7 @@
 <div class="hint" id="hint"><span>גללו</span><i></i></div>
 
 <section id="hero">
-  <video class="hero-bg" autoplay loop muted playsinline preload="auto" fetchpriority="high"></video>
+  <video class="hero-bg" autoplay loop muted playsinline preload="auto" fetchpriority="high" poster="hero-poster.webp"></video>
   <h1 class="title anim-glitch" data-text="אתרים שגורמים לעסק שלכם להיראות ראשון בתחום"><span class="l1">אתרים שגורמים לעסק שלכם</span> <span class="l2">להיראות ראשון <span class="l3">בתחום</span></span></h1>
   <div class="btns">
     <a class="btn solid" href="https://wa.me/972502463500" target="_blank" rel="noopener"><i class="wa-ic"></i>בואו נדבר</a>
@@ -2191,6 +2191,26 @@
   heroV.load();
   const heroPlay = heroV.play();
   if (heroPlay && heroPlay.catch) heroPlay.catch(() => {});
+
+  /* on a weak connection the request can simply hang: nothing errors, nothing
+     arrives, and the opening screen sits empty. the poster frame holds the
+     picture meanwhile, and the clip is asked for again a few times before we
+     leave the still standing in for it. */
+  let heroTries = 0;
+  const heroWatch = setInterval(() => {
+    if (heroV.readyState >= 2 || heroTries >= 3){ clearInterval(heroWatch); return; }
+    heroTries++;
+    heroV.load();
+    const again = heroV.play();
+    if (again && again.catch) again.catch(() => {});
+  }, 6000);
+  heroV.addEventListener('error', () => {
+    if (heroTries >= 3) return;
+    heroTries++;
+    heroV.load();
+    const again = heroV.play();
+    if (again && again.catch) again.catch(() => {});
+  });
 
   const art = new Image();
   art.src = 'assets/rocket.webp';
