@@ -82,7 +82,8 @@
   .check{display:flex;align-items:center;gap:7px;color:var(--dim);font-size:14px;cursor:pointer;user-select:none}
   .check input{width:16px;height:16px;accent-color:var(--ok);cursor:pointer}
   .empty{color:var(--dim);text-align:center;padding:60px 0}
-  .hidden{display:none}
+  /* the gate is an id, so hiding it has to outrank it */
+  .hidden{display:none !important}
 </style>
 </head>
 <body>
