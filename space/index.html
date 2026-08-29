@@ -2099,8 +2099,17 @@
   /* ---------- input ---------- */
   let cooling = false;
   const heroTitle = document.querySelector('#hero .title');
+  /* projMode is switched on while the phone's column is being built, long
+     before anyone scrolls into it, so it cannot stand for "past the intro".
+     what settles it there is whether the column is on screen at all. */
+  function inFlow(){
+    return MARS_FREE.matches
+      ? (marsMode || marsWrap.classList.contains('on'))
+      : (marsMode || projMode);
+  }
+
   function nudge(d){
-    if (marsMode || projMode) return;
+    if (inFlow()) return;
     /* a scroll during the play-through hurries the clip to its end */
     if (busy){ pending = d; vp.playbackRate = 3; return; }
     if (cooling) return;
@@ -2117,7 +2126,7 @@
     go(idx + d);
   }
   addEventListener('wheel', e => {
-    if (marsMode || projMode) return;
+    if (inFlow()) return;
     e.preventDefault();
     if (Math.abs(e.deltaY) < 4) return;
     nudge(e.deltaY > 0 ? 1 : -1);
@@ -2152,12 +2161,6 @@
     if (['ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); nudge(-1); }
   });
   let ty = null;
-  /* projMode is switched on while the phone's column is being built, long
-     before anyone scrolls into it, so it cannot stand for "past the intro".
-     what settles it there is whether the column is on screen at all. */
-  const inFlow = () => MARS_FREE.matches
-    ? (marsMode || marsWrap.classList.contains('on'))
-    : (marsMode || projMode);
   addEventListener('touchstart', e => { if (!inFlow()) ty = e.touches[0].clientY; }, { passive:true });
   addEventListener('touchmove', e => {
     if (inFlow() || ty === null) return;
