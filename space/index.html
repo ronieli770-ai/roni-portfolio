@@ -1960,13 +1960,15 @@
   /* the closing screen slides up while the moon rises into its place - both are
      on screen through the whole move, the way two stacked sections read when
      you scroll past the seam */
-  /* on a phone the three cards ride in on a css animation, and it only starts
-     once this class is on. both ways into the section have to arm it. */
+  /* on a phone the three cards ride in on a css animation that starts the
+     moment this class lands. arming it on arrival ran it while the cards were
+     still below the fold, so entering only clears it - the scroll sync puts it
+     back once they are actually on screen. */
   function armStops(){
     if (!MARS_FREE.matches) return;
     marsRoot.classList.remove('stops-in');
     void marsRoot.offsetWidth;
-    marsRoot.classList.add('stops-in');
+    setTimeout(() => { if (marsFlowRefresh) marsFlowRefresh(); }, 60);
   }
 
   function slideToMars(){
@@ -2859,6 +2861,7 @@
        never starts reporting, so the scroller is read directly instead */
     const entered = new WeakSet(), started = new WeakSet();
     const glass = document.getElementById('hdr-glass');
+    const stopsEl = marsRoot.querySelector('.mars-stops');
     function marsFlowSync(){
       const vh = marsWrap.clientHeight;
       const top = marsWrap.scrollTop, mid = top + vh * 0.5;
@@ -2886,6 +2889,12 @@
         if (marsMode) railSet(5 + cur);
       } else if (marsMode) railSet(4);
       if (glass) glass.classList.toggle('on', top > 8);
+
+      /* the cards start their rise the first time they clear the fold */
+      if (stopsEl && !marsRoot.classList.contains('stops-in')
+          && stopsEl.getBoundingClientRect().top < vh * 0.88){
+        marsRoot.classList.add('stops-in');
+      }
 
     }
     marsWrap.addEventListener('scroll', marsFlowSync, { passive:true });
