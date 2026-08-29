@@ -154,8 +154,20 @@
     position:absolute;left:calc(4.7% - 30px);top:5.1%;width:min(920px,96.7%);height:auto;
     opacity:0;transition:opacity .5s ease;
   }
-  #menu-overlay .mo-portraits:hover .mo-light{opacity:1;}
-  #menu-overlay .mo-portraits:hover .mo-dark{opacity:0;}
+  /* the swap belongs to a real pointer. a finger latches :hover and holds it,
+     which left the portrait blanked out and the image itself grabbable. */
+  @media (hover:hover){
+    #menu-overlay .mo-portraits:hover .mo-light{opacity:1;}
+    #menu-overlay .mo-portraits:hover .mo-dark{opacity:0;}
+  }
+  @media (hover:none){
+    /* a tap on the portrait does nothing at all */
+    #menu-overlay .mo-portraits{
+      pointer-events:none;-webkit-touch-callout:none;
+      -webkit-user-select:none;user-select:none;
+    }
+    #menu-overlay .mo-portraits img{pointer-events:none}
+  }
   #menu-overlay .mo-earth{
     position:absolute;left:52%;top:65%;transform:translateX(-50%) rotate(90deg);width:min(2142px,124vw);height:auto;z-index:3;pointer-events:none;
   }
