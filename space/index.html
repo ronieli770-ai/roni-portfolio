@@ -1295,7 +1295,9 @@
       position:relative!important;left:auto!important;top:auto!important;
       width:100%!important;height:30px!important;flex:none;
     }
-    .proj-section[data-proj="5"] .form-input{font-size:15px!important}
+    /* under 16px safari zooms the page in the moment a field is touched, and
+       never zooms back - the header and the left edge end up off screen */
+    .proj-section[data-proj="5"] .form-input{font-size:16px!important}
     /* name and phone share the first row, name on the right */
     .proj-section[data-proj="5"] .field:nth-of-type(1),
     .proj-section[data-proj="5"] .field:nth-of-type(2){width:calc(50% - 5px)!important}
