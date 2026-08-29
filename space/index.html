@@ -1642,12 +1642,28 @@
      the clip froze. the next chapter's clips are now pulled with fetch into a
      blob, which the phone cannot defer, and the player is handed the local copy. */
   const clipCache = {};              // src -> blob: URL, or a promise while in flight
-  function prime(src){
-    if (!src || clipCache[src]) return;
+  /* these used to be fired off together. on a weak connection three or four
+     full files at once meant none of them finished, and the clip on screen -
+     which streams over the same link - was starved by its own prefetch. they
+     go one at a time now, and only ever behind whatever is playing. */
+  const primeQueue = [];
+  let priming = false;
+  function primeNext(){
+    if (priming) return;
+    const src = primeQueue.shift();
+    if (!src) return;
+    if (clipCache[src]) return primeNext();
+    priming = true;
     clipCache[src] = fetch(src)
       .then(r => { if (!r.ok) throw 0; return r.blob(); })
       .then(b => { clipCache[src] = URL.createObjectURL(b); })
-      .catch(() => { delete clipCache[src]; });
+      .catch(() => { delete clipCache[src]; })
+      .then(() => { priming = false; primeNext(); });
+  }
+  function prime(src){
+    if (!src || clipCache[src] || primeQueue.includes(src)) return;
+    primeQueue.push(src);
+    primeNext();
   }
   function arm(v, src){
     if (!src) return;
@@ -1656,6 +1672,10 @@
     if (v.dataset.use === use) return;
     v.dataset.src = src;
     v.dataset.use = use;
+    /* the clip's own first frame stands in until there are real frames. a
+       stalled download used to leave the stage black, which is what made a
+       weak connection look like a broken page. */
+    v.poster = src.replace('.mp4', '.jpg');
     v.src = use;
     v.load();
   }
@@ -1673,6 +1693,7 @@
   let mode = 'still';  // 'still' | 'play' | 'loop'
   let busy = false;    // true while a play-through is running
   let guard = null;    // fallback in case 'ended' never fires
+  let stallWatch = null, stallTries = 0;   // a clip whose download simply hangs
   /* a scroll made during the play-through used to be thrown away, so the page
      felt dead for the couple of seconds a clip takes. now it is remembered and
      fired the moment the clip lands, and the clip itself hurries to the end. */
@@ -1719,6 +1740,7 @@
 
   function enter(n){
     idx = n;
+    stallTries = 0;
     marks();
     if (n === 0){                      // back to the hero
       hero.classList.remove('off');
@@ -1736,8 +1758,15 @@
     mode = 'play';
     arm(vp, CH[n].play);
     arm(vl, CH[n].loop);               // have the loop ready before the clip ends
-    const nx2 = CH[n + 1];             // fast scrolling can outrun the loop's prefetch
-    if (nx2 && nx2.play){ prime(nx2.play); prime(nx2.loop); }
+    /* fast scrolling can outrun the loop's prefetch, so the next chapter is
+       still fetched from here - but only once this clip is playing, never
+       alongside it */
+    const nx2 = CH[n + 1];
+    if (nx2 && nx2.play){
+      const after = () => { prime(nx2.play); prime(nx2.loop); };
+      if (vp.readyState >= 3) after();
+      else vp.addEventListener('canplay', after, { once:true });
+    }
     vp.playbackRate = 1;
     vp.currentTime = 0;
     run(vp);
@@ -1745,7 +1774,17 @@
     /* the loop takes over on 'ended'; this is the net if the clip never gets
        there - a stalled download used to freeze the page on the old picture */
     clearTimeout(guard);
-    guard = setTimeout(startLoop, 4000);
+    guard = setTimeout(startLoop, 2500);
+
+    /* a request that hangs never errors, so nothing would ever ask again.
+       one retry, then the chapter carries on with its still standing in. */
+    clearTimeout(stallWatch);
+    stallWatch = setTimeout(() => {
+      if (vp.readyState >= 2 || stallTries >= 1) return;
+      stallTries++;
+      vp.load();
+      run(vp);
+    }, 3000);
   }
 
   vp.addEventListener('ended', () => { if (mode === 'play') startLoop(); });
