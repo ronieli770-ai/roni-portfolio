@@ -2910,9 +2910,11 @@
       } else if (marsMode) railSet(4);
       if (glass) glass.classList.toggle('on', top > 8);
 
-      /* the cards start their rise the first time they clear the fold */
+      /* the rise begins as the first card crosses the bottom edge, so it is
+         already moving by the time it is properly on screen - waiting until
+         it was well inside read as a delay */
       if (stopsEl && !marsRoot.classList.contains('stops-in')
-          && stopsEl.getBoundingClientRect().top < vh * 0.88){
+          && stopsEl.getBoundingClientRect().top < vh * 1.05){
         marsRoot.classList.add('stops-in');
       }
 
