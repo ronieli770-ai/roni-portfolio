@@ -1935,9 +1935,19 @@
   /* the closing screen slides up while the moon rises into its place - both are
      on screen through the whole move, the way two stacked sections read when
      you scroll past the seam */
+  /* on a phone the three cards ride in on a css animation, and it only starts
+     once this class is on. both ways into the section have to arm it. */
+  function armStops(){
+    if (!MARS_FREE.matches) return;
+    marsRoot.classList.remove('stops-in');
+    void marsRoot.offsetWidth;
+    marsRoot.classList.add('stops-in');
+  }
+
   function slideToMars(){
     if (marsMode) return;
     marsMode = true;
+    armStops();
     marsWrap.classList.add('on', 'vis', 'sliding');
     marsWrap.style.setProperty('--mo', '100vh');
     openLayers.forEach(el => el.classList.add('handoff'));
@@ -1965,11 +1975,7 @@
   function enterMars(){
     marsMode = true;
     marsSwipes = 0;
-    if (MARS_FREE.matches){                 // replay the cards' entrance
-      marsRoot.classList.remove('stops-in');
-      void marsRoot.offsetWidth;
-      marsRoot.classList.add('stops-in');
-    }
+    armStops();                           // replay the cards' entrance
     marsWrap.classList.add('on');
     void marsWrap.offsetWidth;
     marsWrap.classList.add('vis');
