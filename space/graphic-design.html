@@ -284,7 +284,12 @@
     text-decoration:none;color:#fff;font-weight:600;font-size:min(24px,1.39vw);
     transition:filter .3s ease,transform .3s ease;
   }
-  .ct-cta:hover{filter:brightness(1.08);transform:translateY(-2px)}
+  /* a finger latches :hover and never lets go, and this rule replaces the
+     transform that centres the button on a phone - so the lift is offered only
+     where there is a real pointer to hover with */
+  @media (hover:hover){
+    .ct-cta:hover{filter:brightness(1.08);transform:translateY(-2px)}
+  }
   .ct-cta img{width:1.1em;height:1.1em;display:block}
   .ct-saturn{
     position:absolute;left:8.33%;top:16.47%;width:23.85%;aspect-ratio:1;
