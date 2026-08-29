@@ -2133,9 +2133,15 @@
     if (['ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); nudge(-1); }
   });
   let ty = null;
-  addEventListener('touchstart', e => { if (!marsMode && !projMode) ty = e.touches[0].clientY; }, { passive:true });
+  /* projMode is switched on while the phone's column is being built, long
+     before anyone scrolls into it, so it cannot stand for "past the intro".
+     what settles it there is whether the column is on screen at all. */
+  const inFlow = () => MARS_FREE.matches
+    ? (marsMode || marsWrap.classList.contains('on'))
+    : (marsMode || projMode);
+  addEventListener('touchstart', e => { if (!inFlow()) ty = e.touches[0].clientY; }, { passive:true });
   addEventListener('touchmove', e => {
-    if (marsMode || projMode || ty === null) return;
+    if (inFlow() || ty === null) return;
     const d = ty - e.touches[0].clientY;
     if (Math.abs(d) > 40){ ty = null; nudge(d > 0 ? 1 : -1); }
   }, { passive:true });
