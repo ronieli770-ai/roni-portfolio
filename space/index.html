@@ -278,7 +278,14 @@
   html.rl-enter #hero .btns,html.rl-enter #hero .status-box{animation:hero-el-in .8s ease 1.1s both}
   @keyframes hero-el-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
   #hero.off{opacity:0;transform:scale(1.06);pointer-events:none}
-  #hero .hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%;z-index:0}
+  /* the same frame sits behind the element as well as on its poster: a poster
+     is only drawn while the browser accepts the format and has no frame yet,
+     and a background is drawn regardless - so the opening screen is never the
+     bare backdrop while the clip is on its way */
+  #hero .hero-bg{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%;z-index:0;
+    background:#04070f url(hero-poster.jpg) center 35%/cover no-repeat;
+  }
   #hero .title{
     position:absolute;top:14%;left:50%;transform:translateX(-50%);
     width:min(1200px,84vw);text-align:center;
@@ -1395,7 +1402,7 @@
 <div class="hint" id="hint"><span>גללו</span><i></i></div>
 
 <section id="hero">
-  <video class="hero-bg" autoplay loop muted playsinline preload="auto" fetchpriority="high" poster="hero-poster.webp"></video>
+  <video class="hero-bg" autoplay loop muted playsinline preload="auto" fetchpriority="high" poster="hero-poster.jpg"></video>
   <h1 class="title anim-glitch" data-text="אתרים שגורמים לעסק שלכם להיראות ראשון בתחום"><span class="l1">אתרים שגורמים לעסק שלכם</span> <span class="l2">להיראות ראשון <span class="l3">בתחום</span></span></h1>
   <div class="btns">
     <a class="btn solid" href="https://wa.me/972502463500" target="_blank" rel="noopener"><i class="wa-ic"></i>בואו נדבר</a>
