@@ -2842,8 +2842,10 @@
           const car = carousels[cur];
           if (car && !started.has(projSections[cur])){ started.add(projSections[cur]); car.reset(); }
         }
-        railSet(5 + cur);
-      } else railSet(4);
+        /* the first sync runs while the hero is still on screen, so the rail
+           is left alone until this column is the one being looked at */
+        if (marsMode || projMode) railSet(5 + cur);
+      } else if (marsMode || projMode) railSet(4);
       if (glass) glass.classList.toggle('on', top > 8);
 
     }
