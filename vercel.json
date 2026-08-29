@@ -2,5 +2,8 @@
   "outputDirectory": ".",
   "redirects": [
     { "source": "/", "destination": "/space/index.html", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/admin", "destination": "/space/admin.html" }
   ]
 }
