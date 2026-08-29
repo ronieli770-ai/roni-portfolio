@@ -24,6 +24,10 @@
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+  /* a double tap is the browser's zoom gesture, and on a full screen layout it
+     leaves the reader magnified with nothing to scroll back to. taps are for
+     tapping here; pinch still zooms for anyone who wants it. */
+  html,body{touch-action:manipulation}
   body{
     background:#000;color:var(--ink);
     font-family:'IBM Plex Sans Hebrew',system-ui,-apple-system,sans-serif;
@@ -820,7 +824,7 @@
     #menu-overlay .mo-logo{
       display:block;
       position:absolute;left:50%;top:9.61%;transform:translateX(-50%);
-      width:33.3%;max-width:none;height:auto;z-index:5;
+      width:33.3%;max-width:none;height:auto;z-index:5;cursor:pointer;
     }
     #menu-overlay .mo-nav{
       left:50%;top:19.8%;transform:translateX(-50%);width:100%;
@@ -1342,7 +1346,7 @@
 <div class="menu"><i></i><i></i><i></i></div>
 
 <div id="menu-overlay">
-  <img class="mo-logo" src="assets/logo.webp" alt="סטודיו רוני">
+  <img class="mo-logo" src="assets/logo.webp" alt="סטודיו רוני" data-nav="0">
   <div class="mo-portraits">
     <img class="mo-dark" src="roni-portrait.webp" alt="" loading="lazy" decoding="async">
     <img class="mo-light" data-src="roni-portrait-light.webp" alt="">
