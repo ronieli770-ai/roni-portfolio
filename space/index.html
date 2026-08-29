@@ -2918,11 +2918,11 @@
       } else if (marsMode) railSet(4);
       if (glass) glass.classList.toggle('on', top > 8);
 
-      /* the rise begins as the first card crosses the bottom edge, so it is
-         already moving by the time it is properly on screen - waiting until
-         it was well inside read as a delay */
+      /* the cards sit right under the headline here, so they belong to the
+         section's arrival: the rise starts as the section itself appears,
+         not after a further scroll down to them */
       if (stopsEl && !marsRoot.classList.contains('stops-in')
-          && stopsEl.getBoundingClientRect().top < vh * 1.05){
+          && marsRoot.getBoundingClientRect().top < vh * 0.95){
         marsRoot.classList.add('stops-in');
       }
 
