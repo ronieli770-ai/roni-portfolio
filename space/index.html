@@ -1129,11 +1129,28 @@
     .proj-section[data-proj="3"]{
       display:block!important;padding:118px 44px 120px 14px!important;
       overflow-y:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
-      /* the wash below is pinned to the screen so it does not scroll off with
-         the cards. anchor it to this section instead, or it stays behind while
-         the next section climbs over it and slices the circles at the seam. */
-      contain:paint;
+      /* the wash and the stars used to be layers of their own, pinned to the
+         screen so they would not scroll away with the cards - which left them
+         behind when the next section climbed over, slicing the circles at the
+         seam. as this section's own background they cover exactly its box and
+         end exactly where it ends. local attachment carries them down the
+         scroll with the cards. */
+      background-image:
+        radial-gradient(1.5px 1.5px at 16% 18%,rgba(255,255,255,.38),transparent),
+        radial-gradient(1.2px 1.2px at 74% 10%,rgba(255,255,255,.38),transparent),
+        radial-gradient(1.6px 1.6px at 56% 32%,rgba(255,255,255,.38),transparent),
+        radial-gradient(1.1px 1.1px at 88% 58%,rgba(255,255,255,.38),transparent),
+        radial-gradient(1.3px 1.3px at 34% 76%,rgba(255,255,255,.38),transparent),
+        radial-gradient(1.2px 1.2px at 66% 88%,rgba(255,255,255,.38),transparent),
+        radial-gradient(60% 46% at -6% 92%,rgba(196,178,132,.42) 0%,rgba(120,108,78,.16) 42%,rgba(5,5,10,0) 72%),
+        radial-gradient(48% 40% at 104% 12%,rgba(196,178,132,.34) 0%,rgba(120,108,78,.13) 44%,rgba(5,5,10,0) 74%),
+        radial-gradient(40% 34% at 100% 96%,rgba(196,178,132,.22) 0%,rgba(5,5,10,0) 70%);
+      background-repeat:no-repeat;
+      background-attachment:local;
     }
+    /* the two layers those gradients came from */
+    .proj-section[data-proj="3"] > div:nth-child(1),
+    .proj-section[data-proj="3"] > div:nth-child(2){display:none!important}
     /* block, not flex: a flex scroll container eats its own start padding once
        the content overflows, which pushed the title up under the header */
     .proj-section[data-proj="3"] .why-title{margin-bottom:20px!important}
