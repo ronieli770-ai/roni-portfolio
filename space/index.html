@@ -2703,8 +2703,11 @@
           })
         });
         if (!r.ok) throw new Error();
-        formBtn.textContent = 'הטופס שוגר! נדבר בקרוב 🚀';
+        /* the fields are cleared before leaving, so a browser that restores
+           this page from its cache does not bring the details back with it */
         fInputs.forEach(i => { i.value = ''; });
+        formBtn.textContent = 'הטופס שוגר! 🚀';
+        location.assign('/thank-you');
       } catch (err) {
         formBtn.disabled = false;
         formBtn.textContent = 'משהו השתבש - נסו שוב';
