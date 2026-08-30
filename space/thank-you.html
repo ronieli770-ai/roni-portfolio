@@ -95,9 +95,11 @@
   @media (max-width:768px),(hover:none) and (pointer:coarse) and (max-width:1024px){
     .logo{left:14px;top:18px;width:118px}
     /* a portrait screen needs the moon taller than its natural band */
-    .moon{background-position:center bottom;background-size:auto 46%}
+    /* a portrait screen needs the moon taller than its natural band, and close
+       enough under the copy that the middle is not a stretch of empty black */
+    .moon{background-position:center bottom;background-size:auto 48%}
     .sky{background:linear-gradient(180deg,#000 0%,rgba(0,0,0,.6) 26%,rgba(0,0,0,0) 52%)}
-    main{padding:15vh 22px 0}
+    main{padding:17vh 22px 0}
     .kicker{font-size:26px}
     .title{font-size:44px;margin-top:.1em}
     .note{font-size:16px;line-height:1.5;max-width:30ch;margin-top:18px}
