@@ -47,33 +47,33 @@
     margin:0;background:linear-gradient(to right,#8da8cb,#ffffff);
     -webkit-background-clip:text;background-clip:text;
     color:transparent;-webkit-text-fill-color:transparent;
-    line-height:.85;
+    /* clipping the gradient to the letters clips their box too, so a tight
+       line leaves the tail of a ך outside it. the room below is deliberate. */
+    padding-bottom:.14em;
   }
-  .kicker{font-size:min(80px,4.63vw);font-weight:400}
-  .title{font-size:min(120px,6.94vw);font-weight:700;margin-top:.12em}
+  /* "אני הטייסת שלכם להיום", pane 4 */
+  .kicker{font-size:min(45px,2.6vw);font-weight:300;line-height:1}
+  /* "רוני אליהו", pane 4 */
+  .title{font-size:min(120px,6.94vw);font-weight:700;line-height:.88;margin-top:.02em}
 
   .note{
-    margin:min(35px,2.03vw) 0 0;color:#fff;font-weight:400;
+    margin:min(14px,.81vw) 0 0;color:#fff;font-weight:400;
     font-size:min(18px,1.04vw);line-height:1.35;max-width:min(541px,31.3vw);
   }
 
+  /* the pair the hero opens with: 160 by 58, radius 10, 20px semibold */
   .cta{
-    display:flex;gap:min(20px,1.16vw);margin-top:min(42px,2.43vw);
+    display:flex;gap:14px;margin-top:min(34px,1.97vw);
     flex-direction:row-reverse;                 /* the solid one sits to the right */
   }
   .btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:.42em;
-    height:min(65px,3.76vw);border-radius:min(10px,.58vw);
-    font-size:min(24px,1.39vw);font-weight:600;text-decoration:none;
+    display:inline-flex;align-items:center;justify-content:center;gap:.5em;
+    width:160px;height:58px;border-radius:10px;
+    font-size:20px;font-weight:600;text-decoration:none;
     transition:transform .3s cubic-bezier(.2,.8,.2,1),filter .3s,background .3s;
   }
-  .btn.solid{
-    width:min(212px,12.27vw);color:#fff;
-    background:linear-gradient(to left,#e0783c,#fa9154);
-  }
-  .btn.line{
-    width:min(192px,11.11vw);color:#fa9154;border:1px solid #e0783c;
-  }
+  .btn.solid{color:#fff;background:linear-gradient(to left,#e0783c,#fa9154)}
+  .btn.line{color:#fa9154;border:1px solid #e0783c}
   .btn .ic{
     width:1.05em;height:1.05em;flex:none;background:currentColor;
     -webkit-mask:url(/space/assets/ct-wa.svg) center/contain no-repeat;
@@ -97,17 +97,16 @@
     /* a portrait screen needs the moon taller than its natural band */
     /* a portrait screen needs the moon taller than its natural band, and close
        enough under the copy that the middle is not a stretch of empty black */
-    .moon{background-position:center bottom;background-size:auto 48%}
+    .moon{background-position:center bottom;background-size:auto 58%}
     .sky{background:linear-gradient(180deg,#000 0%,rgba(0,0,0,.6) 26%,rgba(0,0,0,0) 52%)}
     main{padding:17vh 22px 0}
-    .kicker{font-size:26px}
-    .title{font-size:44px;margin-top:.1em}
-    .note{font-size:16px;line-height:1.5;max-width:30ch;margin-top:18px}
-    .cta{
-      flex-direction:column;width:100%;max-width:320px;
-      gap:12px;margin-top:26px;
-    }
-    .btn{width:100%!important;height:54px;font-size:18px;border-radius:10px}
+    /* the same three from pane 4 at their phone sizes */
+    .kicker{font-size:22px}
+    .title{font-size:58px;margin-top:.02em}
+    .note{font-size:16px;line-height:1.5;max-width:30ch;margin-top:10px}
+    /* side by side, at the size the hero's pair takes on a phone */
+    .cta{flex-direction:row-reverse;width:auto;gap:14px;margin-top:24px}
+    .btn{width:136px;height:56px;font-size:17px;border-radius:10px}
   }
   /* a short landscape phone: keep the copy off the horizon */
   @media (max-height:520px) and (orientation:landscape){
