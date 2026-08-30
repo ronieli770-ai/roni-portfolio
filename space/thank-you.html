@@ -21,13 +21,17 @@
      way the design frames it */
   .moon{
     position:fixed;inset:0;z-index:0;
-    background:#000 url(/space/assets/thanks-moon.webp) center bottom/cover no-repeat;
+    /* the picture spans the width and sits on the bottom edge, so the horizon
+       lands where the design puts it whatever shape the window is. cover would
+       crop the top on a wide, short screen and push the horizon up into the
+       copy. above it is black, which is the design's sky. */
+    background:#000 url(/space/assets/thanks-moon.webp) center bottom/100% auto no-repeat;
   }
   /* the design's sky is pure black at the top; this keeps it that way on a
      screen taller than the picture */
   .sky{
     position:fixed;inset:0;z-index:1;pointer-events:none;
-    background:linear-gradient(180deg,#000 0%,rgba(0,0,0,.55) 22%,rgba(0,0,0,0) 46%);
+    background:linear-gradient(180deg,#000 0%,rgba(0,0,0,.72) 30%,rgba(0,0,0,.30) 50%,rgba(0,0,0,0) 62%);
   }
 
   .logo{position:fixed;left:2.14vw;top:2.55vw;width:min(170px,9.84vw);z-index:5}
@@ -90,7 +94,8 @@
 
   @media (max-width:768px),(hover:none) and (pointer:coarse) and (max-width:1024px){
     .logo{left:14px;top:18px;width:118px}
-    .moon{background-position:center bottom;background-size:cover}
+    /* a portrait screen needs the moon taller than its natural band */
+    .moon{background-position:center bottom;background-size:auto 46%}
     .sky{background:linear-gradient(180deg,#000 0%,rgba(0,0,0,.6) 26%,rgba(0,0,0,0) 52%)}
     main{padding:15vh 22px 0}
     .kicker{font-size:26px}
