@@ -4,6 +4,7 @@
     { "source": "/", "destination": "/space/index.html", "permanent": false }
   ],
   "rewrites": [
-    { "source": "/admin", "destination": "/space/admin.html" }
+    { "source": "/admin", "destination": "/space/admin.html" },
+    { "source": "/thank-you", "destination": "/space/thank-you.html" }
   ]
 }
