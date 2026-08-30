@@ -3,9 +3,9 @@
    variables and are read here, on Vercel's side, never in the browser. */
 
 const TO = process.env.CONTACT_TO || 'ronieli770@gmail.com';
-/* the domain's own address is waiting on the registrar to publish the
-   verification records, so until then the mail goes out on Resend's */
-const FROM = process.env.CONTACT_FROM || 'onboarding@resend.dev';
+/* her own domain, so the mail is signed as genuinely hers and lands in the
+   inbox rather than in spam */
+const FROM = process.env.CONTACT_FROM || 'noreply@mail.ronieliyahu.co.il';
 
 const DB_URL = process.env.SUPABASE_URL || 'https://mgnvvtevbzepxnbkekpv.supabase.co';
 
