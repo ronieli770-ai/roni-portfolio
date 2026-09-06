@@ -28,6 +28,11 @@ async function store(lead) {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!key) { console.error('no supabase key, the lead was not stored'); return false; }
 
+  /* the free tier pauses a quiet project, and a paused one can leave the
+     request hanging rather than refusing it. the mail is what matters here,
+     so the filing gets four seconds and then gets out of the way. */
+  const bail = AbortSignal.timeout ? AbortSignal.timeout(4000) : undefined;
+
   const r = await fetch(`${DB_URL}/rest/v1/leads`, {
     method: 'POST',
     headers: {
@@ -37,6 +42,7 @@ async function store(lead) {
       Prefer: 'return=minimal',
     },
     body: JSON.stringify(lead),
+    signal: bail,
   });
 
   if (!r.ok) { console.error('the database refused the lead:', r.status, await r.text()); return false; }
