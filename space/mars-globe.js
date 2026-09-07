@@ -52,13 +52,19 @@
         });
         return this._booting;
       };
-      if (this.clientWidth > 0 && this.clientHeight > 0) this._boot();
-      else {
-        const ro = new ResizeObserver(() => {
-          if (this.clientWidth > 0 && this.clientHeight > 0){ ro.disconnect(); this._boot(); }
-        });
-        ro.observe(this);
-      }
+      /* having a size is not a reason to fetch two megabytes. on a phone this
+         element is fixed to the viewport and sized from the first frame, so
+         booting on size pulled three.js and the model at page load, alongside
+         the opening clip, and the whole opening crawled. the page calls
+         warmup() a screen ahead; this observer is only the net for arriving
+         some other way. it watches the section rather than this element,
+         which is fixed and would always read as on screen. */
+      const watched = this.closest('[data-mars-section]') || this.parentElement || this;
+      const near = new IntersectionObserver(es => {
+        if (es.some(e => e.isIntersecting)){ near.disconnect(); this._boot(); }
+      }, { rootMargin: '120% 0px' });
+      near.observe(watched);
+      this._near = near;
     }
 
     /* start fetching before the section is reached */
@@ -67,6 +73,7 @@
     disconnectedCallback() {
       this._dead = true;
       if (this._ro) this._ro.disconnect();
+      if (this._near) this._near.disconnect();
     }
 
     metrics() {
