@@ -2184,10 +2184,21 @@
     }
     go(idx + d);
   }
+  /* one turn of the wheel, or one flick on a trackpad, arrives as a stream of
+     events that keeps arriving while the momentum decays. counting each of
+     them as a step is what sent a long scroll two or three chapters ahead. the
+     stream is one gesture: the first event moves, the rest only keep the
+     gesture alive, and the next step waits for the wheel to go quiet. */
+  let lastWheelTs = 0;
+  const WHEEL_QUIET = 260;
   addEventListener('wheel', e => {
     if (inFlow()) return;
     e.preventDefault();
     if (Math.abs(e.deltaY) < 4) return;
+    const now = performance.now();
+    const fresh = now - lastWheelTs > WHEEL_QUIET;
+    lastWheelTs = now;
+    if (!fresh) return;
     nudge(e.deltaY > 0 ? 1 : -1);
   }, { passive:false });
   addEventListener('keydown', e => {
