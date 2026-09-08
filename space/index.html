@@ -964,10 +964,10 @@
      stop, and runs backwards on the way up, because it is only ever a
      function of where the section is. */
   html.m-flow .proj-section .pf-copy{opacity:var(--e0,1)}
-  html.m-flow .proj-section .pf-brand{transform:translateY(calc((1 - var(--e0,1)) * 46px))}
-  html.m-flow .proj-section .pf-title{transform:translateY(calc((1 - var(--e1,1)) * 46px))}
-  html.m-flow .proj-section .pf-body {transform:translateY(calc((1 - var(--e2,1)) * 46px))}
-  html.m-flow .proj-section .pf-cta  {transform:translateY(calc((1 - var(--e3,1)) * 46px))}
+  html.m-flow .proj-section .pf-brand{transform:translateY(calc((1 - var(--e0,1)) * 90px))}
+  html.m-flow .proj-section .pf-title{transform:translateY(calc((1 - var(--e1,1)) * 90px))}
+  html.m-flow .proj-section .pf-body {transform:translateY(calc((1 - var(--e2,1)) * 90px))}
+  html.m-flow .proj-section .pf-cta  {transform:translateY(calc((1 - var(--e3,1)) * 90px))}
 
   /* the rail and the header float above the column as they always did */
   html.m-flow #rail,html.m-flow .logo,html.m-flow .menu,html.m-flow #hdr-glass{z-index:14}
@@ -3278,10 +3278,10 @@
         const raw = Math.min(1, Math.max(0, (top + vh - t) / vh));
         const ease = u => u * u * (3 - 2 * u);
         const stage = (a, w) => ease(Math.min(1, Math.max(0, (raw - a) / w)));
-        sec.style.setProperty('--e0', stage(0.12, 0.46).toFixed(3));
-        sec.style.setProperty('--e1', stage(0.20, 0.46).toFixed(3));
-        sec.style.setProperty('--e2', stage(0.28, 0.46).toFixed(3));
-        sec.style.setProperty('--e3', stage(0.36, 0.46).toFixed(3));
+        sec.style.setProperty('--e0', stage(0.06, 0.40).toFixed(3));
+        sec.style.setProperty('--e1', stage(0.18, 0.40).toFixed(3));
+        sec.style.setProperty('--e2', stage(0.30, 0.40).toFixed(3));
+        sec.style.setProperty('--e3', stage(0.42, 0.40).toFixed(3));
         if (mid >= t && mid < b) cur = i;
       });
       if (cur >= 0){
