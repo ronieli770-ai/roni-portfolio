@@ -958,15 +958,21 @@
      on the lines and the fade on the block around them, so the fade the
      carousel already uses when the slide changes is left alone. */
   @supports (animation-timeline: view()){
+    /* the section clips its own content, and a clipped box counts as a scroll
+       container - so an animation asking "how far have I travelled" from
+       inside it was measuring against something that never moves. the section
+       publishes a timeline of its own travel through the column instead, and
+       the lines inside read from that. */
+    html.m-flow .proj-section{view-timeline-name:--sec;view-timeline-axis:block}
     html.m-flow .proj-section .pf-copy{
       animation:copy-fade linear both;
-      animation-timeline:view();animation-range:entry 12% entry 62%;
+      animation-timeline:--sec;animation-range:entry 12% entry 62%;
     }
     html.m-flow .proj-section .pf-brand,
     html.m-flow .proj-section .pf-title,
     html.m-flow .proj-section .pf-body,
     html.m-flow .proj-section .pf-cta{
-      animation:copy-lift linear both;animation-timeline:view();
+      animation:copy-lift linear both;animation-timeline:--sec;
     }
     html.m-flow .proj-section .pf-brand{animation-range:entry 12% entry 58%}
     html.m-flow .proj-section .pf-title{animation-range:entry 18% entry 66%}
