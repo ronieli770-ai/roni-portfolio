@@ -3318,6 +3318,14 @@
 
     }
     marsWrap.addEventListener('scroll', marsFlowSync, { passive:true });
+    /* a scroll event is not guaranteed on every frame - it is coalesced, and
+       some browsers hold it back entirely. the reveal of each section's copy
+       is a function of where that section is, so it is read every frame while
+       the column is on screen and never waits to be told. */
+    (function follow(){
+      if (marsWrap.classList.contains('on')) marsFlowSync();
+      requestAnimationFrame(follow);
+    })();
 
     marsFlowRefresh = marsFlowSync;
     marsFlowSync();
