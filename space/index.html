@@ -916,6 +916,16 @@
     position:relative!important;left:auto!important;top:auto!important;bottom:auto!important;
     margin:clamp(34px,5vh,64px) auto 0;width:fit-content;max-width:100%;white-space:normal;
   }
+  /* the site's two blue washes are given as a share of the viewport - 46% of
+     the width by 46% of the height - so on a wide screen they come out as
+     ellipses more than twice as wide as they are tall, which reads as a band
+     rather than a glow. sized off the height they are circles at any width. */
+  html.m-flow #bg{
+    background-image:
+      radial-gradient(circle 46vh at 6% 50%,  rgba(60,95,149,.85) 0%, rgba(60,95,149,.30) 45%, transparent 72%),
+      radial-gradient(circle 46vh at 87% 20%, rgba(60,95,149,.85) 0%, rgba(60,95,149,.30) 45%, transparent 72%);
+  }
+
   /* the rail and the header float above the column as they always did */
   html.m-flow #rail,html.m-flow .logo,html.m-flow .menu,html.m-flow #hdr-glass{z-index:14}
 
