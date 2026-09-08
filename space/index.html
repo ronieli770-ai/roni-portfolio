@@ -828,7 +828,15 @@
     position:fixed;inset:0;z-index:11;display:block;opacity:1;
     overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
     background:#000;scroll-behavior:smooth;
+    /* free scrolling lets the reader stop halfway and see the bottom of one
+       composition over the top of the next. the browser's own snapping lands
+       each section cleanly without a controller taking the gesture back -
+       every section here is exactly one screen tall, so it cannot trap. */
+    scroll-snap-type:y mandatory;
   }
+  html.m-flow .proj-section,
+  html.m-flow [data-mars-section]{scroll-snap-align:start;scroll-snap-stop:always}
+  html.m-flow [data-mars-section]{min-height:100vh}
   html.m-flow #projects-wrap{
     position:relative!important;inset:auto!important;height:auto;
     display:block!important;z-index:auto!important;background:transparent;
