@@ -830,14 +830,9 @@
   html.m-flow #mars-wrap{
     overscroll-behavior:contain;
     background:#000;scroll-behavior:smooth;
-    /* free scrolling lets the reader stop halfway and see the bottom of one
-       composition over the top of the next. the browser's own snapping lands
-       each section cleanly without a controller taking the gesture back -
-       every section here is exactly one screen tall, so it cannot trap. */
-    scroll-snap-type:y mandatory;
+    /* no snapping: snapping pulls a whole section per nudge, which reads as
+       the page jumping rather than scrolling. this is an ordinary scroll. */
   }
-  html.m-flow .proj-section,
-  html.m-flow [data-mars-section]{scroll-snap-align:start;scroll-snap-stop:always}
   html.m-flow [data-mars-section]{min-height:100vh}
   html.m-flow #projects-wrap{
     position:relative!important;inset:auto!important;height:auto;
@@ -3174,42 +3169,6 @@
 
     }
     marsWrap.addEventListener('scroll', marsFlowSync, { passive:true });
-    /* ---------- one gesture, one section ----------
-       the sections are laid out in flow now, which is what let the browser
-       load them properly, and that is the part worth keeping. free scrolling
-       on top of it travels as far as the momentum carries, which reads as the
-       sections jumping. a wheel gesture is answered with exactly one section,
-       the same way the opening chapters answer one: the first event of a
-       stream moves, the rest only keep it alive. a finger is left alone -
-       native scrolling on a phone is already right. */
-    if (matchMedia('(hover:hover) and (pointer:fine)').matches){
-      const stops = () => [marsRoot, ...projSections]
-        .map(el => marsFlowTop(el))
-        .sort((a, b) => a - b);
-      let flowTs = 0;
-      marsWrap.addEventListener('wheel', e => {
-        if (Math.abs(e.deltaY) < 4) return;
-        e.preventDefault();
-        const now = performance.now();
-        const fresh = now - flowTs > 320;
-        flowTs = now;
-        if (!fresh) return;
-        const list = stops();
-        const here = marsWrap.scrollTop;
-        const d = e.deltaY > 0 ? 1 : -1;
-        /* the stop the reader is on, by whichever is nearest */
-        let i = 0;
-        list.forEach((t, k) => { if (Math.abs(t - here) < Math.abs(list[i] - here)) i = k; });
-        const next = i + d;
-        if (next < 0){
-          /* above the top of the column is the last of the opening chapters */
-          marsWrap.scrollTop = 0;
-          return;
-        }
-        if (next >= list.length) return;
-        marsWrap.scrollTo({ top: list[next], behavior: 'smooth' });
-      }, { passive:false });
-    }
 
     marsFlowRefresh = marsFlowSync;
     marsFlowSync();
