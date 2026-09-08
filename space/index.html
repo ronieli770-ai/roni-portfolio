@@ -384,7 +384,10 @@
   .landing-copy .anim-glitch.glitch-fire{animation:glitch-hold .5s 1 forwards}
   .pane.show .landing-copy{opacity:1}
   .pane.show .hint{opacity:1!important}
-  .pane.show .status-box{opacity:1;transform:none}
+  /* the copy's lines arrive in turn; the status card used to appear before the
+     first of them, with no delay of its own. it now lands with the rhythm of
+     the chapter rather than ahead of it. */
+  .pane.show .status-box{opacity:1;transform:none;transition-delay:.32s,.32s}
   .pane.show .copy > *:nth-child(1){transition-delay:.05s}
   .pane.show .copy > *:nth-child(2){transition-delay:.18s}
   .pane.show .copy > *:nth-child(3){transition-delay:.34s}
