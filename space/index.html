@@ -2865,7 +2865,16 @@
      moves to the next section once it has run out of room in that direction */
   function ownScroll(d){
     const sec = projSections[projIdx];
-    if (!sec || sec.scrollHeight - sec.clientHeight < 4) return false;
+    if (!sec) return false;
+    /* fifteen pixels of rounding is not a scroll. the method section overflows
+       its box by that much while its overflow is hidden, so scrollTop can
+       never move - and handing the wheel to a scroll that cannot happen is
+       what left that section refusing to advance. a section owns the gesture
+       only if it can genuinely scroll, and only past a margin that rounding
+       cannot reach. */
+    if (sec.scrollHeight - sec.clientHeight < 24) return false;
+    const ovf = getComputedStyle(sec).overflowY;
+    if (ovf !== 'auto' && ovf !== 'scroll') return false;
     const top = sec.scrollTop <= 0;
     const bottom = sec.scrollTop + sec.clientHeight >= sec.scrollHeight - 1;
     return d > 0 ? !bottom : !top;
