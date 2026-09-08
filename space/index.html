@@ -952,6 +952,30 @@
     html.m-flow [data-mars-section].armed .mars-sum{opacity:1;animation:none!important}
   }
 
+  /* the copy of a project rises as its section comes up the screen, tied to
+     the scroll itself - so it advances while the reader moves, holds where
+     they stop, and runs backwards when they scroll back up. the lift is put
+     on the lines and the fade on the block around them, so the fade the
+     carousel already uses when the slide changes is left alone. */
+  @supports (animation-timeline: view()){
+    html.m-flow .proj-section .pf-copy{
+      animation:copy-fade linear both;
+      animation-timeline:view();animation-range:entry 12% entry 62%;
+    }
+    html.m-flow .proj-section .pf-brand,
+    html.m-flow .proj-section .pf-title,
+    html.m-flow .proj-section .pf-body,
+    html.m-flow .proj-section .pf-cta{
+      animation:copy-lift linear both;animation-timeline:view();
+    }
+    html.m-flow .proj-section .pf-brand{animation-range:entry 12% entry 58%}
+    html.m-flow .proj-section .pf-title{animation-range:entry 18% entry 66%}
+    html.m-flow .proj-section .pf-body {animation-range:entry 24% entry 74%}
+    html.m-flow .proj-section .pf-cta  {animation-range:entry 30% entry 82%}
+  }
+  @keyframes copy-fade{from{opacity:0}to{opacity:1}}
+  @keyframes copy-lift{from{transform:translateY(46px)}to{transform:none}}
+
   /* the rail and the header float above the column as they always did */
   html.m-flow #rail,html.m-flow .logo,html.m-flow .menu,html.m-flow #hdr-glass{z-index:14}
 
