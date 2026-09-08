@@ -2430,7 +2430,15 @@
   /* the chapter clips come first; the moon and the portfolio clip follow */
   vp.addEventListener('canplaythrough', heavy, { once:true });
   setTimeout(heavy, 5000);
-  const queue = () => { prime(CH[1].play); prime(CH[1].loop); arm(vp, CH[1].play); arm(vl, CH[1].loop); };
+  /* once the opening clip is playing, every chapter clip is pulled down in
+     order behind it - one file at a time, which is what the queue guarantees.
+     four and a half megabytes over the time it takes to read the opening, and
+     from then on a chapter starts from a copy already on the machine rather
+     than from the network. this is what stops them stalling. */
+  const queue = () => {
+    arm(vp, CH[1].play); arm(vl, CH[1].loop);
+    for (let c = 1; c <= LAST; c++){ prime(CH[c].play); prime(CH[c].loop); }
+  };
   if (heroV.readyState >= 3) queue();
   else {
     heroV.addEventListener('canplaythrough', queue, { once:true });
