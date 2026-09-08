@@ -1907,7 +1907,17 @@
        and only clears out for the descent */
     const intro = marsRoot.querySelector('[data-intro]');
     const free = MARS_FREE.matches;
-    if (intro){ const f2 = free ? 0 : Math.min(1, Math.max(0, (p-0.86)/0.06)); intro.style.opacity = String(1-f2); }
+    /* the handover cross-fades this section into the projects behind it. the
+       headline was the only thing fading, so the three cards and the closing
+       line stayed at full strength on top of the section taking over. */
+    const f2 = free ? 0 : Math.min(1, Math.max(0, (p-0.86)/0.06));
+    if (intro) intro.style.opacity = String(1-f2);
+    if (!free){
+      const stops = marsRoot.querySelector('.mars-stops');
+      const sum = marsRoot.querySelector('[data-sum]');
+      if (stops) stops.style.opacity = String(1-f2);
+      if (sum) sum.style.opacity = String(1-f2);
+    }
     const scrim = marsRoot.querySelector('[data-scrim]');
     if (scrim){
       if (!scrim.style.transition) scrim.style.transition = 'opacity .6s ease';
@@ -2679,7 +2689,13 @@
     projMode = false;
     projPrepped = false;
     marsMode = true;
+    /* .on only puts the layer in the document at opacity 0 - .vis is what
+       fades it up. every other way in adds both; this one added only the
+       first, so coming back from the projects landed on a black screen with
+       nothing but the header and the rail. */
     marsWrap.classList.add('on');
+    void marsWrap.offsetWidth;
+    marsWrap.classList.add('vis');
     const vh = window.innerHeight || 800;
     const scrollH = marsRoot.getBoundingClientRect().height - vh;
     marsWrap.scrollTop = Math.max(1, scrollH);
