@@ -2651,6 +2651,15 @@
         render();
       },
       reset(){
+        /* the fan's stills are marked lazy so twelve of them do not load at
+           once on a page nobody has scrolled yet. the moment this carousel is
+           the one on screen they are wanted outright - left lazy, they
+           trickled in and the reader saw one mockup with the rest arriving a
+           beat later. */
+        cards.forEach(c => {
+          const im = c.querySelector('.pf-poster');
+          if (im && im.loading === 'lazy') im.loading = 'eager';
+        });
         pos = target = 0; front = -1; render();
         /* the section fades in over .6s; by then the phone will allow playback */
         [80, 400, 900].forEach(t => setTimeout(() => {
