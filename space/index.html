@@ -3103,14 +3103,17 @@
     marsWrap.appendChild(projWrap);
     /* the star field is a sibling of the copy; inside the card it gets an
        edge to stop at */
-    (() => {
+    /* this rearranges the about block for a phone's single column, and the
+       desktop layout places the same two pieces itself - so it is asked about
+       the screen rather than about the column, which every screen now uses */
+    if (matchMedia('(max-width:768px),(hover:none) and (pointer:coarse) and (max-width:1024px),(max-aspect-ratio:3/4) and (max-width:1400px)').matches){
       const about = projSections[4];
       const stars = about && about.querySelector('galaxy-bg');
       const card  = about && about.querySelector('.ab-card');
       const astro = about && about.querySelector('.astro');
       if (stars && card) card.insertBefore(stars, card.firstChild);
       if (astro && card) card.insertBefore(astro, card.querySelector('h2'));
-    })();
+    }
     projWrap.classList.add('on');
     projMode = true;
     document.documentElement.classList.add('m-flow');
