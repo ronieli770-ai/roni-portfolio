@@ -2575,10 +2575,11 @@
         if (k !== i){ if (v) v.pause(); return; }
         if (!v && c.dataset.clip){
           v = document.createElement('video');
-          /* the clip is fetched when it is played, which only happens once the
-             card is on screen - asking for the whole file up front put several
-             megabytes on the wire before anyone had scrolled to it */
-          v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata';
+          /* this element is only built once its card is at the front, so the
+             fetch already waits for the reader. asking for metadata only was
+             meant to save a little more, but the browser then sat on the
+             request and the mockups never arrived - so it asks outright. */
+          v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
           v.setAttribute('playsinline', '');
           v.setAttribute('muted', '');
           v.poster = c.dataset.clip.replace('.mp4', '.jpg');
