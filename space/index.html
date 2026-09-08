@@ -1682,6 +1682,19 @@
     v.src = use;
     v.load();
   }
+  /* a browser will only decode so many videos at once. past that limit a new
+     player sits in a loading state with nothing arriving and no error at all,
+     which is exactly how the portfolio mockups failed - the file and the
+     network were fine, there was simply no decoder left. anything off screen
+     hands its decoder back. */
+  function release(v){
+    if (!v) return;
+    v.pause();
+    v.removeAttribute('src');
+    delete v.dataset.use;            // so arm() knows to set the source again
+    delete v.dataset.src;
+    try { v.load(); } catch (e) {}
+  }
   const show = v => { v.classList.add('on'); };
   const hide = v => { v.classList.remove('on'); v.pause(); };
   /* a clip that will not start (a phone that refuses autoplay, a slow first
@@ -2363,7 +2376,12 @@
       s.classList.toggle('active', i === n);
       s.classList.remove('enter');
       s.querySelectorAll('video').forEach(v => {
-        if (i === n) v.play().catch(() => {}); else v.pause();
+        if (i === n){ v.play().catch(() => {}); return; }
+        /* pausing leaves the decoder held. the card's player is thrown away
+           instead, and reset() below builds the one for this section fresh
+           whenever the reader comes back to it. */
+        release(v);
+        if (v.closest('.pf-card')) v.remove();
       });
     });
     /* entering a project puts its carousel back on the first slide */
@@ -2690,6 +2708,9 @@
   function enterProjects(){
     projMode = true;
     marsMode = false;
+    /* the chapter clips are two more players held open behind a section that
+       never shows them; enter() arms them again on the way back */
+    hide(vp); hide(vl); release(vp); release(vl);
     marsWrap.classList.remove('on','vis');
     marsAnim = null; marsForceP = null;
     if (!projWrap.classList.contains('on')) projPrepBehind();
