@@ -880,6 +880,13 @@
     -webkit-mask-image:linear-gradient(180deg,#000 72%,transparent 100%);
     mask-image:linear-gradient(180deg,#000 72%,transparent 100%);
   }
+  /* the noise laid over the project blocks starts on the section's own edge,
+     and a texture that begins on a line is the line. it is faded in and out
+     with everything else. */
+  html.m-flow .proj-grain{
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 88%,transparent 100%);
+    mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 88%,transparent 100%);
+  }
   /* the carousel glow is brightest exactly where its section begins, which
      read as a hard line against the block above it */
   html.m-flow .pf-glow{
