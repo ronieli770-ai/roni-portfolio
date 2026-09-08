@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>אפשרויות כניסה לסקשן</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:#000;color:#fff;
+    font-family:'IBM Plex Sans Hebrew',system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  }
+  .note{
+    position:sticky;top:0;z-index:9;background:rgba(8,10,18,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid #1e2333;
+    padding:12px 22px;font-size:14px;color:#8b95b0;
+  }
+  .note b{color:#fa9154}
+
+  section{
+    position:relative;min-height:100vh;display:flex;flex-direction:column;
+    justify-content:center;padding:120px clamp(24px,6vw,120px);overflow:visible;
+  }
+  section::before{
+    content:'';position:absolute;left:0;right:0;top:0;height:150%;z-index:0;pointer-events:none;
+    background:radial-gradient(circle 70vh at 50% 58%,rgba(31,62,123,.62) 0%,rgba(31,62,123,.22) 44%,rgba(0,0,0,0) 72%);
+  }
+  h2{
+    position:relative;z-index:2;margin:0;text-align:center;
+    font-size:clamp(38px,4.6vw,76px);font-weight:300;line-height:1.1;letter-spacing:-.015em;
+    background:linear-gradient(270deg,#FFFFFF 0%,#AFC9E4 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+  }
+  .stops{
+    position:relative;z-index:2;display:flex;gap:clamp(16px,2vw,36px);
+    margin-top:clamp(56px,9vh,120px);
+  }
+  .stop{flex:1 1 0;min-width:0;text-align:right}
+  .stop span.line{
+    display:block;width:116px;height:2px;margin:0 0 26px auto;
+    background:linear-gradient(to left,#FFB067,rgba(255,176,103,.15));
+  }
+  .stop h3{margin:0 0 26px;font-weight:300;font-size:clamp(24px,2.6vw,45px);line-height:1.1;color:#D7DEE8}
+  .stop p{margin:0;font-weight:400;font-size:clamp(15px,1.05vw,18px);line-height:1.6;color:#cfd4da}
+  .sum{
+    position:relative;z-index:2;margin:clamp(34px,5vh,64px) auto 0;width:fit-content;
+    padding:10px 20px;border-radius:12px;font-size:clamp(17px,1.3vw,22px);font-weight:500;
+    color:#fff;background:linear-gradient(to left,#e0783c,#fa9154);
+  }
+
+  /* ---------- option 1: rise ---------- */
+  @supports (animation-timeline: view()){
+    .opt1 .stop{animation:rise linear both;animation-timeline:view();animation-range:entry 8% cover 42%}
+    .opt1 .stop:nth-child(2){animation-range:entry 14% cover 48%}
+    .opt1 .stop:nth-child(3){animation-range:entry 20% cover 54%}
+    .opt1 .sum{animation:rise linear both;animation-timeline:view();animation-range:entry 30% cover 62%}
+
+    /* ---------- option 2: open from the centre ---------- */
+    .opt2 .stop{animation:grow linear both;animation-timeline:view();animation-range:entry 10% cover 46%}
+    .opt2 .stop:nth-child(2){animation-range:entry 16% cover 52%}
+    .opt2 .stop:nth-child(3){animation-range:entry 22% cover 58%}
+    .opt2 .sum{animation:grow linear both;animation-timeline:view();animation-range:entry 32% cover 64%}
+
+    /* ---------- option 3: in from the sides ---------- */
+    .opt3 .stop:nth-child(1){animation:fromRight linear both;animation-timeline:view();animation-range:entry 8% cover 48%}
+    .opt3 .stop:nth-child(2){animation:fromBelow linear both;animation-timeline:view();animation-range:entry 16% cover 54%}
+    .opt3 .stop:nth-child(3){animation:fromLeft  linear both;animation-timeline:view();animation-range:entry 8% cover 48%}
+    .opt3 .sum{animation:fromBelow linear both;animation-timeline:view();animation-range:entry 30% cover 64%}
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(64px)}to{opacity:1;transform:none}}
+  @keyframes grow{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+  @keyframes fromRight{from{opacity:0;transform:translateX(90px)}to{opacity:1;transform:none}}
+  @keyframes fromLeft{from{opacity:0;transform:translateX(-90px)}to{opacity:1;transform:none}}
+  @keyframes fromBelow{from{opacity:0;transform:translateY(80px)}to{opacity:1;transform:none}}
+
+  .spacer{height:70vh;display:flex;align-items:center;justify-content:center;color:#4b5570;font-size:14px}
+</style>
+</head>
+<body>
+<div class="note">גללי למטה. שלוש אפשרויות, אותו תוכן. <b>כל אנימציה מתקדמת עם הגלילה ונעצרת כשאת עוצרת.</b></div>
+
+<div class="spacer">גללי כדי להתחיל</div>
+
+<section class="opt1">
+  <h2>אפשרות 1 · עלייה</h2>
+  <div class="stops">
+    <div class="stop"><span class="line"></span><h3>עלייה בזמן השהייה באתר</h3><p>רוב הגולשים מחליטים בשניות הראשונות אם להישאר. כל אחד שיוצא בשלב הזה הוא תקציב פרסום ששולם ולא הוחזר.</p></div>
+    <div class="stop"><span class="line"></span><h3>מגיעים לשיחה כשהם כבר משוכנעים</h3><p>מי שנשאר לו חשש אחד שלא נענה, פשוט לא פונה. כשהדף עונה על ההתנגדויות, הפנייה מגיעה ממישהו שכבר משוכנע.</p></div>
+    <div class="stop"><span class="line"></span><h3>מחיר גבוה יותר שעובר בלי מיקוח</h3><p>כשהדף נראה כמו של מותג גדול, ההשוואה לזול ביותר נפסקת. אותו שירות נתפס כפרימיום.</p></div>
+  </div>
+  <div class="sum">בסוף, אתר טוב מכניס לך יותר כסף</div>
+</section>
+
+<div class="spacer">אפשרות 2 מתחילה כאן</div>
+
+<section class="opt2">
+  <h2>אפשרות 2 · פתיחה מהמרכז</h2>
+  <div class="stops">
+    <div class="stop"><span class="line"></span><h3>עלייה בזמן השהייה באתר</h3><p>רוב הגולשים מחליטים בשניות הראשונות אם להישאר. כל אחד שיוצא בשלב הזה הוא תקציב פרסום ששולם ולא הוחזר.</p></div>
+    <div class="stop"><span class="line"></span><h3>מגיעים לשיחה כשהם כבר משוכנעים</h3><p>מי שנשאר לו חשש אחד שלא נענה, פשוט לא פונה. כשהדף עונה על ההתנגדויות, הפנייה מגיעה ממישהו שכבר משוכנע.</p></div>
+    <div class="stop"><span class="line"></span><h3>מחיר גבוה יותר שעובר בלי מיקוח</h3><p>כשהדף נראה כמו של מותג גדול, ההשוואה לזול ביותר נפסקת. אותו שירות נתפס כפרימיום.</p></div>
+  </div>
+  <div class="sum">בסוף, אתר טוב מכניס לך יותר כסף</div>
+</section>
+
+<div class="spacer">אפשרות 3 מתחילה כאן</div>
+
+<section class="opt3">
+  <h2>אפשרות 3 · מהצדדים פנימה</h2>
+  <div class="stops">
+    <div class="stop"><span class="line"></span><h3>עלייה בזמן השהייה באתר</h3><p>רוב הגולשים מחליטים בשניות הראשונות אם להישאר. כל אחד שיוצא בשלב הזה הוא תקציב פרסום ששולם ולא הוחזר.</p></div>
+    <div class="stop"><span class="line"></span><h3>מגיעים לשיחה כשהם כבר משוכנעים</h3><p>מי שנשאר לו חשש אחד שלא נענה, פשוט לא פונה. כשהדף עונה על ההתנגדויות, הפנייה מגיעה ממישהו שכבר משוכנע.</p></div>
+    <div class="stop"><span class="line"></span><h3>מחיר גבוה יותר שעובר בלי מיקוח</h3><p>כשהדף נראה כמו של מותג גדול, ההשוואה לזול ביותר נפסקת. אותו שירות נתפס כפרימיום.</p></div>
+  </div>
+  <div class="sum">בסוף, אתר טוב מכניס לך יותר כסף</div>
+</section>
+
+<div class="spacer">סוף. גללי למעלה ולמטה כמה פעמים כדי להשוות.</div>
+</body>
+</html>
