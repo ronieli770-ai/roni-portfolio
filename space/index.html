@@ -1831,6 +1831,7 @@
   let mode = 'still';  // 'still' | 'play' | 'loop'
   let busy = false;    // true while a play-through is running
   let guard = null;    // fallback in case 'ended' never fires
+  let copyIn = null;   // the chapter's words, brought in before its clip ends
   let stallWatch = null, stallTries = 0;   // a clip whose download simply hangs
   /* a scroll made during the play-through used to be thrown away, so the page
      felt dead for the couple of seconds a clip takes. now it is remembered and
@@ -1883,6 +1884,7 @@
   function enter(n){
     idx = n;
     stallTries = 0;
+    clearTimeout(copyIn);
     marks();
     if (n === 0){                      // back to the hero
       hero.classList.remove('off');
@@ -1920,6 +1922,11 @@
     vp.currentTime = 0;
     run(vp);
     show(vp); hide(vl);
+    /* the words used to wait for the clip to finish, a full two seconds after
+       the chapter began, which read as arriving late. they come in while it is
+       still running; the handover to the loop shows them again either way. */
+    clearTimeout(copyIn);
+    copyIn = setTimeout(() => { if (idx === n) showCopy(n); }, 800);
     /* the loop takes over on 'ended'; this is the net if the clip never gets
        there - a stalled download used to freeze the page on the old picture */
     clearTimeout(guard);
