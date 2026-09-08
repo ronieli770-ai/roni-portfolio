@@ -2210,6 +2210,15 @@
   function slideToMars(){
     if (marsMode) return;
     marsMode = true;
+    /* the column used to be slid up over nine tenths of a second. the handover
+       between the opening stage and the column is a change of mode either way,
+       and dressing it as a slide only made it read as a lurch. it is shown at
+       its top instead, and the wheel carries straight on into it. */
+    marsWrap.classList.add('on', 'vis');
+    void marsWrap.offsetWidth;
+    clearHandoff();
+    settleMars();
+    return;
     marsWrap.classList.add('on', 'vis', 'sliding');
     marsWrap.style.setProperty('--mo', '100vh');
     openLayers.forEach(el => el.classList.add('handoff'));
