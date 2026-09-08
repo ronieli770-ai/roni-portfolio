@@ -853,10 +853,22 @@
      fades at the seam instead of ending on a line. each section used to be a
      layer of its own, so an edge was never seen; in a column they meet. */
   html.m-flow [data-mars-section] [data-mars-bg],
+  html.m-flow [data-mars-section] [data-scrim]{position:absolute!important}
+  /* the wash is drawn as real circles, sized off the height of the screen the
+     way the carousel glow already is. as percentages of a box that is no
+     longer the whole viewport they came out as ellipses, and the fade I put
+     on them to hide the seam sliced them flat. they fade to nothing on their
+     own, so there is no seam left to hide. */
+  html.m-flow [data-mars-section] [data-mars-bg]{
+    background-image:
+      radial-gradient(circle 62vh at 50% 86%,rgba(31,62,123,.62) 0%,rgba(31,62,123,.20) 46%,rgba(0,0,0,0) 74%),
+      radial-gradient(circle 88vh at 50% 112%,rgba(31,62,123,.45) 0%,rgba(0,0,0,0) 72%)!important;
+    background-color:transparent!important;
+    -webkit-mask-image:none!important;mask-image:none!important;
+  }
   html.m-flow [data-mars-section] [data-scrim]{
-    position:absolute!important;
-    -webkit-mask-image:linear-gradient(180deg,#000 68%,transparent 100%);
-    mask-image:linear-gradient(180deg,#000 68%,transparent 100%);
+    -webkit-mask-image:linear-gradient(180deg,#000 72%,transparent 100%);
+    mask-image:linear-gradient(180deg,#000 72%,transparent 100%);
   }
   /* the carousel glow is brightest exactly where its section begins, which
      read as a hard line against the block above it */
