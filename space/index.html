@@ -2567,9 +2567,30 @@
       }, 220);
     }
 
+    /* the card next in line is warmed into the browser's cache so stepping to
+       it starts on a file that is already here. the rule that kept the
+       chapters from starving each other applies: it begins only once what is
+       on screen is playing, it is one file at a time, and it is dropped the
+       moment the reader moves on. */
+    let peek = null;
+    function dropPeek(){ if (peek){ peek.abort(); peek = null; } }
+    function warmNext(){
+      dropPeek();
+      const nxt = cards[(((front + 1) % N) + N) % N];
+      const url = nxt && nxt.dataset.clip;
+      if (!url) return;
+      const ac = new AbortController();
+      peek = ac;
+      fetch(url, { signal: ac.signal, priority: 'low' })
+        .then(r => r.ok && r.blob())
+        .catch(() => {})
+        .then(() => { if (peek === ac) peek = null; });
+    }
+
     function setFront(i){
       if (i === front) return;
       front = i;
+      dropPeek();
       cards.forEach((c, k) => {
         let v = c.querySelector('video');
         if (k !== i){ if (v) v.pause(); return; }
@@ -2588,9 +2609,14 @@
              the section is still hidden when the first card is built - so the
              play is retried once there are frames to show */
           v.addEventListener('canplay', () => v.play().catch(() => {}));
+          /* only once this one is actually running does the next get warmed */
+          v.addEventListener('playing', warmNext, { once:true });
           c.querySelector('.pf-screen').insertBefore(v, c.querySelector('.pf-glare'));
         }
-        if (v) v.play().catch(() => {});
+        if (v){
+          v.play().catch(() => {});
+          if (v.readyState >= 3) warmNext();
+        }
       });
       cards.forEach((c, k) => c.classList.toggle('is-front', k === i));
       dots.forEach((d, k) => d.classList.toggle('on', k === i));
