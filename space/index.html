@@ -1907,17 +1907,15 @@
        and only clears out for the descent */
     const intro = marsRoot.querySelector('[data-intro]');
     const free = MARS_FREE.matches;
-    /* the handover cross-fades this section into the projects behind it. the
-       headline was the only thing fading, so the three cards and the closing
-       line stayed at full strength on top of the section taking over. */
+    /* the handover cross-fades this section into the projects waiting behind
+       it. fading each piece by hand fought the logic that decides when each
+       one is due - the closing line appeared the moment the section did. the
+       whole stage fades instead, as one layer, and every piece inside keeps
+       whatever state its own timing gave it. */
     const f2 = free ? 0 : Math.min(1, Math.max(0, (p-0.86)/0.06));
     if (intro) intro.style.opacity = String(1-f2);
-    if (!free){
-      const stops = marsRoot.querySelector('.mars-stops');
-      const sum = marsRoot.querySelector('[data-sum]');
-      if (stops) stops.style.opacity = String(1-f2);
-      if (sum) sum.style.opacity = String(1-f2);
-    }
+    const stage = marsRoot.querySelector(':scope > div');
+    if (stage) stage.style.opacity = free ? '' : String(1-f2);
     const scrim = marsRoot.querySelector('[data-scrim]');
     if (scrim){
       if (!scrim.style.transition) scrim.style.transition = 'opacity .6s ease';
