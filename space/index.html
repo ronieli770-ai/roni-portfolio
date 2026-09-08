@@ -824,9 +824,11 @@
      already uses, so the browser owns the scrolling and decides for itself what
      to load as the reader approaches it. the phone's own version of these rules
      follows below and wins there, being later in the sheet. */
+  /* whether this layer is on screen stays with the classes that own it - the
+     first version of these rules forced it visible, which covered the opening
+     screen from the first frame. only how it scrolls is set here. */
   html.m-flow #mars-wrap{
-    position:fixed;inset:0;z-index:11;display:block;opacity:1;
-    overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+    overscroll-behavior:contain;
     background:#000;scroll-behavior:smooth;
     /* free scrolling lets the reader stop halfway and see the bottom of one
        composition over the top of the next. the browser's own snapping lands
