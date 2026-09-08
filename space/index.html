@@ -846,8 +846,11 @@
      stage: no sticky stage, no eight screens of track */
   html.m-flow [data-mars-section]{height:auto!important}
   html.m-flow [data-mars-section] > div{
-    position:relative!important;height:auto!important;overflow:visible!important;
-    padding:130px clamp(24px,6vw,120px) 110px;
+    position:static!important;height:auto!important;overflow:visible!important;
+    /* the block fills the screen and sits its content in the middle of it,
+       rather than hanging from the top edge */
+    min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+    padding:120px clamp(24px,6vw,120px);
   }
   /* one black sheet behind the whole column, and every backdrop inside it
      fades at the seam instead of ending on a line. each section used to be a
@@ -910,7 +913,8 @@
   }
   html.m-flow .mars-stops{
     position:relative!important;left:auto!important;right:auto!important;top:auto!important;
-    margin-top:clamp(34px,5vh,70px);gap:clamp(16px,2vw,36px);
+    /* the headline needs air under it before the three reasons begin */
+    margin-top:clamp(56px,9vh,120px);gap:clamp(16px,2vw,36px);
   }
   html.m-flow .mars-sum{
     position:relative!important;left:auto!important;top:auto!important;bottom:auto!important;
