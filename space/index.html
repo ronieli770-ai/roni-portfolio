@@ -833,7 +833,13 @@
     /* no snapping: snapping pulls a whole section per nudge, which reads as
        the page jumping rather than scrolling. this is an ordinary scroll. */
   }
-  html.m-flow [data-mars-section]{min-height:100vh}
+  /* the section is given room to be scrolled through: the block inside stays
+     centred and still while the section travels past, and it is the section
+     that drives the animations, since a sticky block never moves itself. */
+  html.m-flow [data-mars-section]{
+    min-height:190vh;
+    view-timeline-name:--marssec;view-timeline-axis:block;
+  }
   html.m-flow #projects-wrap{
     position:relative!important;inset:auto!important;height:auto;
     display:block!important;z-index:auto!important;background:transparent;
@@ -849,7 +855,8 @@
     position:static!important;height:auto!important;overflow:visible!important;
     /* the block fills the screen and sits its content in the middle of it,
        rather than hanging from the top edge */
-    min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+    position:sticky!important;top:0;
+    min-height:100vh;height:100vh;display:flex;flex-direction:column;justify-content:center;
     padding:120px clamp(24px,6vw,120px);
   }
   /* one black sheet behind the whole column, and every backdrop inside it
@@ -955,15 +962,15 @@
   @supports (animation-timeline: view()){
     html.m-flow [data-mars-section].armed [data-stop]{
       animation:flow-rise linear both;
-      animation-timeline:view();
-      animation-range:entry 6% entry 46%;
+      animation-timeline:--marssec;
+      animation-range:contain 2% contain 22%;
     }
-    html.m-flow [data-mars-section].armed [data-stop]:nth-child(2){animation-range:entry 24% entry 64%}
-    html.m-flow [data-mars-section].armed [data-stop]:nth-child(3){animation-range:entry 42% entry 82%}
+    html.m-flow [data-mars-section].armed [data-stop]:nth-child(2){animation-range:contain 14% contain 34%}
+    html.m-flow [data-mars-section].armed [data-stop]:nth-child(3){animation-range:contain 26% contain 46%}
     html.m-flow [data-mars-section].armed .mars-sum{
       animation:flow-rise linear both;
-      animation-timeline:view();
-      animation-range:entry 62% cover 14%;
+      animation-timeline:--marssec;
+      animation-range:contain 40% contain 62%;
     }
   }
   @media (prefers-reduced-motion:reduce){
@@ -2229,6 +2236,16 @@
   function slideToMars(){
     if (marsMode) return;
     marsMode = true;
+    /* the column used to be slid up over nine tenths of a second. that landed
+       the section already full on the screen, so anything meant to happen as
+       it arrives had happened before it was seen - and it did not feel like
+       scrolling, because it was not. it is simply shown at its top now, and
+       the wheel carries on from there. */
+    marsWrap.classList.add('on', 'vis');
+    void marsWrap.offsetWidth;
+    clearHandoff();
+    settleMars();
+    return;
     marsWrap.classList.add('on', 'vis', 'sliding');
     marsWrap.style.setProperty('--mo', '100vh');
     openLayers.forEach(el => el.classList.add('handoff'));
