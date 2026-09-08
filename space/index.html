@@ -2340,7 +2340,10 @@
       /* frames per pixel of scroll. 0.022 spends a chapter over roughly two and
          a half screens of scrolling - unhurried, and close to the density the
          reference site runs at once its far longer sequences are accounted for. */
+      cancelAnimationFrame(settleAnim);
+      clearTimeout(settleTimer);
       scrubTo(P + e.deltaY * 0.022);
+      settleTimer = setTimeout(scrubSettle, 170);
       return;
     }
     const now = performance.now();
@@ -2462,6 +2465,29 @@
     idx = c;
     marks();
     panes.forEach((pane, k) => pane.classList.toggle('show', k === c && within > 0.62));
+  }
+
+  /* the source frames carry the animation's own motion blur. in motion that
+     reads as speed, which is what it is for; stopped on it, it is just a smear.
+     so the scroll may pass through the blurred middle, but it never rests
+     there: when the wheel goes quiet the run eases to the nearest calm frame,
+     which is the beginning or the end of the chapter. */
+  let settleTimer = null, settleAnim = null;
+  function scrubSettle(){
+    cancelAnimationFrame(settleAnim);
+    const c = Math.min(3, Math.max(1, Math.floor(P / SEQ_N) + 1));
+    const lo = (c - 1) * SEQ_N;
+    const hi = c * SEQ_N - 0.5;          // the last frame, not the next chapter
+    const to = (P - lo) < (hi - P) ? lo : hi;
+    const from = P, t0 = performance.now(), dur = 520;
+    if (Math.abs(to - from) < 0.2) return;
+    const step = now => {
+      const u = Math.min(1, (now - t0) / dur);
+      const e = u < .5 ? 4*u*u*u : 1 - Math.pow(-2*u+2, 3)/2;
+      scrubTo(from + (to - from) * e);
+      if (u < 1) settleAnim = requestAnimationFrame(step);
+    };
+    settleAnim = requestAnimationFrame(step);
   }
 
   function scrubTo(next){
