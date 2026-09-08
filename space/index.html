@@ -1728,6 +1728,10 @@
     if (mode === 'loop') return;
     clearTimeout(guard);
     mode = 'loop';
+    /* whoever gets here first - the clip ending, or the net that fires when it
+       never does - the loop has to be this chapter's. arming twice costs
+       nothing; the call returns as soon as the source is already set. */
+    arm(vl, CH[idx].loop);
     vl.currentTime = 0;
     run(vl);
     show(vl); hide(vp);
@@ -1760,7 +1764,14 @@
     veil.classList.add('on');
     mode = 'play';
     arm(vp, CH[n].play);
-    arm(vl, CH[n].loop);               // have the loop ready before the clip ends
+    /* the loop is not wanted until this clip ends, and arming it here put a
+       second download on the wire beside the one being watched - two clips
+       sharing the line is what made the opening chapters stutter. it is armed
+       once this one is playing, and startLoop arms it itself if it has to
+       take over before that. */
+    const armLoop = () => arm(vl, CH[n].loop);
+    if (vp.readyState >= 3) armLoop();
+    else vp.addEventListener('canplay', armLoop, { once:true });
     /* fast scrolling can outrun the loop's prefetch, so the next chapter is
        still fetched from here - but only once this clip is playing, never
        alongside it */
