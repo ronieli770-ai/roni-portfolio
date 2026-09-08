@@ -2337,10 +2337,10 @@
        the moment the wheel does. no gesture lock is wanted here - that was
        for stepping whole chapters. */
     if (SCRUB){
-      /* frames per pixel of scroll. 0.035 spends a chapter over about a screen
-         and a half of scrolling, which is roughly the pace the reference site
-         runs at once its far longer sequences are taken into account. */
-      scrubTo(P + e.deltaY * 0.035);
+      /* frames per pixel of scroll. 0.022 spends a chapter over roughly two and
+         a half screens of scrolling - unhurried, and close to the density the
+         reference site runs at once its far longer sequences are accounted for. */
+      scrubTo(P + e.deltaY * 0.022);
       return;
     }
     const now = performance.now();
