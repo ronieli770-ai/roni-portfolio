@@ -681,8 +681,7 @@
     display:flex;align-items:center;justify-content:center;
   }
   /* the copy is swapped out on every slide, so it fades rather than snapping */
-  .pf-copy.swap .pf-brand,.pf-copy.swap .pf-title,.pf-copy.swap .pf-body{opacity:0}
-  .pf-brand,.pf-title,.pf-body{transition:opacity .22s ease}
+  /* the copy is swapped outright, so there is nothing left to transition */
 
   .proj-section.enter .proj-video{animation:proj-fade .9s ease both}
   .proj-section.enter .proj-scrim{animation:proj-fade .9s ease both}
@@ -2583,6 +2582,26 @@
     },
     {
       format:'site',
+      name:'Kapach Capital',
+      brand:'Kapach Capital · השקעות נדל״ן בדובאי',
+      title:'אתר תדמית',
+      url:'https://kapach-capital.co.il/',
+      host:'kapach-capital.co.il',
+      dir:'work/ndn/',
+      slides:[
+        { v:'s1',
+          lead:'האתר פונה למשקיעים ישראלים שמחפשים תשואה מחוץ לארץ',
+          body:'האתר פותח בכאב של המשקיע הישראלי - הון עצמי שלא מספיק בארץ ותשואה נמוכה - ומולו מציג את הייחוד של Kapach Capital: מעטפת מלאה להשקעה בדובאי, מהבירוקרטיה ועד ניהול הנכס. בעסק שבנוי על אמון, האתר מציג את התהליך במדויק ואת הפנים שמאחורי החברה, ועמוד פודקאסטים שיתווסף בהמשך ימשיך לחזק את שניהם.' },
+        { v:'s2', title:'עמוד · אודות',
+          lead:'סיפור שהגולש מזהה בו את עצמו',
+          body:'יש לו הון עצמי אבל אין לו מושג איפה נכון להשקיע אותו, והוא חי את הקושי שכולם פה חולקים - להתקדם כלכלית במדינה יקרה. המסע של המייסדים אל ההצלחה בדובאי הופך אותם להשראה, והמכירה עוברת דרך שאיפה: הגולש לא קונה שירות, הוא קונה את היעד - השקעה חכמה בלי כאב ראש.' },
+        { img:'s3', title:'עמוד · יצירת קשר',
+          lead:'טופס שמסנן כבר בכניסה',
+          body:'לצד הטלפון, המייל והמפה יושב טופס שמבקש גם את ההון העצמי הזמין להשקעה. שדה אחד שחוסך שיחות לא רלוונטיות ומביא את הצוות מוכן לשיחה שכן מתקיימת.' }
+      ]
+    },
+    {
+      format:'site',
       name:'טויל גרופ',
       brand:'טויל גרופ · עבודות גמר למשרדים',
       title:'אתר תדמית ופורטפוליו',
@@ -2602,26 +2621,6 @@
         { v:'s4', title:'עמוד · צרו קשר',
           lead:'הצגה אסתטית ומזמינה של הפרטים',
           body:'טלפון, טופס קצר ומשפט אחד שממסגר את מה שיקרה אחריו: נשמח להכיר את הפרויקט ולהציע תהליך עבודה ברור.' }
-      ]
-    },
-    {
-      format:'site',
-      name:'Kapach Capital',
-      brand:'Kapach Capital · השקעות נדל״ן בדובאי',
-      title:'אתר תדמית',
-      url:'https://kapach-capital.co.il/',
-      host:'kapach-capital.co.il',
-      dir:'work/ndn/',
-      slides:[
-        { v:'s1',
-          lead:'האתר פונה למשקיעים ישראלים שמחפשים תשואה מחוץ לארץ',
-          body:'האתר פותח בכאב של המשקיע הישראלי - הון עצמי שלא מספיק בארץ ותשואה נמוכה - ומולו מציג את הייחוד של Kapach Capital: מעטפת מלאה להשקעה בדובאי, מהבירוקרטיה ועד ניהול הנכס. בעסק שבנוי על אמון, האתר מציג את התהליך במדויק ואת הפנים שמאחורי החברה, ועמוד פודקאסטים שיתווסף בהמשך ימשיך לחזק את שניהם.' },
-        { v:'s2', title:'עמוד · אודות',
-          lead:'סיפור שהגולש מזהה בו את עצמו',
-          body:'יש לו הון עצמי אבל אין לו מושג איפה נכון להשקיע אותו, והוא חי את הקושי שכולם פה חולקים - להתקדם כלכלית במדינה יקרה. המסע של המייסדים אל ההצלחה בדובאי הופך אותם להשראה, והמכירה עוברת דרך שאיפה: הגולש לא קונה שירות, הוא קונה את היעד - השקעה חכמה בלי כאב ראש.' },
-        { img:'s3', title:'עמוד · יצירת קשר',
-          lead:'טופס שמסנן כבר בכניסה',
-          body:'לצד הטלפון, המייל והמפה יושב טופס שמבקש גם את ההון העצמי הזמין להשקעה. שדה אחד שחוסך שיחות לא רלוונטיות ומביא את הצוות מוכן לשיחה שכן מתקיימת.' }
       ]
     }
   ];
@@ -2724,14 +2723,12 @@
     function paintCopy(i){
       const sl = proj.slides[i];
       if (!sl) return;
-      copy.classList.add('swap');
-      setTimeout(() => {
-        copy.querySelector('.pf-brand').textContent = sl.brand || proj.brand;
-        copy.querySelector('.pf-title').textContent = sl.title || proj.title;
-        copy.querySelector('.pf-body').innerHTML =
-          '<strong>' + (sl.lead || sl.title || '') + '</strong>' + sl.body;
-        copy.classList.remove('swap');
-      }, 220);
+      /* the copy used to fade out, wait, and fade back in on every slide. it
+         changes outright now - nothing on these lines moves. */
+      copy.querySelector('.pf-brand').textContent = sl.brand || proj.brand;
+      copy.querySelector('.pf-title').textContent = sl.title || proj.title;
+      copy.querySelector('.pf-body').innerHTML =
+        '<strong>' + (sl.lead || sl.title || '') + '</strong>' + sl.body;
     }
 
     /* the card next in line is warmed into the browser's cache so stepping to
