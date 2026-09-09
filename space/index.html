@@ -955,21 +955,6 @@
     html.m-flow [data-mars-section].armed .mars-sum{opacity:1;animation:none!important}
   }
 
-  /* the copy of a project rises as its section comes up the screen. the
-     browser's own scroll timelines never resolved inside this structure - a
-     section that clips its content counts as a scroll container, and the
-     column sits in a fixed layer - so the progress is measured by the sync
-     that already runs on every scroll of the column and handed to the
-     stylesheet as a number. it advances with the reader, holds where they
-     stop, and runs backwards on the way up, because it is only ever a
-     function of where the section is. */
-  html.m-flow .proj-section .pf-copy{opacity:var(--e0,1)}
-  /* the same rise the three cards make in the moon block: thirty pixels, not a
-     journey. it is the scroll that carries it here rather than a timer. */
-  html.m-flow .proj-section .pf-brand{transform:translateY(calc((1 - var(--e0,1)) * 30px))}
-  html.m-flow .proj-section .pf-title{transform:translateY(calc((1 - var(--e1,1)) * 30px))}
-  html.m-flow .proj-section .pf-body {transform:translateY(calc((1 - var(--e2,1)) * 30px))}
-  html.m-flow .proj-section .pf-cta  {transform:translateY(calc((1 - var(--e3,1)) * 30px))}
 
   /* the rail and the header float above the column as they always did */
   html.m-flow #rail,html.m-flow .logo,html.m-flow .menu,html.m-flow #hdr-glass{z-index:14}
@@ -3274,16 +3259,6 @@
           if (onScreen){ if (v.paused) v.play().catch(() => {}); }
           else if (!v.paused) v.pause();
         });
-        /* how far this section has come up the screen, 0 just below it and 1
-           once it is settled - the four staged values are what the copy's
-           lines read, so each starts a little after the one before it */
-        const raw = Math.min(1, Math.max(0, (top + vh - t) / vh));
-        const ease = u => u * u * (3 - 2 * u);
-        const stage = (a, w) => ease(Math.min(1, Math.max(0, (raw - a) / w)));
-        sec.style.setProperty('--e0', stage(0.10, 0.34).toFixed(3));
-        sec.style.setProperty('--e1', stage(0.18, 0.34).toFixed(3));
-        sec.style.setProperty('--e2', stage(0.26, 0.34).toFixed(3));
-        sec.style.setProperty('--e3', stage(0.34, 0.34).toFixed(3));
         if (mid >= t && mid < b) cur = i;
       });
       if (cur >= 0){
@@ -3320,14 +3295,6 @@
 
     }
     marsWrap.addEventListener('scroll', marsFlowSync, { passive:true });
-    /* a scroll event is not guaranteed on every frame - it is coalesced, and
-       some browsers hold it back entirely. the reveal of each section's copy
-       is a function of where that section is, so it is read every frame while
-       the column is on screen and never waits to be told. */
-    (function follow(){
-      if (marsWrap.classList.contains('on')) marsFlowSync();
-      requestAnimationFrame(follow);
-    })();
 
     marsFlowRefresh = marsFlowSync;
     marsFlowSync();
