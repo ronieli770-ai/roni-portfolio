@@ -632,6 +632,12 @@
   }
   @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px){
     .gd-head{padding:60px 14px 0}
+    /* the stage is centred in a full-screen section and its first card sits 12.93% (branding)
+       or 9.38% (print) down it, which left a tall gap under the heading. the section is pulled
+       up so the first card lands 24px under the heading, the same gap as the projects */
+    .gd-head + .gd-sec{--sh:min(calc((100vw - 58px) * 874 / 402), calc(100svh - 16px))}
+    .gd-head + .gd-sec[data-gd="2"]{margin-top:calc(24px - (100svh - var(--sh)) / 2 - .1293 * var(--sh))}
+    .gd-head + .gd-sec[data-gd="8"]{margin-top:calc(24px - (100svh - var(--sh)) / 2 - .0938 * var(--sh))}
   }
 
   /* ---------- section 8 - גרפיקה לדפוס ---------- */
