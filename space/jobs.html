@@ -281,9 +281,9 @@
     display:block;width:9px;height:9px;border-radius:99px;background:rgba(255,255,255,.26);
     cursor:pointer;transition:width .3s ease,background .3s ease;
   }
-  /* the clip in front is marked in the site orange */
-  .pf-dots b.on{width:26px;background:#fa9154;box-shadow:0 0 12px rgba(250,145,84,.7)}
-  .pf-dots b:hover{background:rgba(250,145,84,.6)}
+  /* the clip in front is marked in white, as on the studio site */
+  .pf-dots b.on{width:26px;background:#fff}
+  .pf-dots b:hover{background:rgba(255,255,255,.6)}
 
   /* ---------- project containers ----------
      each project sits in a black card with rounded corners. the cards keep
@@ -711,13 +711,20 @@
   .show-more{margin-top:20px}
 
   /* ---------- film before the contact: scrubbed by scroll, as an image sequence on canvas ----------
-     150 frames (10fps, 960px). the stage sticks for the section's length and the scroll
+     150 frames (10fps, full 1282px source width, webp). the stage sticks for the section's length and the scroll
      position picks the frame; the first frame is painted as a css background, so the stage
      is never empty, and a frame that has not arrived falls back to the nearest one that has. */
-  .film{position:relative;height:420vh;padding:0}
-  .film-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#1d1d20 url(work/creative/seq/f001.jpg) center/cover no-repeat}
+  .film{position:relative;height:420vh;padding:0;margin-top:min(146px,8.45vw)}
+  .film-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#1d1d20 url(work/creative/film-poster.jpg) center/cover no-repeat}
   .film-stage canvas{display:block;width:100%;height:100%}
-  @media (max-width:768px){ .film{height:300vh} }
+  /* three words over the film, apple style: each one sharpens in from a blur, holds, and blurs
+     out before the next - all three are gone before the turn to camera (frame 75 of 150) */
+  .film-words{position:absolute;inset:0;display:grid;justify-items:center;align-items:end;padding-bottom:15vh;pointer-events:none}
+  .film-words span{grid-area:1/1;font-weight:600;font-size:clamp(46px,8.7vw,150px);line-height:1;letter-spacing:-.01em;white-space:nowrap;
+    background:var(--title-grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+    opacity:0;will-change:opacity,transform,filter}
+  @media (max-width:768px){ .film-words{padding-bottom:22vh} }
+  @media (max-width:768px){ .film{height:300vh;margin-top:60px} }
 
   /* ---------- contact (figma 388:2, frame 1728) ---------- */
   .contact .head{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
@@ -1000,7 +1007,9 @@
 </section>
 
   <section class="film" id="film" aria-label="רוני בסטודיו - סרטון">
-    <div class="film-stage"><canvas></canvas></div>
+    <div class="film-stage"><canvas></canvas>
+      <div class="film-words" aria-hidden="true"><span>עיצוב.</span><span>אתרים.</span><span>בינה מלאכותית.</span></div>
+    </div>
   </section>
 
   <section id="contact" class="contact">
@@ -1544,7 +1553,7 @@
     const sec = document.getElementById('film');
     if (!sec) return;
     const cv = sec.querySelector('canvas'), cx = cv.getContext('2d');
-    const N = 150, src = i => `work/creative/seq/f${String(i + 1).padStart(3, '0')}.jpg`;
+    const N = 150, src = i => `work/creative/seq/f${String(i + 1).padStart(3, '0')}.webp`;
     const frames = new Array(N), ready = new Array(N).fill(false);
     let started = false, shown = -1;
     /* coarse to fine, so a scrub works early and sharpens as frames land: every 16th,
@@ -1585,6 +1594,27 @@
       const w = im.naturalWidth * k, h = im.naturalHeight * k;
       cx.drawImage(im, (W - w) / 2, (H - h) / 2, w, h);
     }
+    /* each word owns a slice of the scroll: the first quarter sharpens it in, the last
+       third blurs it out. the slices end at .48, just before she turns at about .5 */
+    const ws = [...sec.querySelectorAll('.film-words span')];
+    const SLOTS = [[.01, .17], [.17, .33], [.33, .48]];
+    const still = matchMedia('(prefers-reduced-motion:reduce)');
+    const ease = x => x * x * (3 - 2 * x);
+    function words(p){
+      ws.forEach((w, i) => {
+        const [a, b] = SLOTS[i], u = (p - a) / (b - a);
+        let o = 0, bl = 0, sc = 1, y = 0;
+        if (u > 0 && u < 1){
+          if (u < .3){ const e = ease(u / .3); o = e; bl = (1 - e) * 14; sc = .92 + .08 * e; y = (1 - e) * 24; }
+          else if (u > .68){ const e = ease((u - .68) / .32); o = 1 - e; bl = e * 14; sc = 1 + .05 * e; y = -e * 14; }
+          else o = 1;
+        }
+        if (still.matches){ bl = 0; sc = 1; y = 0; }
+        w.style.opacity = o.toFixed(3);
+        w.style.filter = bl ? `blur(${bl.toFixed(1)}px)` : '';
+        w.style.transform = `translateY(${y.toFixed(1)}px) scale(${sc.toFixed(3)})`;
+      });
+    }
     (function tick(){
       requestAnimationFrame(tick);
       const r = sec.getBoundingClientRect();
@@ -1592,6 +1622,7 @@
       if (r.bottom < 0 || r.top > innerHeight) return;
       /* the last 8% of the scroll holds the final frame */
       const p = Math.max(0, Math.min(1, -r.top / (r.height - innerHeight) / .92));
+      words(p);
       const want = nearest(Math.round(p * (N - 1)));
       if (want >= 0 && want !== shown){ draw(want); shown = want; }
     })();
