@@ -711,10 +711,13 @@
   .show-more{margin-top:20px}
 
   /* ---------- film before the contact: scrubbed by scroll, as an image sequence on canvas ----------
-     150 frames (10fps, full 1282px source width, webp). the stage sticks for the section's length and the scroll
+     151 frames (10fps, webp) upscaled to 1080p and lightly sharpened: a 1280 set that loads
+     first, and a 1920 set that a large screen swaps in afterwards. the stage sticks for the section's length and the scroll
      position picks the frame; the first frame is painted as a css background, so the stage
      is never empty, and a frame that has not arrived falls back to the nearest one that has. */
-  .film{position:relative;height:420vh;padding:0;margin-top:min(146px,8.45vw)}
+  /* 500vh: the film plays over the first 74% of the scroll, then the stage shrinks onto the
+     page grid (6.771% sides, 35px corners, the project card height) before the page moves on */
+  .film{position:relative;height:500vh;padding:0;margin-top:min(146px,8.45vw)}
   .film-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#1d1d20 url(work/creative/film-poster.jpg) center/cover no-repeat}
   .film-stage canvas{display:block;width:100%;height:100%}
   /* three words over the film, apple style: each one sharpens in from a blur, holds, and blurs
@@ -722,7 +725,7 @@
   .film-words{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
   .film-words span{grid-area:1/1;font-weight:600;font-size:clamp(40px,5.6vw,80px);line-height:1.05;letter-spacing:-.01em;white-space:nowrap;color:#fff;
     opacity:0;will-change:opacity,transform,filter}
-  @media (max-width:768px){ .film{height:300vh;margin-top:60px} }
+  @media (max-width:768px){ .film{height:360vh;margin-top:60px} }
 
   /* ---------- contact (figma 388:2, frame 1728) ---------- */
   .contact .head{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
@@ -1551,31 +1554,59 @@
     const sec = document.getElementById('film');
     if (!sec) return;
     const cv = sec.querySelector('canvas'), cx = cv.getContext('2d');
-    const N = 150, src = i => `work/creative/seq/f${String(i + 1).padStart(3, '0')}.webp`;
-    const frames = new Array(N), ready = new Array(N).fill(false);
-    let started = false, shown = -1;
-    /* coarse to fine, so a scrub works early and sharpens as frames land: every 16th,
-       then every 8th, 4th, 2nd, then the rest - four at a time, each with two retries */
+    /* the 1280 set loads first and carries the scrub; on a large sharp screen the 1920 set
+       follows in the background, nearest frames first, and each sharp frame replaces its
+       soft one as it lands - so the extra quality never delays the first picture */
+    const N = 151, src = (d, i) => `work/creative/${d}/f${String(i + 1).padStart(3, '0')}.webp`;
+    const frames = new Array(N), ready = new Array(N).fill(false), sharp = new Array(N).fill(false);
+    let started = false, shown = -1, wantHd = false, hdStarted = false, cur = 0;
+    /* a phone gets its own portrait set (720x1280, cut from the upscaled film around her) so the
+       full-height picture stays sharp; for the closing shrink, where the whole frame shows,
+       it also loads the last full-width frame */
+    let base = 'seq', phone = false, fullLast = null;
     const order = [];
     [16, 8, 4, 2, 1].forEach(st => { for (let i = 0; i < N; i += st) if (!order.includes(i)) order.push(i); });
-    let next = 0, inflight = 0;
+    let next = 0, inflight = 0, loaded = 0;
+    function load(d, i, done){
+      const im = new Image(); let tries = 0;
+      im.decoding = 'async';
+      im.onload = () => done(im);
+      im.onerror = () => { if (++tries <= 2) setTimeout(() => { im.src = src(d, i) + '?r=' + tries; }, 800 * tries); else done(null); };
+      im.src = src(d, i);
+    }
     function pump(){
       while (inflight < 4 && next < order.length){
-        const i = order[next++], im = new Image();
-        let tries = 0;
-        inflight++;
-        im.decoding = 'async';
-        im.onload = () => { ready[i] = true; frames[i] = im; inflight--; shown = -1; pump(); };
-        im.onerror = () => {
-          if (++tries <= 2){ setTimeout(() => { im.src = src(i) + '?r=' + tries; }, 800 * tries); return; }
-          inflight--; pump();
-        };
-        im.src = src(i);
+        const i = order[next++]; inflight++;
+        load(base, i, im => {
+          inflight--;
+          if (im && !sharp[i]){ frames[i] = im; ready[i] = true; shown = -1; }
+          if (++loaded === N){ if (wantHd) startHd(); if (phone) load('seq', N - 1, im2 => { fullLast = im2; shown = -1; }); }
+          pump();
+        });
+      }
+    }
+    let hdQueue = [], hdIn = 0;
+    function startHd(){
+      if (hdStarted) return; hdStarted = true;
+      hdQueue = [...Array(N).keys()];
+      hdPump();
+    }
+    function hdPump(){
+      /* always fetch the sharp frame closest to where the reader is */
+      hdQueue.sort((a, b) => Math.abs(a - cur) - Math.abs(b - cur));
+      while (hdIn < 3 && hdQueue.length){
+        const i = hdQueue.shift(); hdIn++;
+        load('seq-hd', i, im => {
+          hdIn--;
+          if (im){ frames[i] = im; ready[i] = true; sharp[i] = true; if (i === shown) shown = -1; }
+          hdPump();
+        });
       }
     }
     function size(){
       const r = devicePixelRatio || 1;
       cv.width = Math.round(cv.clientWidth * r); cv.height = Math.round(cv.clientHeight * r);
+      cx.imageSmoothingQuality = 'high';
       shown = -1;
     }
     function nearest(i){
@@ -1586,18 +1617,47 @@
       }
       return -1;
     }
+    /* the frame is drawn into a box that eases from the full stage down to a card on the
+       page grid, so the picture itself shrinks with the card instead of being cropped.
+       desktop card: 6.771% sides, the project card height, 35px corners, picture covers it.
+       phone card: 14px sides, 16:9, 24px corners, the whole frame shows. */
+    let shrink = 0;
+    function cardBox(W, H){
+      const r = devicePixelRatio || 1, phone = W / r < 769;
+      if (phone){
+        const w = W - 28 * r, h = Math.min(w * 9 / 16, H - 40 * r);
+        return { x: 14 * r, y: (H - h) / 2, w, h, rad: 24 * r };
+      }
+      const side = W * .06771, ih = H / r;
+      const ch = Math.min(ih - 40, Math.max(Math.min(600, ih - 40), Math.min(ih * .7296, 815))) * r;
+      return { x: side, y: (H - ch) / 2, w: W - side * 2, h: ch, rad: 35 * r };
+    }
     function draw(i){
-      const im = frames[i], W = cv.width, H = cv.height;
-      const k = Math.max(W / im.naturalWidth, H / im.naturalHeight);
+      const W = cv.width, H = cv.height;
+      const im = (phone && shrink > 0 && fullLast) ? fullLast : frames[i];
+      cx.clearRect(0, 0, W, H);
+      const c = cardBox(W, H), t = shrink;
+      const bx = c.x * t, by = c.y * t, bw = W + (c.w - W) * t, bh = H + (c.h - H) * t, rad = c.rad * t;
+      /* full screen: cover. as it shrinks on a phone it moves to contain, so nothing is lost */
+      const kc = Math.max(bw / im.naturalWidth, bh / im.naturalHeight), kn = Math.min(bw / im.naturalWidth, bh / im.naturalHeight);
+      const k = phone ? kc + (kn - kc) * t : kc;
       const w = im.naturalWidth * k, h = im.naturalHeight * k;
-      cx.drawImage(im, (W - w) / 2, (H - h) / 2, w, h);
+      cx.save();
+      cx.beginPath();
+      if (cx.roundRect) cx.roundRect(bx, by, bw, bh, rad); else cx.rect(bx, by, bw, bh);
+      cx.clip();
+      cx.drawImage(im, bx + (bw - w) / 2, by + (bh - h) / 2, w, h);
+      cx.restore();
     }
     /* each word owns a slice of the scroll: the first quarter sharpens it in, the last
-       third blurs it out. the slices end at .48, just before she turns at about .5 */
+       third blurs it out. the first starts once the middle of the stage is in view, and
+       the slices end at .48, just before she turns at about .5 */
     const ws = [...sec.querySelectorAll('.film-words span')];
-    const SLOTS = [[.01, .17], [.17, .33], [.33, .48]];
+    const SLOTS = [[.16, .27], [.27, .38], [.38, .48]];
     const still = matchMedia('(prefers-reduced-motion:reduce)');
     const ease = x => x * x * (3 - 2 * x);
+    const stage = sec.querySelector('.film-stage');
+    let lastK = -1;
     function words(p){
       ws.forEach((w, i) => {
         const [a, b] = SLOTS[i], u = (p - a) / (b - a);
@@ -1616,12 +1676,23 @@
     (function tick(){
       requestAnimationFrame(tick);
       const r = sec.getBoundingClientRect();
-      if (!started && r.top < innerHeight * 2.5){ started = true; size(); pump(); }
+      if (!started && r.top < innerHeight * 2.5){ started = true; size(); phone = cv.clientWidth < 769; base = phone ? 'seq-m' : 'seq'; wantHd = !phone && cv.width >= 1700; pump(); }
       if (r.bottom < 0 || r.top > innerHeight) return;
-      /* the last 8% of the scroll holds the final frame */
-      const p = Math.max(0, Math.min(1, -r.top / (r.height - innerHeight) / .92));
+      /* 0-.74 of the scroll plays the film, .78-.92 shrinks the stage onto the page grid,
+         the rest holds the card before the page moves on */
+      /* the count starts as the section's top edge comes up from the bottom of the window,
+         not once it reaches the top - the film is already moving as it scrolls into view */
+      const q = Math.max(0, Math.min(1, (innerHeight - r.top) / r.height));
+      const p = Math.min(1, q / .74);
+      const k = ease(Math.max(0, Math.min(1, (q - .78) / .14)));
+      if (k !== lastK){
+        lastK = k; shrink = k; shown = -1;
+        /* the poster behind the canvas would show around the shrinking card */
+        if (k > 0) stage.style.backgroundImage = 'none'; else stage.style.backgroundImage = '';
+      }
       words(p);
-      const want = nearest(Math.round(p * (N - 1)));
+      cur = Math.round(p * (N - 1));
+      const want = nearest(cur);
       if (want >= 0 && want !== shown){ draw(want); shown = want; }
     })();
     addEventListener('resize', () => { if (started) size(); }, {passive:true});
