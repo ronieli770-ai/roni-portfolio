@@ -1,6 +1,7 @@
 {
   "outputDirectory": ".",
   "redirects": [
+    { "source": "/", "has": [{ "type": "host", "value": "portfolio.ronieliyahu.co.il" }], "destination": "/space/jobs.html", "permanent": false },
     { "source": "/", "destination": "/space/index.html", "permanent": false }
   ],
   "rewrites": [
