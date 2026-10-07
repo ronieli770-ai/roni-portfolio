@@ -68,7 +68,9 @@
   .intro > :not(.fx){position:relative}
   .intro .fx{position:absolute;inset:0;pointer-events:none}
   .intro .fx-stars{opacity:.38;background-image:radial-gradient(1.5px 1.5px at 16% 18%,#fff,transparent),radial-gradient(1.2px 1.2px at 74% 10%,#fff,transparent),radial-gradient(1.6px 1.6px at 56% 32%,#fff,transparent),radial-gradient(1.1px 1.1px at 88% 58%,#fff,transparent),radial-gradient(1.3px 1.3px at 34% 76%,#fff,transparent),radial-gradient(1.2px 1.2px at 66% 88%,#fff,transparent)}
-  .intro .fx-reveal{background:url(mars-texture.webp) center/cover no-repeat;opacity:0;transition:opacity .5s ease;
+  /* the texture layer is pinned to the window rather than the section, so it always
+     runs edge to edge (cover keeps its proportions) whatever the scrollbar does */
+  .intro .fx-reveal{position:fixed;inset:0;background:url(mars-texture.webp) center/cover no-repeat;opacity:0;transition:opacity .5s ease;
     -webkit-mask-image:radial-gradient(circle 420px at var(--mx,50%) var(--my,50%),rgba(0,0,0,.85) 0%,rgba(0,0,0,.45) 35%,rgba(0,0,0,.16) 62%,transparent 88%);
     mask-image:radial-gradient(circle 420px at var(--mx,50%) var(--my,50%),rgba(0,0,0,.85) 0%,rgba(0,0,0,.45) 35%,rgba(0,0,0,.16) 62%,transparent 88%)}
 
@@ -127,13 +129,6 @@
     100%{transform:translateX(0) scaleX(1);opacity:1}
   }
   @media (prefers-reduced-motion:reduce){.nv-cta:hover .arr img{animation:none}}
-
-  /* ---------- value cards ---------- */
-  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,28px);margin-top:52px;align-items:start}
-  .card{padding:clamp(26px,2.4vw,38px)}
-  .card .num{color:var(--accent);font-size:15px;font-weight:600}
-  .card h3{margin:14px 0 0;font-weight:400;font-size:clamp(24px,2vw,30px);line-height:1.2;color:#EDF1F6}
-  .card p{margin:14px 0 0;color:var(--soft);font-size:17px}
 
   /* ---------- projects - copied from the studio portfolio (index.html) ----------
      there they are fixed, full-screen slides; here they are ordinary sections
@@ -333,6 +328,359 @@
     .pf-cta{margin:24px 0 0 auto;height:40px;font-size:16px}
   }
 
+  /* ---------- branding + ads - copied from the studio's graphic-design.html ----------
+     every section is one screen tall; the compositions keep the figma aspect */
+  /* every section is exactly one screen tall, page scrolls normally */
+  /* ---------- section 1 - מיתוג ---------- */
+  .gd-mark{
+    position:absolute;left:calc(50% + 5.874vw);top:calc(50% + 0.045%);
+    transform:translate(-50%,-50%);
+    width:min(71px,4.109vw);aspect-ratio:71/118;overflow:hidden;pointer-events:none;
+  }
+  .gd-mark img{
+    position:absolute;left:-415.58%;top:-35.94%;
+    width:588.91%;height:170.31%;max-width:none;display:block;
+  }
+  .gd-word{
+    position:absolute;top:46.55%;left:calc(50% - 2.922vw);transform:translateX(-50%);
+    width:min(181px,10.47vw);text-align:center;white-space:nowrap;
+    font-size:min(80px,4.63vw);font-weight:400;line-height:.85;color:#fff;
+  }
+
+  /* ---------- section 5 - מודעות גרפיות ---------- */
+  .ga-mark{
+    position:absolute;left:64.67%;top:calc(50% + 0.045%);
+    transform:translate(-50%,-50%);
+    width:min(71px,4.109vw);aspect-ratio:71/118;overflow:hidden;pointer-events:none;
+  }
+  .ga-mark img{
+    position:absolute;left:-415.58%;top:-35.94%;
+    width:588.91%;height:170.31%;max-width:none;display:block;
+  }
+  .ga-word{
+    position:absolute;top:46.46%;right:39.18%;
+    width:min(475px,27.49vw);text-align:right;white-space:nowrap;
+    font-size:min(80px,4.63vw);font-weight:400;line-height:.85;color:#fff;
+  }
+
+  /* ---------- section 6 - dome gallery ---------- */
+  .sphere-root{
+    position:relative;width:100%;height:100%;
+    --radius:520px;--viewer-pad:72px;
+    --circ:calc(var(--radius) * 3.14);
+    --rot-y:calc((360deg / var(--segments-x)) / 2);
+    --rot-x:calc((360deg / var(--segments-y)) / 2);
+    --item-width:calc(var(--circ) / var(--segments-x));
+    --item-height:calc(var(--circ) / var(--segments-y));
+  }
+  .sphere-root *{box-sizing:border-box}
+  .sphere,.item,.item__image{transform-style:preserve-3d}
+  main.sphere-main{
+    position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;
+    touch-action:none;user-select:none;-webkit-user-select:none;background:transparent;cursor:grab;
+  }
+  main.sphere-main:active{cursor:grabbing}
+  .stage{width:100%;height:100%;display:grid;place-items:center;perspective:calc(var(--radius) * 2);perspective-origin:50% 50%;contain:layout paint size}
+  .sphere{transform:translateZ(calc(var(--radius) * -1));will-change:transform}
+  .overlay,.overlay--blur{position:absolute;inset:0;margin:auto;z-index:3;pointer-events:none}
+  .overlay{background-image:radial-gradient(rgba(235,235,235,0) 65%,var(--overlay-blur-color,#000) 100%)}
+  .overlay--blur{
+    -webkit-mask-image:radial-gradient(rgba(235,235,235,0) 70%,var(--overlay-blur-color,#000) 90%);
+    mask-image:radial-gradient(rgba(235,235,235,0) 70%,var(--overlay-blur-color,#000) 90%);
+    backdrop-filter:blur(3px);
+  }
+  .item{
+    width:calc(var(--item-width) * var(--item-size-x));
+    height:calc(var(--item-height) * var(--item-size-y));
+    position:absolute;top:-999px;bottom:-999px;left:-999px;right:-999px;margin:auto;
+    transform-origin:50% 50%;backface-visibility:hidden;transition:transform 300ms;
+    transform:rotateY(calc(var(--rot-y) * (var(--offset-x) + ((var(--item-size-x) - 1) / 2)) + var(--rot-y-delta,0deg)))
+      rotateX(calc(var(--rot-x) * (var(--offset-y) - ((var(--item-size-y) - 1) / 2)) + var(--rot-x-delta,0deg)))
+      translateZ(var(--radius));
+  }
+  .item__image{
+    position:absolute;display:block;inset:10px;border-radius:var(--tile-radius,12px);
+    background:transparent;overflow:hidden;backface-visibility:hidden;transition:transform 300ms;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;pointer-events:auto;transform:translateZ(0);
+  }
+  .item__image:focus{outline:none}
+  .item__image:hover{transform:translateZ(0) scale(1.25);z-index:6}
+  .item__image img{width:100%;height:100%;object-fit:cover;pointer-events:none;backface-visibility:hidden;filter:var(--image-filter,none)}
+  .viewer{position:absolute;inset:0;z-index:20;pointer-events:none;display:flex;align-items:center;justify-content:center;padding:var(--viewer-pad)}
+  .viewer .frame{height:100%;aspect-ratio:1;border-radius:var(--enlarge-radius,32px);display:flex}
+  @media (max-aspect-ratio:1/1){.viewer .frame{height:auto;width:100%}}
+  .viewer .scrim{position:absolute;inset:0;z-index:10;background:rgba(0,0,0,.72);pointer-events:none;opacity:0;transition:opacity .5s ease;backdrop-filter:blur(8px)}
+  .sphere-root[data-enlarging='true'] .viewer .scrim{opacity:1;pointer-events:all}
+  .viewer .enlarge{position:absolute;z-index:30;border-radius:var(--enlarge-radius,32px);overflow:hidden;transform-origin:top left;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .viewer .enlarge img{width:100%;height:100%;object-fit:contain;filter:var(--image-filter,none)}
+  .sphere-root .enlarge-closing img{filter:var(--image-filter,none)}
+  .edge-fade{position:absolute;left:0;right:0;height:120px;z-index:5;pointer-events:none;background:linear-gradient(to bottom,transparent,var(--overlay-blur-color,#000))}
+  .edge-fade--top{top:0;transform:rotate(180deg)}
+  .edge-fade--bottom{bottom:0}
+  .gd-sec[data-gd="6"] dome-gallery{position:absolute;inset:0}
+
+  /* ---------- section 2 - מדריכים ב+ ---------- */
+  /* the whole composition keeps the figma aspect ratio, so nothing stretches.
+     the flat photographs fill their tile: letterboxing them left a hairline of
+     backdrop inside the rounded corner, which read as a broken radius, and
+     their proportions match the tile to within a percent so nothing of the
+     picture is lost. the cut-outs on transparency still sit inside theirs. */
+  .gd-sec[data-gd="2"],.gd-sec[data-gd="3"]{display:flex;align-items:center;justify-content:center}
+  .gd-stage{
+    position:relative;overflow:hidden;
+    aspect-ratio:1728/1117;
+    width:min(100%,calc(100vh * 1728 / 1117));
+    width:min(100%,calc(100svh * 1728 / 1117));
+  }
+  .gp-card{position:absolute;left:79.21%;top:74.93%;width:11.86%;height:18.26%;border-radius:min(20px,1.16vw);background:#fff}
+  .gp-mark{position:absolute;left:5.37%;top:0;width:88.78%;height:99.02%;object-fit:contain;display:block}
+  .gp-board{position:absolute;left:7.685%;top:16.38%;width:30.73%;height:65.17%;border-radius:min(20px,1.16vw);overflow:hidden;isolation:isolate}
+  .gp-board img{position:absolute;left:0;top:-8.34%;width:100%;height:109.54%;max-width:none;display:block}
+  .gp-bottle{position:absolute;left:-5.486%;top:28.75%;width:40.02%;height:76.97%;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:3}
+  .gp-bottle div{width:85.32%;height:91.51%;transform:rotate(-7.82deg)}
+  .gp-bottle img{width:100%;height:100%;object-fit:contain;display:block}
+  .gp-grid{position:absolute;left:40.56%;top:16.38%;width:50.52%;height:55.24%;border-radius:min(20px,1.16vw);overflow:hidden}
+  .gp-grid img{width:100%;height:100%;object-fit:cover;display:block}
+  .gp-swatches{position:absolute;left:40.56%;top:74.93%;width:36.92%;height:18.08%;border-radius:min(20px,1.16vw);overflow:hidden;display:flex;direction:ltr}
+  .gp-swatches div{flex:1}
+  .gp-sw1{background:#027f40}
+  .gp-sw2{background:#01e673}
+  .gp-sw3{background:#00c05f}
+  .gp-sw4{background:#03ff7f}
+
+  /* ---------- magic bento - spotlight + border glow + tilt + magnetism ---------- */
+  .mb-card{
+    --glow-x:50%;--glow-y:50%;--glow-intensity:0;--glow-radius:390px;
+    transition:transform .18s ease-out,box-shadow .3s ease;
+    transform-style:preserve-3d;
+  }
+  .mb-card{z-index:2}
+  /* glow lives behind the card and bleeds outwards only - nothing inside */
+  .mb-glow{
+    position:absolute;pointer-events:none;z-index:1;
+    border-radius:min(28px,1.6vw);
+    filter:blur(16px);
+    opacity:0;transition:opacity .3s ease;
+  }
+  /* ---------- section 3 - Xplore ---------- */
+  .xp-login{position:absolute;left:8.808%;top:17.10%;width:35.94%;height:33.66%;border-radius:min(20px,1.16vw);overflow:hidden;background:#fff}
+  .xp-login img{width:100%;height:100%;object-fit:cover;display:block}
+  .xp-home{position:absolute;left:8.808%;top:54.07%;width:35.94%;height:36.62%;border-radius:min(20px,1.16vw);overflow:hidden;background:#fff}
+  .xp-home img{width:100%;height:100%;object-fit:cover;display:block}
+  .xp-logocard{position:absolute;left:46.87%;top:17.10%;width:44.32%;height:33.63%;border-radius:min(20px,1.16vw);overflow:hidden;background:#fff}
+  .xp-logocard img{position:absolute;left:13.95%;top:21.93%;width:72.08%;height:56.16%;object-fit:contain}
+  .xp-halves{position:absolute;left:46.87%;top:53.98%;width:18.375%;height:36.63%;border-radius:min(20px,1.16vw);overflow:hidden;display:flex;flex-direction:column}
+  .xp-h1{flex:1;background:#eff8cf}
+  .xp-h2{flex:1;background:#95d65e}
+  .xp-markcard{position:absolute;left:67.35%;top:54.05%;width:23.68%;height:36.63%;border-radius:min(20px,1.16vw);overflow:hidden}
+  .xp-markcard img{width:100%;height:100%;display:block}
+
+  /* ---------- section 4 - Drive-In ---------- */
+  .gd-sec[data-gd="4"]{display:flex;align-items:center;justify-content:center}
+  .di-devices{position:absolute;left:5.96%;top:14.5%;width:47.28%;height:40.55%;pointer-events:none;z-index:3}
+  .di-devices img{width:100%;height:100%;object-fit:contain;display:block}
+  .di-grid{position:absolute;left:55.21%;top:15.58%;width:36.05%;height:55.77%;border-radius:min(20px,1.16vw);overflow:hidden}
+  .di-grid img{width:100%;height:100%;object-fit:cover;display:block}
+  .di-stationery{position:absolute;left:10.36%;top:54.34%;width:39.53%;height:40.73%;border-radius:min(20px,1.16vw);overflow:hidden;background:#fff}
+  .di-stationery img{width:100%;height:100%;object-fit:cover;display:block}
+  .di-colors{position:absolute;left:55.21%;top:74.75%;width:36.05%;height:18.26%;border-radius:min(20px,1.16vw);overflow:hidden;display:flex;direction:ltr}
+  .di-c1{flex:0 0 49.76%;background:#000b1f}
+  .di-c2{flex:1;background:#0044ff}
+
+  .mb-spotlight{
+    position:fixed;width:800px;height:800px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,
+      rgba(255,255,255,.10) 0%,
+      rgba(255,255,255,.055) 15%,
+      rgba(255,255,255,.03) 25%,
+      rgba(255,255,255,.015) 40%,
+      rgba(255,255,255,.008) 65%,
+      transparent 70%);
+    z-index:200;opacity:0;transform:translate(-50%,-50%);
+    mix-blend-mode:screen;will-change:transform,opacity;
+    transition:opacity .25s ease-out;
+  }
+  /* every section is exactly one screen tall and clips what it holds; the page-wide
+     section padding does not apply to these */
+  .gd-sec{position:relative;z-index:1;width:100%;height:100vh;height:100svh;overflow:hidden;background:transparent;padding:0}
+  @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px){
+    /* title cards - mark sits beside the 35px heading */
+    .gd-sec[data-gd="1"],.gd-sec[data-gd="5"],.gd-sec[data-gd="7"]{
+      display:flex;align-items:center;justify-content:center;gap:12px;
+    }
+    .gd-mark,.ga-mark{position:relative;left:auto;top:auto;transform:none;width:25px;aspect-ratio:71/118}
+    .gd-word,.ga-word{
+      position:relative;left:auto;top:auto;right:auto;transform:none;width:auto;
+      font-size:35px;line-height:1;text-align:center;
+    }
+
+    /* sections 2, 3, 8 - the mobile grid comes straight from the Figma
+       iPhone frames (402x874), every rect converted to a percentage */
+    .gd-sec[data-gd="2"] .gd-stage,
+    .gd-sec[data-gd="3"] .gd-stage,
+    .gd-sec[data-gd="8"] .gd-stage{
+      /* the home page's mobile grid: 44px on the rail side, 14px on the other */
+      aspect-ratio:402/874;width:calc(100% - 58px);height:auto;
+      margin-right:44px;margin-left:14px;
+      max-height:calc(100% - 16px);overflow:visible;
+    }
+
+    /* Guides+ - logo grid, palette + icon, folder with the bottle on its left */
+    .gd-sec[data-gd="2"] .gd-stage .gp-grid{
+      left:3.98%;top:12.93%;width:92.04%;height:29.98%;border-radius:20px;
+    }
+    .gd-sec[data-gd="2"] .gd-stage .gp-grid img{object-fit:cover}
+    .gd-sec[data-gd="2"] .gd-stage .gp-swatches{
+      left:3.98%;top:44.72%;width:67.38%;height:9.84%;border-radius:20px;
+    }
+    .gd-sec[data-gd="2"] .gd-stage .gp-card{
+      left:74.38%;top:44.74%;width:21.64%;height:9.95%;border-radius:20px;
+    }
+    /* the folder keeps its own 1200x1800 proportion - height follows the width */
+    .gd-sec[data-gd="2"] .gd-stage .gp-board{
+      left:38.47%;top:56.41%;width:57.46%;height:39.65%;border-radius:20px;
+    }
+    /* every other tile holds its picture in the ordinary flow; this one held
+       it absolutely, and safari will not clip such a child to a rounded
+       corner - which is why this card alone came out square. */
+    .gd-sec[data-gd="2"] .gd-stage .gp-board img{
+      position:relative;left:auto;top:auto;width:100%;height:100%;
+      object-fit:cover;display:block;
+    }
+    .gd-sec[data-gd="2"] .gd-stage .gp-bottle{
+      left:-8.21%;top:56.29%;width:74.83%;height:42.78%;
+    }
+
+    /* Xplore - login, home, logo card + mark, colour strip */
+    .gd-sec[data-gd="3"] .gd-stage .xp-login{
+      left:3.73%;top:7.44%;width:92.29%;height:25.63%;border-radius:20px;
+    }
+    .gd-sec[data-gd="3"] .gd-stage .xp-home{
+      left:3.73%;top:34.90%;width:92.29%;height:27.92%;border-radius:20px;
+    }
+    /* every gap in the column is the same 16px of the Figma frame */
+    .gd-sec[data-gd="3"] .gd-stage .xp-logocard{
+      left:3.73%;top:64.65%;width:59.17%;height:13.35%;border-radius:20px;
+    }
+    .gd-sec[data-gd="3"] .gd-stage .xp-markcard{
+      left:67.00%;top:64.65%;width:29.27%;height:13.35%;border-radius:20px;
+    }
+    .gd-sec[data-gd="3"] .gd-stage .xp-halves{
+      left:3.73%;top:79.83%;width:92.29%;height:13.76%;
+      border-radius:20px;flex-direction:row;direction:ltr;
+    }
+    .gd-sec[data-gd="3"] .gd-stage .xp-h1{background:#95d65e}
+    .gd-sec[data-gd="3"] .gd-stage .xp-h2{background:#eff8cf}
+
+    /* print - flyer, billboard, roll-up with the invite laid over it */
+    .gd-sec[data-gd="8"] .gd-stage .pr-flyer{
+      left:3.73%;top:9.38%;width:59.70%;height:19.11%;border-radius:30px;
+    }
+    .gd-sec[data-gd="8"] .gd-stage .pr-billboard{
+      left:3.73%;top:30.32%;width:92.54%;height:23.23%;border-radius:30px;
+    }
+    .gd-sec[data-gd="8"] .gd-stage .pr-rollup{
+      left:3.73%;top:55.38%;width:43.53%;height:38.90%;border-radius:30px;
+    }
+    .gd-sec[data-gd="8"] .gd-stage .pr-invite{
+      left:35.07%;top:53.55%;width:78.86%;height:46.45%;
+    }
+
+    /* Drive-In - no mobile frame in Figma, so it keeps the bento grid */
+    .gd-sec[data-gd="4"] .gd-stage{
+      aspect-ratio:auto;width:100%;height:100%;
+      /* the other sections' cards sit 3.73% inside their stage - 13px on a
+         402 screen - so the bento is inset to that same card line: 57/27 */
+      display:grid;gap:12px;padding:74px 57px 16px 27px;overflow:visible;
+      direction:ltr;align-content:center;
+      grid-template-columns:1fr 1fr;
+    }
+    .gd-sec[data-gd="4"] .gd-stage > *{
+      position:relative;left:auto;top:auto;right:auto;bottom:auto;
+      width:auto;height:auto;transform:none;
+    }
+    .di-grid,.di-stationery{background:#fff;padding:10px}
+    .di-grid img,.di-stationery img,.di-devices img{
+      position:relative;left:auto;top:auto;
+      width:100%;height:100%;object-fit:contain;display:block;
+    }
+    /* the devices photo is trimmed of its baked-in transparent margin, so it
+       now runs edge to edge on the grid */
+    .gd-sec[data-gd="4"] .gd-stage .di-devices{grid-area:1/1/2/3;aspect-ratio:1467/805;background:none;padding:0}
+    /* the photo's own margin is even now, so the tile takes its proportions */
+    .gd-sec[data-gd="4"] .gd-stage .di-stationery{grid-area:2/1/3/3;aspect-ratio:1512/1007}
+    .gd-sec[data-gd="4"] .gd-stage .di-stationery img{object-fit:cover}
+    /* the tile takes its height from the picture inside it rather than from
+       the grid row, so the white frame is the padding and nothing else - a
+       percentage height here left the spare pixels at one edge only */
+    .gd-sec[data-gd="4"] .gd-stage .di-grid{grid-area:3/1/4/2;aspect-ratio:auto;align-self:start}
+    .gd-sec[data-gd="4"] .gd-stage .di-grid img{
+      width:100%;height:auto;aspect-ratio:1598/1600;object-fit:cover;display:block;
+    }
+    .gd-sec[data-gd="4"] .gd-stage .di-colors{grid-area:3/2/4/3;background:#fff;padding:10px}
+  }
+
+  /* section headings over branding, ads and print - same treatment as "הפרוייקטים שלי":
+     60px semibold on the 6.771% page margin, 146px of air above, 51px to the content */
+  .gd-head{position:relative;z-index:1;padding:min(146px,8.45vw) 6.771% 0}
+  .gd-head .proj-head{margin-bottom:0}
+  /* the first branding composition carries 16.38% of empty stage above its cards, so it
+     is pulled up to leave the same 51px between heading and cards as the projects */
+  @media (min-width:769px){
+    .gd-head + .gd-sec[data-gd="2"]{margin-top:calc(min(51px,2.95vw) - .1638 * min(100vh,64.64vw))}
+    .gd-head + .gd-sec[data-gd="8"]{margin-top:calc(min(51px,2.95vw) - .2032 * min(100vh,64.64vw))}
+  }
+  @media (max-width:768px), (hover:none) and (pointer:coarse) and (max-width:1024px){
+    .gd-head{padding:60px 14px 0}
+  }
+
+  /* ---------- section 8 - גרפיקה לדפוס ---------- */
+  .gd-sec[data-gd="8"]{display:flex;align-items:center;justify-content:center}
+  .pr-rollup{position:absolute;left:10.36%;top:20.59%;width:24.36%;height:73.14%;border-radius:min(30px,1.74vw);overflow:hidden}
+  /* the square photo is cropped to a tall tile by hand. at 194.06% wide the
+     offset that centres it is half the overflow, -47.03%, not -38.6% - it was
+     sitting a chunk to one side of its frame. */
+  .pr-rollup img{position:absolute;left:-47.03%;top:0;width:194.06%;height:100%;max-width:none;display:block}
+  .pr-flyer{position:absolute;left:37.04%;top:20.32%;width:33.33%;height:36.08%;border-radius:min(30px,1.74vw);overflow:hidden}
+  .pr-flyer img{width:100%;height:100%;object-fit:cover;display:block}
+  .pr-billboard{position:absolute;left:37.04%;top:60.07%;width:39.87%;height:33.66%;border-radius:min(30px,1.74vw);overflow:hidden}
+  .pr-billboard img{width:100%;height:100%;object-fit:cover;display:block}
+  .pr-invite{position:absolute;left:63.77%;top:20.32%;width:41.03%;height:81.20%;pointer-events:none;z-index:3}
+  .pr-invite img{width:100%;height:100%;object-fit:contain;display:block}
+  /* the hand ran 2% past the stage's right edge and was clipped there; the photo itself
+     is whole, so the invite moves left until its fingertips sit 2% inside the edge */
+  .gd-sec[data-gd="8"] .pr-invite{left:59.76%}
+
+  /* ---------- ads: rings that gather into the ball on scroll ----------
+     after cosmos.so. the section is 216vh: the stage sticks while the rings gather
+     over 72vh of scroll, then the finished ball holds the screen for another 40vh.
+     the ball uses the dome gallery's own geometry (22 x 5 cells, r = half the width). */
+  /* the same 146px of air the headings get above them */
+  .ads-scroll{position:relative;height:216vh;padding:0;margin-top:min(146px,8.45vw)}
+  .as-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;perspective-origin:50% 50%;touch-action:pan-y}
+  .as-world{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+  .as-tile{position:absolute;left:0;top:0;transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity}
+  .as-tile .img{position:absolute;inset:var(--inset,0px);overflow:hidden;border-radius:var(--rad,14px);backface-visibility:hidden;transition:transform .3s}
+  .as-tile img{display:block;width:100%;height:100%;max-width:none;object-fit:cover;-webkit-user-drag:none;user-select:none;pointer-events:none}
+  .as-stage.ball{cursor:grab}
+  .as-stage.ball:active{cursor:grabbing}
+  .as-stage.ball .as-tile .img{cursor:pointer}
+  .as-stage.ball .as-tile .img:hover{transform:scale(1.25)}
+  .as-veil{position:absolute;inset:0;pointer-events:none;z-index:3;opacity:0}
+  .as-veil .ov{position:absolute;inset:0;background-image:radial-gradient(rgba(29,29,32,0) 65%,#1d1d20 100%)}
+  .as-veil .ovb{position:absolute;inset:0;-webkit-mask-image:radial-gradient(rgba(0,0,0,0) 70%,#000 90%);mask-image:radial-gradient(rgba(0,0,0,0) 70%,#000 90%);backdrop-filter:blur(3px)}
+  .as-veil .fade{position:absolute;left:0;right:0;height:120px;background:linear-gradient(to bottom,transparent,#1d1d20)}
+  .as-veil .fade.top{top:0;transform:rotate(180deg)}
+  .as-veil .fade.bot{bottom:0}
+  .as-title{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:5}
+  .as-title .proj-head{margin:0;white-space:nowrap}
+  /* a phone gets the light version: no live blur in the veil */
+  @media (max-width:768px), (hover:none) and (pointer:coarse){
+    .as-veil .ovb{display:none}
+    .ads-scroll{margin-top:60px}
+    .as-title .proj-head{font-size:34px}
+  }
+
   /* ---------- graphic design ---------- */
   .sub{margin:72px 0 0;font-weight:400;font-size:clamp(26px,2.4vw,36px);color:#EDF1F6}
   .sub small{display:block;margin-top:6px;color:var(--mute);font-size:16px;font-weight:400}
@@ -349,35 +697,52 @@
   .masonry.open .tile.more{display:block}
   .show-more{margin-top:20px}
 
-  /* ---------- tools ---------- */
-  .tools{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2vw,28px);margin-top:52px}
-  .tools .glass{padding:clamp(24px,2.4vw,36px)}
-  .tools h3{margin:0;font-weight:500;font-size:20px;color:#EDF1F6}
-  .tools ul{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 0;padding:0;list-style:none}
-  .tools li{padding:10px 16px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);font-size:16px;direction:ltr}
-  .tools li em{display:block;margin-top:2px;font-style:normal;color:var(--mute);font-size:13px;direction:rtl;text-align:right}
-  .tools .ai li{background:rgba(250,145,84,.08);border-color:rgba(250,145,84,.25)}
-
-  /* ---------- experience ---------- */
-  .timeline{margin-top:52px;display:grid;gap:0;max-width:880px}
-  .job{display:grid;grid-template-columns:150px 1fr;gap:28px;position:relative;padding-bottom:40px}
-  .job .when{color:var(--accent);font-weight:600;font-size:16px;padding-top:4px;direction:rtl}
-  .job .what{position:relative;padding-inline-start:30px;border-inline-start:1px solid rgba(255,255,255,.14)}
-  .job .what::before{content:"";position:absolute;inset-inline-start:-6px;top:10px;width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
-  .job:last-child .what{border-color:transparent}
-  .job h3{margin:0;font-weight:500;font-size:22px;color:#EDF1F6}
-  .job ul{margin:10px 0 0;padding:0;list-style:none;color:var(--soft);font-size:16.5px}
-  .job li{position:relative;padding-inline-start:16px;margin-top:6px}
-  .job li::before{content:"";position:absolute;inset-inline-start:0;top:.75em;width:6px;height:1.5px;background:var(--mute)}
-
-  /* ---------- contact ---------- */
-  .contact .glass{padding:clamp(36px,5vw,72px);text-align:center;position:relative;overflow:hidden}
-  .contact .glass::before{content:"";position:absolute;inset:auto -20% -60% -20%;height:120%;background:radial-gradient(50% 50% at 50% 100%,rgba(250,145,84,.22) 0%,rgba(5,5,10,0) 70%);pointer-events:none}
-  .contact h2{position:relative;margin:0;font-weight:300;font-size:clamp(38px,5vw,72px);line-height:1.05}
-  .contact p{position:relative;margin:18px auto 0;max-width:560px;color:var(--soft);font-size:18px}
-  .contact .ctas{position:relative;display:flex;flex-wrap:wrap;gap:14px;margin-top:34px;justify-content:center}
+  /* ---------- contact (figma 388:2, frame 1728) ---------- */
+  .contact .head{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
+  .contact .kick{font-size:18px;line-height:.85;color:#fa9154}
+  .contact h2{margin:0;font-weight:400;font-size:clamp(42px,3.47vw,60px);line-height:.93;padding-bottom:.08em}
+  .contact .body{display:flex;justify-content:center;align-items:center;gap:clamp(48px,6.3vw,109px);margin-top:53px}
+  .contact .card{width:min(504px,100%);background:rgba(255,255,255,.1);border-radius:35px;padding:49px 20px 63px;display:flex;flex-direction:column;align-items:center}
+  .contact .card h3{margin:0 0 25.5px;font-weight:400;font-size:22px;line-height:.93;color:#fff}
+  .contact form{width:min(309px,100%);display:flex;flex-direction:column;gap:10px}
+  .contact input,.contact textarea{width:100%;height:41px;margin:0;padding:0 12px;border-radius:4px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.1);color:#fff;font-family:'IBM Plex Sans Hebrew',system-ui,sans-serif;font-size:18px;line-height:.93;text-align:center;outline:none;transition:border-color .2s}
+  .contact textarea{height:130px;padding:12px;resize:none;display:block;overflow:hidden;scrollbar-width:none;line-height:1.4}
+  .contact textarea::-webkit-scrollbar{display:none}
+  .contact textarea:placeholder-shown{padding-top:55px}
+  .contact textarea:focus::placeholder{color:transparent}
+  .contact input::placeholder,.contact textarea::placeholder{color:#81848e;opacity:1}
+  .contact input:focus,.contact textarea:focus{border-color:rgba(250,145,84,.7)}
+  .contact button{height:41px;margin-top:1px;border:0;border-radius:4px;background:#fff;color:#000;font-family:'IBM Plex Sans Hebrew',system-ui,sans-serif;font-weight:700;font-size:18px;line-height:.93;cursor:pointer;transition:background .2s}
+  .contact button:hover{background:#f5f5f7}
+  .contact .note{margin:4px 0 0;min-height:1em;color:var(--soft);font-size:14px;text-align:center}
+  .contact .info{color:#fff;font-weight:700}
+  .contact .info p{margin:0;font-size:22px;line-height:1.2}
+  .contact .info ul{list-style:none;margin:33px 0 0;padding:0;display:flex;flex-direction:column;gap:17px}
+  .contact .info a,.contact .info .loc{display:flex;align-items:center;gap:16px;font-size:24px;line-height:1.2;text-decoration:none}
+  .contact .info a:hover{color:#fa9154}
+  .contact .info img{width:32px;height:32px;object-fit:contain;flex:none}
+  .contact .info .ph img{width:27px;height:27px;margin-inline:2.5px}
   .contact .ltr{direction:ltr}
-  footer{padding:30px 0 190px;color:var(--mute);font-size:14px;text-align:center}
+  @media (max-width:860px){.contact .body{flex-direction:column-reverse;gap:40px;margin-top:40px}.contact .info{text-align:center}.contact .info ul{align-items:center}.contact .card{padding:44px 20px 48px}}
+  /* no footer: the last section keeps the room the fixed dock needs below it */
+  #contact{padding-bottom:calc(clamp(72px,11vh,130px) + 200px)}
+
+  /* ---------- floating whatsapp + phone - copied from the main site (index.html) ---------- */
+  .fabs{position:fixed;z-index:40;right:2.6vw;bottom:35px;display:flex;flex-direction:column;gap:14px}
+  .fab{--wa:64px;position:relative;display:block;width:var(--wa);height:var(--wa);border-radius:50%;
+    background:#FA9154;box-shadow:0 4px 34px rgba(250,145,84,.7);
+    transition:transform .3s cubic-bezier(.2,.8,.2,1),background .25s ease}
+  /* the glyphs are inline svg rather than a css mask: a mask image will not load
+     when the page is opened straight from the disk */
+  .fab svg{position:absolute;inset:27%;width:46%;height:46%;fill:#fff;transition:fill .25s ease}
+  .fab-tel svg{inset:29%;width:42%;height:42%}
+  .fab:hover{transform:translateY(-3px);background:#fff}
+  .fab:hover svg{fill:#FA9154}
+  /* the phone button is for phones only */
+  .fab-tel{display:none}
+  @media (max-width:900px), (hover:none) and (pointer:coarse){.fab-tel{display:block}}
+  /* on a phone the dock runs the full width, so the buttons sit above it */
+  @media (max-width:900px){.fabs{right:14px;bottom:calc(84px + env(safe-area-inset-bottom,0px));gap:10px}.fab{--wa:52px}}
 
   /* ---------- lightbox ---------- */
   #lb{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:clamp(16px,4vw,60px);background:rgba(3,3,8,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
@@ -422,11 +787,8 @@
     .about .txt .kick{font-size:16px;margin-bottom:8px}
     .about .txt h2{font-size:38px;margin:0 0 16px}
     .about .pill{font-size:16px}
-    .cards,.tools{grid-template-columns:1fr}
     .proj{grid-template-columns:1fr}
     .bento{grid-template-columns:repeat(2,1fr);grid-auto-rows:clamp(130px,38vw,200px)}
-    .job{grid-template-columns:1fr;gap:8px}
-    .job .when{padding-inline-start:30px}
   }
   @media (max-width:560px){
     .dock{gap:6px;padding:6px;bottom:12px;height:auto}
@@ -508,167 +870,103 @@
     </section>
   </div>
 
-  <section id="value">
-    <div class="wrap">
-      <div class="rv">
-        <span class="eyebrow">מה אני מביאה לצוות</span>
-        <h2 class="sec-title grad">מעצבת שגם בונה, וגם כותבת</h2>
-      </div>
-      <div class="cards">
-        <article class="card glass rv">
-          <span class="num">01</span>
-          <h3>עיצוב וקריאייטיב</h3>
-          <p>מיתוג, קמפיינים, מודעות, דפוס ותכנים לסושיאל. שלוש שנים במשרד פרסום, בצוות קריאייטיב ומול מנהלי לקוחות, בלוחות זמנים צפופים.</p>
-        </article>
-        <article class="card glass rv">
-          <span class="num">02</span>
-          <h3>אתרים עם בינה מלאכותית</h3>
-          <p>בונה אתרים ודפי נחיתה בווייב קודינג עם קלוד, עם מיקרו אנימציות ואנימציות גלילה. מהעיצוב בפיגמה ועד אתר באוויר, בלי לחכות למפתח. וגם בוורדפרס ובאלמנטור.</p>
-        </article>
-        <article class="card glass rv">
-          <span class="num">03</span>
-          <h3>מבנה ותוכן שמוכרים</h3>
-          <p>כותבת את התוכן ובונה כל דף כמשפך שיווקי, מהכותרת הראשונה ועד הפנייה. כל החלטה עיצובית משרתת מטרה עסקית.</p>
-        </article>
-      </div>
+  <div id="design">
+<div class="gd-head" id="g-mitug"><h2 class="proj-head">מיתוג</h2></div>
+
+<section class="gd-sec" id="s2" data-gd="2">
+  <div class="gd-stage">
+    <div class="gp-board mb-card"><img src="assets/gp-board.webp" alt=""></div>
+    <div class="gp-bottle"><div><img src="assets/gp-bottle.webp" alt=""></div></div>
+    <div class="gp-grid mb-card"><img src="assets/gp-grid.webp" alt=""></div>
+    <div class="gp-swatches mb-card">
+      <div class="gp-sw1"></div>
+      <div class="gp-sw2"></div>
+      <div class="gp-sw3"></div>
+      <div class="gp-sw4"></div>
     </div>
-  </section>
+    <div class="gp-card mb-card"><img class="gp-mark" src="assets/gp-mark.webp" alt=""></div>
+  </div>
+</section>
 
-  <section id="design">
-    <div class="wrap">
-      <div class="rv">
-        <span class="eyebrow">עיצוב גרפי</span>
-        <h2 class="sec-title grad">מיתוג, מודעות ודפוס</h2>
-      </div>
-
-      <h3 class="sub rv">מיתוג<small>שפה חזותית מלאה: לוגו, צבעים, טיפוגרפיה ויישומים</small></h3>
-      <div class="bento rv">
-        <a class="tile w2 h2" href="assets/gp-board.webp"><img src="assets/gp-board.webp" alt="" loading="lazy"></a>
-        <a class="tile fit" href="assets/gp-mark.webp"><img src="assets/gp-mark.webp" alt="" loading="lazy"></a>
-        <a class="tile fit h2" href="assets/gp-bottle.webp"><img src="assets/gp-bottle.webp" alt="" loading="lazy"></a>
-        <a class="tile" href="assets/gp-grid.webp"><img src="assets/gp-grid.webp" alt="" loading="lazy"></a>
-      </div>
-      <div class="bento rv">
-        <a class="tile w2" href="assets/xp-home.webp"><img src="assets/xp-home.webp" alt="" loading="lazy"></a>
-        <a class="tile fit" href="assets/xp-mark.svg"><img src="assets/xp-mark.svg" alt="" loading="lazy"></a>
-        <a class="tile h2" href="assets/xp-login.webp"><img src="assets/xp-login.webp" alt="" loading="lazy"></a>
-        <a class="tile w2" href="assets/xp-logo.webp"><img src="assets/xp-logo.webp" alt="" loading="lazy"></a>
-      </div>
-      <div class="bento rv">
-        <a class="tile w2 h2" href="assets/di-grid.webp"><img src="assets/di-grid.webp" alt="" loading="lazy"></a>
-        <a class="tile w2" href="assets/di-stationery.webp"><img src="assets/di-stationery.webp" alt="" loading="lazy"></a>
-        <a class="tile fit w2" href="assets/di-devices-2.webp"><img src="assets/di-devices-2.webp" alt="" loading="lazy"></a>
-      </div>
-
-      <h3 class="sub rv">מודעות גרפיות<small>קמפיינים לדיגיטל ולסושיאל, ממשרד הפרסום ומהעבודה העצמאית</small></h3>
-      <div class="masonry rv" id="ads"></div>
-      <button class="btn btn-ghost show-more" id="ads-more" type="button">הצגת כל המודעות</button>
-
-      <h3 class="sub rv">גרפיקה לדפוס<small>רולאפים, פליירים, שילוט והזמנות</small></h3>
-      <div class="bento rv">
-        <a class="tile h2" href="assets/pr-rollup.webp"><img src="assets/pr-rollup.webp" alt="" loading="lazy"></a>
-        <a class="tile w2" href="assets/pr-billboard.webp"><img src="assets/pr-billboard.webp" alt="" loading="lazy"></a>
-        <a class="tile h2" href="assets/pr-flyer.webp"><img src="assets/pr-flyer.webp" alt="" loading="lazy"></a>
-        <a class="tile fit w2" href="assets/pr-invite.webp"><img src="assets/pr-invite.webp" alt="" loading="lazy"></a>
-      </div>
+<section class="gd-sec" id="s3" data-gd="3">
+  <div class="gd-stage">
+    <div class="xp-login mb-card"><img src="assets/xp-login.webp" alt=""></div>
+    <div class="xp-logocard mb-card"><img src="assets/xp-logo.webp" alt=""></div>
+    <div class="xp-home mb-card"><img src="assets/xp-home.webp" alt=""></div>
+    <div class="xp-halves mb-card">
+      <div class="xp-h1"></div>
+      <div class="xp-h2"></div>
     </div>
-  </section>
+    <div class="xp-markcard mb-card"><img src="assets/xp-mark.svg" alt=""></div>
+  </div>
+</section>
 
-  <section id="tools">
-    <div class="wrap">
-      <div class="rv">
-        <span class="eyebrow">כלים</span>
-        <h2 class="sec-title grad">הכלים שאני עובדת איתם</h2>
-      </div>
-      <div class="tools">
-        <div class="glass rv">
-          <h3>עיצוב ובניית אתרים</h3>
-          <ul>
-            <li>Illustrator</li><li>Photoshop</li><li>Figma</li><li>WordPress</li><li>Elementor</li>
-          </ul>
-        </div>
-        <div class="glass rv">
-          <h3>בינה מלאכותית</h3>
-          <ul class="ai">
-            <li>Claude<em>פיתוח אתרים ואנימציות</em></li>
-            <li>Figma + Claude<em>מעבר מעיצוב לפיתוח</em></li>
-            <li>Nano Banana<em>יצירת תמונות</em></li>
-          </ul>
-        </div>
-      </div>
+<section class="gd-sec" id="s4" data-gd="4">
+  <div class="gd-stage">
+    <div class="di-grid mb-card"><img src="assets/di-grid.webp" alt=""></div>
+    <div class="di-stationery mb-card"><img src="assets/di-stationery.webp" alt=""></div>
+    <div class="di-colors mb-card">
+      <div class="di-c1"></div>
+      <div class="di-c2"></div>
     </div>
-  </section>
+    <div class="di-devices"><img src="assets/di-devices-2.webp" alt=""></div>
+  </div>
+</section>
 
-  <section id="experience">
-    <div class="wrap">
-      <div class="rv">
-        <span class="eyebrow">ניסיון</span>
-        <h2 class="sec-title grad">ניסיון תעסוקתי</h2>
-      </div>
-      <div class="timeline">
-        <div class="job rv">
-          <div class="when">2026 - היום</div>
-          <div class="what">
-            <h3>מעצבת גרפית ובונת אתרים עצמאית</h3>
-            <ul>
-              <li>בניית אתרי תדמית ודפי נחיתה בווייב קודינג עם קלוד: קוד בהתאמה אישית, מיקרו אנימציות ואנימציות גלילה.</li>
-              <li>תכנון המבנה והתוכן של כל דף כמשפך שיווקי, מהכותרת הראשונה ועד הפנייה.</li>
-              <li>בניית אתרים בוורדפרס ובאלמנטור.</li>
-              <li>עיצוב גרפי במיקור חוץ לסוכנויות שיווק ודיגיטל: שפות חזותיות, קמפיינים ותכנים לרשתות החברתיות.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="job rv">
-          <div class="when">2023 - 2026</div>
-          <div class="what">
-            <h3>מעצבת גרפית, משרד פרסום</h3>
-            <ul>
-              <li>כתיבה, עיצוב ובנייה של דפי נחיתה ואתרי תדמית ופורטפוליו ללקוחות המשרד.</li>
-              <li>עיצוב קמפיינים דיגיטליים ומודעות ללקוחות ממגוון תחומים.</li>
-              <li>הפקת באנרים, חומרי דפוס ותכנים לרשתות החברתיות.</li>
-              <li>עבודה בצוות קריאייטיב ומול מנהלי לקוחות וקמפיינים, בלוחות זמנים צפופים.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="job rv">
-          <div class="when">2022</div>
-          <div class="what">
-            <h3>מעצבת ועוזרת אישית למעצבת תכשיטים</h3>
-            <ul>
-              <li>ניהול ותחזוקה של החנות האינטרנטית.</li>
-              <li>יצירת תוכן לרשתות החברתיות.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="job rv">
-          <div class="when">2021 - 2022</div>
-          <div class="what">
-            <h3>קורס עיצוב גרפי, מכללת האקריו</h3>
-            <ul>
-              <li>קורס מקצועי בהיקף 630 שעות, סיום בהצטיינות.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+<section class="ads-scroll" id="g-ads">
+  <div class="as-stage">
+    <div class="as-world"></div>
+    <div class="as-veil"><div class="ov"></div><div class="ovb"></div><div class="fade top"></div><div class="fade bot"></div></div>
+    <div class="as-title"><h2 class="proj-head">מודעות גרפיות</h2></div>
+  </div>
+</section>
+
+<div class="gd-head" id="g-print"><h2 class="proj-head">גרפיקה לדפוס</h2></div>
+<section class="gd-sec" data-gd="8">
+  <div class="gd-stage">
+    <div class="pr-rollup mb-card"><img src="assets/pr-rollup.webp" alt=""></div>
+    <div class="pr-flyer mb-card"><img src="assets/pr-flyer.webp" alt=""></div>
+    <div class="pr-billboard mb-card"><img src="assets/pr-billboard.webp" alt=""></div>
+    <div class="pr-invite"><img src="assets/pr-invite.webp" alt=""></div>
+  </div>
+</section>
 
   <section id="contact" class="contact">
     <div class="wrap">
-      <div class="glass rv">
+      <div class="head rv">
+        <span class="kick">יצירת קשר</span>
         <h2 class="grad">בואו נדבר</h2>
-        <p>מחפשים מעצבת שגם בונה אתרים? אשמח לשמוע על התפקיד.</p>
-        <div class="ctas">
-          <a class="btn btn-main ltr" href="tel:0502463500">050-246-3500</a>
-          <a class="btn btn-ghost ltr" href="mailto:ronieli770@gmail.com">ronieli770@gmail.com</a>
-          <a class="btn btn-ghost" href="https://wa.me/972502463500" target="_blank" rel="noopener">וואטסאפ</a>
+      </div>
+      <div class="body rv">
+        <div class="info">
+          <p>יש לכם תפקיד פתוח?<br>אשמח לשמוע עליו.</p>
+          <ul>
+            <li><a class="ph" href="tel:0502463500"><img src="assets/contact-phone.svg" alt=""><span class="ltr">050-2463500</span></a></li>
+            <li><a href="mailto:ronieli770@gmail.com"><img src="assets/contact-mail.svg" alt=""><span class="ltr">ronieli770@gmail.com</span></a></li>
+            <li><span class="loc"><img src="assets/contact-pin.svg" alt=""><span>רמת גן</span></span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>השאירו פרטים</h3>
+          <form id="contact-form" novalidate>
+            <input name="name" required autocomplete="name" placeholder="שם מלא, חברה / משרד" aria-label="שם מלא, חברה / משרד">
+            <input name="phone" type="tel" required autocomplete="tel" placeholder="טלפון" aria-label="טלפון">
+            <input name="email" type="email" autocomplete="email" placeholder="מייל" aria-label="מייל">
+            <textarea name="msg" placeholder="ספרו לי על התפקיד" aria-label="ספרו לי על התפקיד"></textarea>
+            <button type="submit">שליחה</button>
+            <p class="note" id="cf-note" aria-live="polite"></p>
+          </form>
         </div>
       </div>
     </div>
   </section>
 </main>
 
-<footer>רוני אליהו · רמת גן</footer>
+
+<div class="fabs">
+  <a class="fab fab-tel" href="tel:0502463500" aria-label="התקשרו אליי"><svg viewBox="0 0 33.0017 31.001" aria-hidden="true"><path d="M22.6412 21.1829L23.4129 20.4238L21.6209 18.6408L20.8526 19.3999L22.6412 21.1829ZM26.0002 20.1054L29.2339 21.8464L30.4437 19.6378L27.2117 17.8985L26.0002 20.1054ZM29.8549 25.3051L27.452 27.6729L29.2406 29.4542L31.6435 27.0881L29.8549 25.3051ZM25.9866 28.4337C23.533 28.6616 17.1874 28.4588 10.3139 21.6923L8.52365 23.4736C16.0233 30.8585 23.1624 31.2204 26.2235 30.9372L25.9866 28.4337ZM10.3139 21.6923C3.76363 15.2408 2.67727 9.81646 2.5419 7.46207L0.00706193 7.60451C0.176277 10.5672 1.52154 16.5797 8.52365 23.4736L10.3139 21.6923ZM12.6406 11.3363L13.1263 10.8571L11.3394 9.07579L10.8537 9.55337L12.6406 11.3363ZM13.5121 4.76584L11.38 1.94393L9.34772 3.45207L11.4798 6.27231L13.5121 4.76584ZM4.20359 1.32894L1.54692 3.94306L3.33721 5.72603L5.99219 3.1119L4.20359 1.32894ZM11.7472 10.4449C10.8504 9.55337 10.8504 9.55337 10.8504 9.55672H10.847L10.8419 9.56342C10.7615 9.64371 10.6895 9.73186 10.627 9.82651C10.5356 9.96057 10.4358 10.1365 10.3512 10.3594C10.1452 10.9347 10.0939 11.5532 10.2023 12.1541C10.429 13.6036 11.4375 15.5189 14.0197 18.0627L15.81 16.2797C13.392 13.9002 12.8166 12.4524 12.71 11.7687C12.6593 11.4436 12.7117 11.2827 12.7269 11.2458C12.7371 11.2235 12.7371 11.2202 12.7269 11.2358C12.7119 11.2589 12.6949 11.2808 12.6762 11.3011L12.6593 11.3179L12.6423 11.333L11.7472 10.4449ZM14.0197 18.0627C16.6037 20.6064 18.5479 21.5984 20.0133 21.8196C20.763 21.9336 21.3671 21.8431 21.8256 21.6738C22.0825 21.5808 22.3225 21.4473 22.5363 21.2784L22.6209 21.203L22.6328 21.1929L22.6379 21.1879L22.6396 21.1845C22.6396 21.1845 22.6412 21.1829 21.7461 20.2914C20.8493 19.3999 20.8543 19.3982 20.8543 19.3982L20.8577 19.3949L20.8611 19.3915L20.8713 19.3831L20.8882 19.3664L20.9525 19.3161C20.9683 19.3061 20.9643 19.3072 20.9406 19.3195C20.8983 19.3345 20.7325 19.3865 20.3991 19.3362C19.6986 19.229 18.2264 18.6592 15.81 16.2797L14.0197 18.0627ZM11.38 1.94225C9.654 -0.336727 6.26294 -0.698682 4.20359 1.32894L5.99219 3.1119C6.89242 2.22545 8.4898 2.31761 9.34772 3.45207L11.38 1.94225ZM2.54359 7.46375C2.50975 6.88395 2.7788 6.27734 3.33721 5.7277L1.54523 3.94474C0.636542 4.83957 -0.0792377 6.10641 0.00706193 7.60451L2.54359 7.46375ZM27.452 27.6729C26.9884 28.1321 26.4875 28.3901 25.9883 28.4354L26.2235 30.9372C27.4673 30.8216 28.4842 30.2016 29.2423 29.4559L27.452 27.6729ZM13.1263 10.8571C14.7931 9.21655 14.9166 6.62421 13.5138 4.76751L11.4815 6.27399C12.1635 7.1772 12.0619 8.36193 11.3377 9.07746L13.1263 10.8571ZM29.2355 21.8481C30.618 22.5921 30.8329 24.3449 29.8566 25.3068L31.6469 27.0881C33.9143 24.8544 33.2155 21.1292 30.4454 19.6395L29.2355 21.8481ZM23.4129 20.4254C24.0626 19.7853 25.1084 19.6278 26.0019 20.107L27.2134 17.9001C25.3791 16.9115 23.1049 17.1846 21.6226 18.6425L23.4129 20.4254Z"/></svg></a>
+  <a class="fab fab-wa" href="https://wa.me/972502463500" target="_blank" rel="noopener" aria-label="דברו איתי בוואטסאפ"><svg viewBox="58 54 34.4 34.4" aria-hidden="true"><path d="M87.4456 59.3471C85.879 57.7731 84.0132 56.5251 81.9569 55.6757C79.9007 54.8264 77.6951 54.3928 75.4687 54.4001C66.1401 54.4001 58.5371 61.9651 58.5371 71.2471C58.5371 74.2221 59.323 77.1121 60.7924 79.6621L58.4004 88.4L67.3702 86.054C69.8476 87.397 72.6326 88.111 75.4687 88.111C84.7974 88.111 92.4004 80.546 92.4004 71.2641C92.4004 66.7591 90.6406 62.5261 87.4456 59.3471ZM75.4687 85.255C72.9401 85.255 70.4627 84.575 68.2929 83.3L67.7803 82.994L62.4496 84.388L63.8677 79.2201L63.526 78.6931C62.1208 76.4611 61.3748 73.8808 61.3733 71.2471C61.3733 63.5291 67.6949 57.2391 75.4516 57.2391C79.2104 57.2391 82.7471 58.7011 85.3954 61.3531C86.7069 62.6517 87.7462 64.1964 88.453 65.8977C89.1598 67.5991 89.5201 69.4231 89.513 71.2641C89.5471 78.9821 83.2255 85.255 75.4687 85.255ZM83.1913 74.7831C82.7642 74.5791 80.6798 73.5591 80.3039 73.4061C79.9109 73.2701 79.6376 73.2021 79.3471 73.6101C79.0567 74.0351 78.2537 74.9871 78.0145 75.2591C77.7753 75.5481 77.519 75.5821 77.0918 75.3611C76.6647 75.1571 75.2979 74.6981 73.6918 73.2701C72.4275 72.1481 71.5903 70.7711 71.3341 70.3461C71.0949 69.9211 71.2999 69.7001 71.522 69.4791C71.7099 69.2921 71.9491 68.9861 72.1542 68.7481C72.3592 68.5101 72.4446 68.3231 72.5813 68.0511C72.718 67.7621 72.6496 67.5241 72.5471 67.3201C72.4446 67.1161 71.5903 65.0421 71.2486 64.1921C70.9069 63.3761 70.5481 63.4781 70.2918 63.4611H69.4717C69.1813 63.4611 68.7371 63.5631 68.3441 63.9881C67.9682 64.4131 66.8748 65.4331 66.8748 67.5071C66.8748 69.5811 68.3954 71.5871 68.6004 71.8591C68.8054 72.1481 71.5903 76.3981 75.8275 78.2171C76.8356 78.6591 77.6215 78.9141 78.2366 79.1011C79.2446 79.4241 80.1672 79.373 80.9019 79.271C81.722 79.1521 83.4135 78.2511 83.7552 77.2651C84.114 76.2791 84.114 75.4461 83.9944 75.2591C83.8748 75.0721 83.6185 74.9871 83.1913 74.7831Z"/></svg></a>
+</div>
 
 <nav class="dock" aria-label="ניווט">
   <a class="nv on" href="#top" data-sec="top">בית</a>
@@ -687,23 +985,6 @@
 
 <script>
 (() => {
-  /* ads: first 12 visible, the rest behind a button */
-  const ads = document.getElementById('ads');
-  for (let i = 1; i <= 62; i++){
-    const n = String(i).padStart(2,'0');
-    const a = document.createElement('a');
-    a.className = 'tile' + (i > 12 ? ' more' : '');
-    a.href = `assets/ads/ad-${n}.jpg`;
-    a.innerHTML = `<img src="assets/ads/ad-${n}.jpg" alt="" loading="lazy">`;
-    ads.appendChild(a);
-  }
-  const more = document.getElementById('ads-more');
-  more.addEventListener('click', () => {
-    const open = ads.classList.toggle('open');
-    more.textContent = open ? 'הצגת פחות' : 'הצגת כל המודעות';
-    if (!open) ads.scrollIntoView({block:'start'});
-  });
-
   /* lightbox for clips and images */
   const lb = document.getElementById('lb'), body = document.getElementById('lb-body');
   let paused = [];
@@ -723,6 +1004,8 @@
   document.addEventListener('click', e => {
     if (e.target.closest('.pf-stage')) return;   // the carousel handles its own taps
     const clip = e.target.closest('[data-clip]');
+    const gimg = e.target.closest('.gd-stage img');
+    if (gimg){ e.preventDefault(); open(`<img src="${gimg.currentSrc || gimg.src}" alt="">`); return; }
     const img = e.target.closest('[data-img], a.tile');
     if (clip){ e.preventDefault(); const c = clip.dataset.clip; open(`<video src="${c}" poster="${c.replace('.mp4','.jpg')}" controls playsinline loop></video>`); }
     else if (img){ e.preventDefault(); open(`<img src="${img.dataset.img || img.getAttribute('href')}" alt="">`); }
@@ -1025,6 +1308,115 @@
   }), {threshold:.25});
   projSections.forEach(sec => pio.observe(sec));
 
+  /* ---------- ads: rings into the ball (built and tuned in ads-scroll-demo.html) ---------- */
+  (() => {
+    const sec = document.getElementById('g-ads');
+    if (!sec) return;
+    const stage = sec.querySelector('.as-stage'), world = sec.querySelector('.as-world');
+    const title = sec.querySelector('.as-title'), veil = sec.querySelector('.as-veil');
+    const N = 62, FULL = i => `assets/ads/ad-${String(i + 1).padStart(2, '0')}.jpg`;
+    const THUMB = i => `assets/ads/thumb/ad-${String(i + 1).padStart(2, '0')}.webp`;
+    const SEG = 22, UNIT = 360 / SEG / 2;
+    const cells = [];
+    for (let c = 0; c < SEG; c++){
+      const x = -37 + c * 2;
+      (c % 2 === 0 ? [-4, -2, 0, 2, 4] : [-3, -1, 1, 3, 5]).forEach(y => cells.push({ a: UNIT * (x + .5), b: UNIT * (y - .5) }));
+    }
+    const RINGS = [ { r:.215, n:10, dir: 1 }, { r:.33, n:15, dir:-1 }, { r:.45, n:21, dir: 1 }, { r:.58, n:27, dir:-1 }, { r:.76, n:37, dir: 1 } ];
+    let W, H, R, side, ringSize, tiles = [];
+    const radiusFor = (w, h) => Math.max(450, Math.min((w / h >= 1.3 ? w : Math.min(w, h)) * .5, h * 1.35));
+    function build(){
+      world.innerHTML = '';
+      W = stage.clientWidth; H = stage.clientHeight;
+      R = radiusFor(W, H);
+      side = (R * 3.14 / SEG) * 2;
+      ringSize = Math.max(70, Math.min(W, H) * .1);
+      const slots = [];
+      RINGS.forEach((rg, ri) => { for (let k = 0; k < rg.n; k++) slots.push({ ri, k, ang: k / rg.n * 360, rad: rg.r * Math.max(W, H * 1.4) }); });
+      const ends = cells.map((c, i) => {
+        const a = c.a * Math.PI / 180, b = c.b * Math.PI / 180;
+        const X = R * Math.cos(b) * Math.sin(a), Y = -R * Math.sin(b), Z = R * Math.cos(b) * Math.cos(a);
+        return { i, X, Y, Z, a: c.a, b: c.b, face: Math.cos(a) * Math.cos(b), scr: Math.atan2(Y, X) };
+      });
+      const byFace = ends.slice().sort((p, q) => q.face - p.face);
+      const inner = slots.filter(s => s.ri < 4), outer = slots.filter(s => s.ri === 4);
+      const pair = (cs0, ss0) => {
+        const cs = cs0.slice().sort((p, q) => p.scr - q.scr), ss = ss0.slice().sort((p, q) => p.ang - q.ang);
+        cs.forEach((c, j) => { c.slot = ss[Math.floor(j * ss.length / cs.length)]; });
+      };
+      pair(byFace.slice(0, inner.length), inner);
+      pair(byFace.slice(inner.length), outer);
+      tiles = ends.map(e => {
+        const el = document.createElement('div');
+        const n = (e.i * 7) % N;
+        el.className = 'as-tile';
+        el.dataset.full = FULL(n);
+        el.style.width = el.style.height = side + 'px';
+        el.style.marginLeft = el.style.marginTop = -side / 2 + 'px';
+        el.innerHTML = `<div class="img"><img src="${THUMB(n)}" alt="" draggable="false" loading="lazy" decoding="async"></div>`;
+        world.appendChild(el);
+        return { el, img: el.firstChild, e, s: e.slot, delay: Math.min(.35, e.slot.rad / Math.max(W, H) * .4) };
+      });
+    }
+    const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+    let rot = { x: 0, y: 0 }, vel = { x: 0, y: 0 }, start = null, drag = null, t0 = performance.now();
+    function frame(now){
+      requestAnimationFrame(frame);
+      const r = sec.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;       // nothing to draw off screen
+      const time = (now - t0) / 1000;
+      const p = clamp(-r.top / (r.height - innerHeight));
+      const g = clamp((p - .0345) / .6207), G = ease(g), done = g >= 1;
+      stage.classList.toggle('ball', done);
+      if (!start && done){ rot.y += vel.x + .08; rot.x = clamp(rot.x - vel.y, -6, 6); vel.x *= .94; vel.y *= .94; }
+      title.style.opacity = String(1 - clamp(g / .3));
+      veil.style.opacity = String(clamp((g - .55) / .45));
+      stage.style.perspective = 2 * R + 'px';
+      world.style.transform = `translateZ(${-R * G}px) rotateX(${rot.x * G}deg) rotateY(${rot.y * G}deg)`;
+      const spin = time * 6 + p * 220;
+      tiles.forEach(t => {
+        const k = ease(clamp((g - t.delay) / (1 - t.delay)));
+        const rg = RINGS[t.s.ri];
+        const ang = (t.s.ang + spin * rg.dir * (1 - t.s.ri * .12)) * Math.PI / 180;
+        const sx = Math.cos(ang) * t.s.rad, sy = Math.sin(ang) * t.s.rad * .78, e = t.e;
+        const d = Math.hypot(sx / (W / 2), sy / (H / 2));
+        const o = Math.max(.12, clamp((d - .35) / .55)) * (1 - clamp((d - 1.15) / .5) * .45);
+        const undo = 1 - k;
+        t.el.style.opacity = String(lerp(o, 1, k));
+        t.el.style.transform =
+          `rotateY(${-rot.y * G * undo}deg) rotateX(${-rot.x * G * undo}deg) translate3d(${lerp(sx, e.X, k)}px,${lerp(sy, e.Y, k)}px,${lerp(0, e.Z, k)}px) ` +
+          `rotateY(${e.a * k}deg) rotateX(${e.b * k}deg) scale(${lerp(ringSize / side, 1, k)})`;
+        t.img.style.setProperty('--inset', (10 * k) + 'px');
+        t.img.style.setProperty('--rad', lerp(14, 30, k) + 'px');
+      });
+    }
+    /* the finished ball drags like the dome gallery (dx/20 around, dy/20 tilt within 6deg);
+       a tap without a drag opens the ad full size */
+    stage.addEventListener('pointerdown', e => {
+      if (!stage.classList.contains('ball')) return;
+      start = { x: e.clientX, y: e.clientY, rx: rot.x, ry: rot.y, moved: 0, tile: e.target.closest('.as-tile') };
+      drag = { x: e.clientX, y: e.clientY, t: performance.now() };
+    });
+    addEventListener('pointermove', e => {
+      if (!start) return;
+      start.moved = Math.max(start.moved, Math.hypot(e.clientX - start.x, e.clientY - start.y));
+      rot.y = start.ry + (e.clientX - start.x) / 20;
+      rot.x = clamp(start.rx - (e.clientY - start.y) / 20, -6, 6);
+      const now = performance.now(), dt = Math.max(1, now - drag.t);
+      vel = { x: (e.clientX - drag.x) / dt * .4, y: (e.clientY - drag.y) / dt * .4 };
+      drag = { x: e.clientX, y: e.clientY, t: now };
+    });
+    addEventListener('pointerup', () => {
+      if (start && start.moved < 6 && start.tile) open(`<img src="${start.tile.dataset.full}" alt="">`);
+      start = null; drag = null;
+    });
+    build();
+    let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(build, 150); });
+    requestAnimationFrame(frame);
+  })();
+
   /* rotating word under the name */
   const WORDS = ['מעצבת גרפית','בונת אתרים','מעצבת דיגיטל','אמא לכלב','חולת טיולים'];
   const rot = document.querySelector('.rot');
@@ -1061,11 +1453,19 @@
 
   /* intro: mars texture follows the cursor */
   const intro = document.querySelector('.intro'), rev = intro.querySelector('.fx-reveal');
-  intro.addEventListener('mousemove', e => {
+  /* the light is always on while the intro is in view: it starts in the middle,
+     follows the cursor anywhere on the page, and is lit again on the way back up */
+  rev.style.opacity = '1';
+  addEventListener('mousemove', e => {
+    rev.style.setProperty('--mx', e.clientX + 'px');
+    rev.style.setProperty('--my', e.clientY + 'px');
+  }, {passive:true});
+  intro.addEventListener('mousemove', () => { rev.style.opacity = '1'; }, {passive:true});
+  /* the layer is window-sized, so it goes out once the intro has scrolled away */
+  new IntersectionObserver(es => es.forEach(e => { rev.style.opacity = e.isIntersecting ? '1' : '0'; }), {threshold:0}).observe(intro);
+  addEventListener('scroll', () => {
     const r = intro.getBoundingClientRect();
-    rev.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-    rev.style.setProperty('--my', (e.clientY - r.top) + 'px');
-    rev.style.opacity = '1';
+    rev.style.clipPath = r.bottom < innerHeight ? `inset(0 0 ${innerHeight - Math.max(0, r.bottom)}px 0)` : '';
   }, {passive:true});
   /* leaving the window (scrollbar, another screen) keeps the light where the cursor last was;
      only moving onto the menu puts it out (the scrollbar reports the page root as its target) */
@@ -1110,7 +1510,7 @@
       ring.classList.add('on');
     }, {passive:true});
     document.addEventListener('mouseleave', () => ring.classList.remove('on'));
-    addEventListener('mouseover', e => ring.classList.toggle('hot', !!e.target.closest('a,button,[data-clip],[data-img],.tile,.pf-dots')));   // the whole dot row counts, so the ring stays small between the dots
+    addEventListener('mouseover', e => ring.classList.toggle('hot', !!e.target.closest('a,button,[data-clip],[data-img],.tile,.pf-dots,.gd-stage img,.as-stage.ball .as-tile')));   // the whole dot row counts, so the ring stays small between the dots
     (function tick(){
       cx += (tx - cx) * .22; cy += (ty - cy) * .22;
       ring.style.transform = `translate(${cx}px,${cy}px)`;
@@ -1124,6 +1524,104 @@
   }), {threshold:.12, rootMargin:'0px 0px -40px 0px'});
   document.querySelectorAll('.rv').forEach(el => rio.observe(el));
 })();
+</script>
+<script>
+(() => {
+  const RADIUS = 390;
+  const stages = [...document.querySelectorAll('.gd-stage')];
+  if (!stages.length) return;
+  if (window.innerWidth <= 768 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const spot = document.createElement('div');
+  spot.className = 'mb-spotlight';
+  document.body.appendChild(spot);
+
+  /* one glow layer per card, sitting behind it inside its own stage */
+  const PAD = 18;
+  const units = [];
+  stages.forEach(stage => {
+    [...stage.querySelectorAll('.mb-card')].forEach(card => {
+      const glow = document.createElement('div');
+      glow.className = 'mb-glow';
+      stage.appendChild(glow);
+      units.push({ stage, card, glow });
+    });
+  });
+  const cards = units.map(u => u.card);
+  const placeGlows = () => {
+    units.forEach(u => {
+      const s = u.stage.getBoundingClientRect();
+      const r = u.card.getBoundingClientRect();
+      u.glow.style.left = (r.left - s.left - PAD) + 'px';
+      u.glow.style.top = (r.top - s.top - PAD) + 'px';
+      u.glow.style.width = (r.width + PAD * 2) + 'px';
+      u.glow.style.height = (r.height + PAD * 2) + 'px';
+    });
+  };
+  placeGlows();
+  addEventListener('resize', placeGlows);
+  addEventListener('load', placeGlows);
+
+  const proximity = RADIUS * 0.5;
+  const fade = RADIUS * 0.75;
+
+  addEventListener('mousemove', e => {
+    let minD = Infinity;
+    units.forEach(u => {
+      const s = u.stage.getBoundingClientRect();
+      const inside = e.clientX >= s.left && e.clientX <= s.right && e.clientY >= s.top && e.clientY <= s.bottom;
+      if (!inside){
+        u.glow.style.opacity = '0';
+        return;
+      }
+      const r = u.card.getBoundingClientRect();
+      const cx = r.left + r.width/2, cy = r.top + r.height/2;
+      const d = Math.max(0, Math.hypot(e.clientX-cx, e.clientY-cy) - Math.max(r.width, r.height)/2);
+      minD = Math.min(minD, d);
+      let g = 0;
+      if (d <= proximity) g = 1;
+      else if (d <= fade) g = (fade - d) / (fade - proximity);
+      u.glow.style.opacity = String(g);
+      if (g > 0){
+        const gx = e.clientX - r.left + PAD;
+        const gy = e.clientY - r.top + PAD;
+        u.glow.style.background = `radial-gradient(${RADIUS}px circle at ${gx}px ${gy}px,`
+          + `rgba(255,255,255,.95) 0%,rgba(255,255,255,.5) 30%,transparent 62%)`;
+      }
+    });
+    spot.style.left = e.clientX + 'px';
+    spot.style.top = e.clientY + 'px';
+    spot.style.opacity = String(
+      minD <= proximity ? 0.8 :
+      minD <= fade ? ((fade - minD) / (fade - proximity)) * 0.8 : 0
+    );
+  }, { passive:true });
+
+  /* tilt + magnetism */
+  cards.forEach(c => {
+    c.addEventListener('mousemove', e => {
+      const r = c.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      const cx = r.width/2, cy = r.height/2;
+      const rx = ((y - cy) / cy) * -10;
+      const ry = ((x - cx) / cx) * 10;
+      const mx = (x - cx) * 0.05, my = (y - cy) * 0.05;
+      c.style.transform = `perspective(1000px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translate3d(${mx.toFixed(1)}px,${my.toFixed(1)}px,0)`;
+    }, { passive:true });
+    c.addEventListener('mouseleave', () => { c.style.transform = ''; });
+  });
+})();
+</script>
+<script>
+document.querySelector('#contact-form textarea').addEventListener('input',function(){this.style.height='130px';this.style.height=Math.max(130,this.scrollHeight+2)+'px'});
+document.getElementById('contact-form').addEventListener('submit',function(e){
+  e.preventDefault();
+  var f=this,note=document.getElementById('cf-note');
+  if(!f.name.value.trim()||!f.phone.value.trim()){note.textContent='צריך לפחות שם וטלפון.';return}
+  var body='שם / חברה: '+f.name.value+'\nטלפון: '+f.phone.value+'\nמייל: '+f.email.value+'\n\n'+f.msg.value;
+  location.href='mailto:ronieli770@gmail.com?subject='+encodeURIComponent('פנייה מהתיק - '+f.name.value)+'&body='+encodeURIComponent(body);
+  note.textContent='נפתח חלון מייל מוכן לשליחה.';
+});
 </script>
 </body>
 </html>
