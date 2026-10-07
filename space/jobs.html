@@ -1572,9 +1572,9 @@
     v.addEventListener('canplay', () => { if (!v.ended && v.currentTime === 0 && sec.getBoundingClientRect().top < innerHeight * .65) v.play().catch(() => {}); }, { once: true });
 
     /* three words ride the clock of the film: each sharpens in from a blur, holds, and blurs
-       out, and the last is gone at .48 of the film, just before she turns at about .5 */
+       out, and the last is gone at .42 of the 7.25s cut, just before she turns at about .44 */
     const ws = [...sec.querySelectorAll('.film-words span')];
-    const SLOTS = [[.03, .18], [.18, .33], [.33, .48]];
+    const SLOTS = [[.02, .16], [.16, .30], [.30, .42]];
     const still = matchMedia('(prefers-reduced-motion:reduce)');
     const ease = x => x * x * (3 - 2 * x);
     function words(p){
