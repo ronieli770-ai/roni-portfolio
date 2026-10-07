@@ -265,6 +265,7 @@
     color:#fff;font-weight:500;font-size:min(18px,1.04vw);line-height:normal;text-decoration:none;white-space:nowrap;
     display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;
   }
+  .pf-cta[hidden]{display:none}
   .pf-cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(250,145,84,.3)}
   /* carousel dots - the clip navigation inside each project */
   .pf-dots{
@@ -913,6 +914,19 @@
       </div>
       </div>
     </section>
+    <section class="proj-section" data-proj="3" id="proj-3">
+      <div class="proj-box">
+      <div class="proj-grain"></div>
+      <div class="pf-stage"></div>
+      <div class="pf-dots"></div>
+      <div class="pf-copy">
+        <span class="pf-brand"></span>
+        <h2 class="pf-title"></h2>
+        <div class="pf-body"></div>
+        <a class="pf-cta" target="_blank" rel="noopener">למעבר לפרוייקט</a>
+      </div>
+      </div>
+    </section>
   </div>
 
   <div id="design">
@@ -1063,6 +1077,38 @@
   /* ---------- projects: the carousels from the studio portfolio ---------- */
   const PROJECTS = [
     {
+      format:'site',
+      name:'Joopy',
+      brand:'Incentive Solutions · מערכת לחישוב תמריצים',
+      title:'עיצוב דף בית לחברת תוכנה',
+      url:'',                           // a design in figma, not live yet - the cta is hidden
+      host:'incentives-solutions.com',
+      dir:'work/joopy/',
+      slides:[
+        { v:'s1',
+          lead:'האתר פונה למנהלי כספים ותפעול בארגונים גדולים',
+          body:'האתר הקודם היה עמוס, סגול מדי, ולא הציג את המוצרים החדשים של החברה - בדיוק כשהיא מתכוננת להתחרות בשווקים בחו״ל. הדף החדש פותח במשפט אחד שאומר מה המערכת עושה, ולצידו אנימציה של מסך אמיתי שמראה תוכנית תגמול רצה על כל הארגון. הגולש מבין את המוצר עוד לפני שקרא פסקה.' },
+        { img:'s2', title:'סקשן · הכאב',
+          lead:'מערכת תמריצים היא מוצר מופשט',
+          body:'האתגר הראשון היה לגרום למנהל להרגיש את הבעיה לפני שמדברים על פיצ׳רים. הסקשן מתרגם את המוצר לארבעה כאבים שהוא חי כל חודש: תקציב שמתברר בדיעבד, עובד ששואל כמה מגיע לו ואין לו תשובה, טעות שמגיעה לתלוש ושעות שנשרפות על אקסלים. הכותרת סוגרת את זה במשפט אחד: הבעיה היא לא הבונוסים, הבעיה היא האקסל.' },
+        { v:'s3', title:'פיצ׳ר · סליידר לפני ואחרי',
+          lead:'הפער בין האקסל למערכת, בגרירה אחת',
+          body:'במקום להסביר כמה המערכת מסדרת את העבודה, הגולש גורר את הסליידר ורואה את זה בעצמו: מצד אחד גיליון אקסל עמוס ומסובך, ומצד שני אותם נתונים במערכת מסודרת. הלפני והאחרי עושים את עבודת השכנוע, והטקסט לצידם רק מסביר מה השתנה.' },
+        { v:'s4', title:'פיצ׳ר · לשוניות לפי ענף',
+          lead:'כל ענף רואה רק את מה שרלוונטי אליו',
+          body:'המערכת מותאמת לכל ענף בנפרד, והבאנר עם הלשוניות באתר הישן בלבל את הלקוחות. בדף החדש הגולש בוחר את הענף שלו - ביטוח, שירותים פיננסיים, טלקום ועוד - והתוכן מתחלף. כל פיצ׳ר מוצג באנימציה קצרה שמראה אותו בפעולה, ככה שמנהל מחברת ביטוח רואה את עמלות הסוכנים שלו ולא רשימה כללית של יכולות.' },
+        { img:'s5', title:'פיצ׳ר · בינה מלאכותית',
+          lead:'בינה מלאכותית שמראים, לא רק מצהירים עליה',
+          body:'הלקוח ביקש להבליט את הבינה המלאכותית במערכת. במקום עוד כותרת כללית, הסקשן מציג רכיבים מתוך הממשק: מנסחים בקשה במילים והמערכת בונה את הדוח, והמערכת מציעה לכל נציג איפה כדאי לו להתמקד כדי לשפר את התגמול שלו. הגולש רואה מה הוא מקבל בפועל.' },
+        { img:'s6', title:'סקשן · מערכת ההסכמים',
+          lead:'מוצר אחר, סקשן משלו',
+          body:'מערכת ההסכמים של החברה לא מחשבת תמריצים - היא מנהלת את ההסכמים מול סוכנים, והצגה שלה לצד הענפים יצרה בלבול. הפתרון היה לבודד אותה לסקשן נפרד, שמציין מראש שהוא רלוונטי בעיקר לביטוח ולשירותים פיננסיים, כך שמי שלא צריך אותו יכול לדלג. הוויזואלים מראים את שרשרת האישורים מהניסוח ועד החתימה האחרונה.' },
+        { img:'s7', title:'סקשן · החזר השקעה',
+          lead:'מדברים בשפה של מי שחותם על הרכישה',
+          body:'הלקוח רצה להציג החזר השקעה ברור יותר. ההחלטה על מערכת כזאת עוברת אצל סמנכ״ל הכספים, אז הסקשן בנוי סביב ארבעה מדדים שמעניינים אותו: סבב תגמול שנסגר בשלושה ימים, שעות אנליסט שנחסכות, חודשים עד החזר ההשקעה וכסף שהפסיק לצאת בטעות.' }
+      ]
+    },
+    {
       format:'landing',                 // 'landing' → phone frame, 'site' → browser frame
       name:'היטבוקס',
       brand:'HITBOX · רשת מכוני אגרוף',
@@ -1151,7 +1197,8 @@
 
     stage.dataset.format = proj.format;
     sec.dataset.format = proj.format;
-    copy.querySelector('.pf-cta').href = proj.url || '#';
+    const cta = copy.querySelector('.pf-cta');
+    if (proj.url) cta.href = proj.url; else cta.hidden = true;
 
     const N = proj.slides.length;
     const cards = proj.slides.map(sl => {
