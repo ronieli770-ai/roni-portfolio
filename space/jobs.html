@@ -787,6 +787,10 @@
     .intro::after{content:"";position:absolute;left:0;right:0;bottom:0;height:33%;z-index:0;pointer-events:none;
       background:linear-gradient(to top,var(--bg) 0%,rgba(29,29,32,0) 100%)}
     .intro > :not(.fx){z-index:1}
+    /* on a phone the texture scrolls with the section instead of being pinned to the window:
+       a pinned layer is clipped from the scroll event, which a phone fires late, so the orange
+       used to peek out under the fade. here it simply ends where the section ends */
+    .intro .fx-reveal{position:absolute}
     /* phone composition: the photo fills the column and the heading sits on its faded foot,
        with the copy running on underneath - text sizes stay the site's own */
     .about .ph{position:relative;left:auto;top:auto;width:100%;max-width:560px}
@@ -1474,6 +1478,7 @@
   /* the layer is window-sized, so it goes out once the intro has scrolled away */
   new IntersectionObserver(es => es.forEach(e => { rev.style.opacity = e.isIntersecting ? '1' : '0'; }), {threshold:0}).observe(intro);
   addEventListener('scroll', () => {
+    if (getComputedStyle(rev).position !== 'fixed'){ rev.style.clipPath = ''; return; }
     const r = intro.getBoundingClientRect();
     rev.style.clipPath = r.bottom < innerHeight ? `inset(0 0 ${innerHeight - Math.max(0, r.bottom)}px 0)` : '';
   }, {passive:true});
