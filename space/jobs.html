@@ -713,10 +713,11 @@
   /* ---------- film before the contact: a plain video that plays once it is in view ----------
      it opens full screen and, as the page scrolls on, shrinks into a card on the page grid -
      the sides and corners of the project cards, in the film's own shape so nothing is cut:
-     16:9 on a computer, the 9:16 portrait cut on a phone. the size is set from the scroll in js. */
+     16:9 on a computer, the 9:16 portrait cut on a phone. the stage is laid out once at the card's
+     size and only scaled from the scroll - resizing a playing video every frame stalled it on phones. */
   .film{position:relative;height:200vh;height:200svh;padding:0;margin-top:min(146px,8.45vw)}
   .film-pin{position:sticky;top:0;height:100vh;height:100svh;display:grid;place-items:center;overflow:hidden}
-  .film-stage{position:relative;width:100vw;height:100vh;height:100svh;overflow:hidden;isolation:isolate;container-type:inline-size;
+  .film-stage{position:relative;width:100vw;height:100vh;height:100svh;overflow:hidden;isolation:isolate;container-type:inline-size;transform-origin:50% 50%;will-change:transform;
     background:#000 url(work/creative/film-poster.jpg) center/cover no-repeat}
   .film-stage video{display:block;width:100%;height:100%;object-fit:cover}
   /* three words over the film, apple style: each one sharpens in from a blur, holds, and blurs
@@ -1559,7 +1560,7 @@
     let loaded = false;
     new IntersectionObserver(es => es.forEach(e => {
       if (e.isIntersecting && !loaded){ loaded = true; v.preload = 'auto'; v.src = phone ? 'work/creative/film-m.mp4' : 'work/creative/film.mp4'; }
-    }), { rootMargin: '150% 0px' }).observe(sec);
+    }), { rootMargin: '300% 0px' }).observe(sec);
     /* it plays once and stops on its last frame. scrolling past it and coming back up
        starts it again from the top; leaving it half-way and coming back carries on */
     let passed = false;
@@ -1572,7 +1573,16 @@
         if (e.boundingClientRect.top < 0) passed = true;
       }
     }), { threshold: .35 }).observe(pin);
-    v.addEventListener('canplay', () => { if (!v.ended && v.currentTime === 0 && pin.getBoundingClientRect().top < innerHeight * .65) v.play().catch(() => {}); }, { once: true });
+    v.muted = true; v.defaultMuted = true;
+    const onScreen = () => { const r = pin.getBoundingClientRect(); return r.top < innerHeight * .65 && r.bottom > innerHeight * .35; };
+    ['loadeddata', 'canplay'].forEach(ev => v.addEventListener(ev, () => { if (!v.ended && v.paused && v.currentTime === 0 && onScreen()) v.play().catch(() => {}); }));
+    /* a stalled request never errors, it just hangs - while it is on screen with no frames,
+       the load is asked for again, three times at most */
+    let tries = 0;
+    setInterval(() => {
+      if (!loaded || v.readyState >= 3 || v.ended || tries >= 3 || !onScreen()) return;
+      tries++; const t = v.currentTime; v.load(); v.currentTime = t; v.play().catch(() => {});
+    }, 6000);
 
     /* full screen while it scrolls in; once it pins, the next 80% of a screen of scroll eases
        it down to the card, and the last stretch holds the card before the page moves on */
@@ -1587,16 +1597,22 @@
       if (h > H - 40){ h = H - 40; w = h * 1920 / 1076; }
       return { w, h, r: 35 };
     }
-    let lastSize = '';
+    let lastSize = '', lastT = -1, c = null, s0 = 1;
     function fit(){
-      const W = pin.clientWidth, H = pin.clientHeight, c = card(W, H);
+      const W = pin.clientWidth, H = pin.clientHeight;
+      const key = W + 'x' + H;
+      if (key !== lastSize){
+        /* laid out once per screen size at the card's size; a phone's address bar does not change this */
+        lastSize = key; lastT = -1; c = card(W, H);
+        stage.style.width = c.w.toFixed(1) + 'px'; stage.style.height = c.h.toFixed(1) + 'px';
+        s0 = Math.max(W / c.w, H / c.h);
+      }
       const t = ease(Math.max(0, Math.min(1, -sec.getBoundingClientRect().top / (H * .8))));
-      const key = t.toFixed(4) + W + 'x' + H;
-      if (key === lastSize) return;
-      lastSize = key;
-      stage.style.width = (W + (c.w - W) * t).toFixed(1) + 'px';
-      stage.style.height = (H + (c.h - H) * t).toFixed(1) + 'px';
-      stage.style.borderRadius = (c.r * t).toFixed(1) + 'px';
+      if (Math.abs(t - lastT) < .0005) return;
+      lastT = t;
+      const sc = s0 + (1 - s0) * t;
+      stage.style.transform = `scale(${sc.toFixed(4)})`;
+      stage.style.borderRadius = (c.r * t / sc).toFixed(2) + 'px';
     }
 
     /* three words ride the clock of the film: each sharpens in from a blur, holds, and blurs
