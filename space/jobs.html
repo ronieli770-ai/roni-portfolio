@@ -781,7 +781,9 @@
     .intro .big{font-size:10.2vw;margin-top:14px}
     .intro .row{margin-top:30px;gap:15px}
     .intro .facts{margin-top:28px;white-space:normal;max-width:360px;font-size:18px;line-height:1.45;color:#fff}
-    .about{height:auto;min-height:0;display:flex;flex-direction:column;align-items:center;padding:60px 20px}
+    /* the intro is a full screen with its copy centred, so its foot is mostly empty: the about
+       section starts without top padding and tucks up into that faded foot */
+    .about{height:auto;min-height:0;display:flex;flex-direction:column;align-items:center;padding:0 20px 60px;margin-top:-12svh}
     /* the intro's foot fades into section 2's colour, over the orange texture:
        full page colour at the very bottom, gone a third of the way up */
     .intro::after{content:"";position:absolute;left:0;right:0;bottom:0;height:33%;z-index:0;pointer-events:none;
