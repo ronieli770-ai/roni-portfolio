@@ -1399,7 +1399,7 @@
         el.dataset.full = FULL(n);
         el.style.width = el.style.height = side + 'px';
         el.style.marginLeft = el.style.marginTop = -side / 2 + 'px';
-        el.innerHTML = `<div class="img"><img src="${THUMB(n)}" alt="" draggable="false" loading="lazy" decoding="async"></div>`;
+        el.innerHTML = `<div class="img"><img src="${THUMB(n)}" alt="" draggable="false" decoding="async"></div>`;
         world.appendChild(el);
         return { el, img: el.firstChild, e, s: e.slot, delay: Math.min(.35, e.slot.rad / Math.max(W, H) * .4) };
       });
@@ -1459,7 +1459,14 @@
       start = null; drag = null;
     });
     build();
-    let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(build, 150); });
+    /* a phone's address bar comes back when the reader scrolls up, and that fires a resize.
+       rebuilding then threw every tile away and the thumbnails had to load again, so the
+       reverse animation ran empty. only a change of width rebuilds now */
+    let rz, lastW = innerWidth;
+    addEventListener('resize', () => {
+      if (innerWidth === lastW) return;
+      lastW = innerWidth; clearTimeout(rz); rz = setTimeout(build, 150);
+    });
     requestAnimationFrame(frame);
   })();
 
