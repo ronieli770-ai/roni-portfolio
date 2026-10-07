@@ -92,6 +92,11 @@
     .about .ph .fig:hover .smile{opacity:1}
     .about .ph .fig:hover .calm{opacity:0}
   }
+  /* without a pointer the smile comes on by scroll: once the middle of the photo passes the
+     middle of the screen (see the script), with a slower, softer cross-fade */
+  .about .ph .fig.smiling .smile{opacity:1}
+  .about .ph .fig.smiling .calm{opacity:0}
+  @media (hover:none), (max-width:900px){.about .ph .calm,.about .ph .smile{transition:opacity 1.1s ease}}
   .about .col{position:absolute;right:6.771%;top:50%;transform:translateY(-50%);width:min(645px,37.326vw);display:flex;flex-direction:column;align-items:flex-start;gap:min(20px,1.157vw)}
   .about .txt{font-size:min(30px,1.736vw);line-height:normal;font-weight:500;color:#81848e;text-align:right}
   .about .txt p b{font-weight:500;color:#fff}
@@ -844,7 +849,7 @@
   </section>
 
   <section class="about" id="about">
-    <div class="ph"><div class="fig"><picture><source media="(max-width:900px)" srcset="assets/jobs-portrait-m.webp"><img class="calm" src="assets/jobs-portrait.webp?v=2" alt="רוני אליהו" loading="lazy"></picture><img class="smile" src="assets/jobs-portrait-smile.webp" alt="" loading="lazy"></div></div>
+    <div class="ph"><div class="fig"><picture><source media="(max-width:900px)" srcset="assets/jobs-portrait-m.webp"><img class="calm" src="assets/jobs-portrait.webp?v=2" alt="רוני אליהו" loading="lazy"></picture><picture><source media="(max-width:900px)" srcset="assets/jobs-portrait-smile-m.webp"><img class="smile" src="assets/jobs-portrait-smile.webp" alt="" loading="lazy"></picture></div></div>
     <div class="col">
     <div class="txt">
       <span class="kick">קצת עליי</span>
@@ -1511,6 +1516,13 @@
     about.style.setProperty('--ph-top', (mid - aPh.offsetHeight * .40) + 'px');
   }
   document.fonts.ready.then(placePhoto);
+  /* phones: smile once the middle of the photo passes the middle of the screen, and go back
+     to calm when it is scrolled back down below it */
+  if (matchMedia('(hover:none), (max-width:900px)').matches){
+    const fig = aPh.querySelector('.fig');
+    const smile = () => { const r = fig.getBoundingClientRect(); fig.classList.toggle('smiling', r.top + r.height / 2 < innerHeight / 2); };
+    addEventListener('scroll', smile, {passive:true}); smile();
+  }
   addEventListener('resize', placePhoto, {passive:true});
 
   /* menu glow follows the cursor */
