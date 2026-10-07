@@ -719,11 +719,9 @@
   .film-stage canvas{display:block;width:100%;height:100%}
   /* three words over the film, apple style: each one sharpens in from a blur, holds, and blurs
      out before the next - all three are gone before the turn to camera (frame 75 of 150) */
-  .film-words{position:absolute;inset:0;display:grid;justify-items:center;align-items:end;padding-bottom:15vh;pointer-events:none}
-  .film-words span{grid-area:1/1;font-weight:600;font-size:clamp(46px,8.7vw,150px);line-height:1;letter-spacing:-.01em;white-space:nowrap;
-    background:var(--title-grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+  .film-words{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+  .film-words span{grid-area:1/1;font-weight:600;font-size:clamp(40px,5.6vw,80px);line-height:1.05;letter-spacing:-.01em;white-space:nowrap;color:#fff;
     opacity:0;will-change:opacity,transform,filter}
-  @media (max-width:768px){ .film-words{padding-bottom:22vh} }
   @media (max-width:768px){ .film{height:300vh;margin-top:60px} }
 
   /* ---------- contact (figma 388:2, frame 1728) ---------- */
