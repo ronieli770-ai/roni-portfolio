@@ -787,11 +787,15 @@
        from section 1 into 2 has no line. translucent, so the stars still show through */
     .intro{background:linear-gradient(to bottom,transparent 45%,rgba(0,0,0,.6) 100%)}
     .about{background:linear-gradient(to bottom,rgba(0,0,0,.6) 0%,transparent 65%)}
-    .about .ph{position:relative;left:auto;top:auto;width:min(80%,360px)}
-    .about .col{position:static;transform:none;width:100%;max-width:560px;margin-top:10px;gap:20px}
-    .about .txt{font-size:20px}
-    .about .txt .kick{font-size:16px;margin-bottom:8px}
-    .about .txt h2{font-size:38px;margin:0 0 16px}
+    /* phone composition: the photo runs edge to edge and the heading sits on its faded
+       foot, right-aligned and large, with the copy running on underneath */
+    .about .ph{position:relative;left:auto;top:auto;width:calc(100% + 40px);max-width:560px;margin:0 -20px}
+    .about .ph::before{content:"";position:absolute;inset:8% 4% 20%;border-radius:50%;pointer-events:none;
+      background:radial-gradient(closest-side,rgba(141,168,203,.22),rgba(141,168,203,0))}
+    .about .col{position:relative;transform:none;width:100%;max-width:560px;margin-top:max(-40vw,-220px);gap:24px}
+    .about .txt{font-size:20px;line-height:1.5}
+    .about .txt .kick{font-size:16px;margin-bottom:10px}
+    .about .txt h2{font-size:min(13vw,60px);line-height:.95;margin:0 0 22px;white-space:normal;text-shadow:0 4px 30px rgba(0,0,0,.45)}
     .about .pill{font-size:16px}
     .proj{grid-template-columns:1fr}
     .bento{grid-template-columns:repeat(2,1fr);grid-auto-rows:clamp(130px,38vw,200px)}
