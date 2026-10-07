@@ -711,17 +711,18 @@
   .show-more{margin-top:20px}
 
   /* ---------- film before the contact: a plain video that plays once it is in view ----------
-     the 1920 cut on a wide screen, a 720x1280 portrait cut around her on a phone. */
-  .film{position:relative;padding:0;margin-top:min(146px,8.45vw)}
-  .film-stage{position:relative;height:100vh;height:100svh;overflow:hidden;background:#1d1d20 url(work/creative/film-poster.jpg) center/cover no-repeat}
+     it sits in a card on the page grid, the same sides and corners as the project cards, and
+     the card takes the film's own 1920x1076 shape so the whole frame shows, nothing cut. */
+  .film{position:relative;padding:0 6.771%;margin-top:min(146px,8.45vw)}
+  .film-stage{position:relative;aspect-ratio:1920/1076;border-radius:35px;overflow:hidden;isolation:isolate;container-type:inline-size;
+    background:#000 url(work/creative/film-poster.jpg) center/cover no-repeat}
   .film-stage video{display:block;width:100%;height:100%;object-fit:cover}
-  @media (max-width:768px){ .film-stage{background-image:url(work/creative/film-poster-m.jpg)} }
   /* three words over the film, apple style: each one sharpens in from a blur, holds, and blurs
      out before the next - all three are gone before the turn to camera (frame 75 of 150) */
   .film-words{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
-  .film-words span{grid-area:1/1;font-weight:600;font-size:clamp(40px,5.6vw,80px);line-height:1.05;letter-spacing:-.01em;white-space:nowrap;color:#fff;
+  .film-words span{grid-area:1/1;font-weight:600;font-size:clamp(22px,5.6cqw,80px);line-height:1.05;letter-spacing:-.01em;white-space:nowrap;color:#fff;
     opacity:0;will-change:opacity,transform,filter}
-  @media (max-width:768px){ .film{margin-top:60px} }
+  @media (max-width:768px){ .film{margin-top:60px;padding:0 14px} .film-stage{border-radius:24px} }
 
   /* ---------- contact (figma 388:2, frame 1728) ---------- */
   .contact .head{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
@@ -1550,12 +1551,11 @@
     const sec = document.getElementById('film');
     if (!sec) return;
     const v = sec.querySelector('video');
-    const phone = matchMedia('(max-width:768px)').matches;
-    v.poster = phone ? 'work/creative/film-poster-m.jpg' : 'work/creative/film-poster.jpg';
+    v.poster = 'work/creative/film-poster.jpg';
     /* the file is fetched only as the section comes near, and plays only while it is on screen */
     let loaded = false;
     new IntersectionObserver(es => es.forEach(e => {
-      if (e.isIntersecting && !loaded){ loaded = true; v.preload = 'auto'; v.src = phone ? 'work/creative/film-m.mp4' : 'work/creative/film.mp4'; }
+      if (e.isIntersecting && !loaded){ loaded = true; v.preload = 'auto'; v.src = 'work/creative/film.mp4'; }
     }), { rootMargin: '150% 0px' }).observe(sec);
     /* it plays once and stops on its last frame. scrolling past it and coming back up
        starts it again from the top; leaving it half-way and coming back carries on */
