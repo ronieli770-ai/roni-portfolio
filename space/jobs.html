@@ -742,7 +742,13 @@
   .fab-tel{display:none}
   @media (max-width:900px), (hover:none) and (pointer:coarse){.fab-tel{display:block}}
   /* on a phone the dock runs the full width, so the buttons sit above it */
-  @media (max-width:900px){.fabs{right:14px;bottom:calc(84px + env(safe-area-inset-bottom,0px));gap:10px}.fab{--wa:52px}}
+  /* on a phone the dock spans the grid, the same 20px gutter as the page and the floating buttons */
+  @media (max-width:900px){
+    .dock{left:20px;right:20px;transform:none;justify-content:space-between}
+    .dock .nv{flex:1 1 0;text-align:center;justify-content:center}
+    .dock .nv-cta{flex:none}
+  }
+  @media (max-width:900px){.fabs{right:20px;bottom:calc(84px + env(safe-area-inset-bottom,0px));gap:10px}.fab{--wa:52px}}
 
   /* ---------- lightbox ---------- */
   #lb{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:clamp(16px,4vw,60px);background:rgba(3,3,8,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
