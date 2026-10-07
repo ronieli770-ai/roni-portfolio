@@ -711,10 +711,12 @@
   .show-more{margin-top:20px}
 
   /* ---------- film before the contact: a plain video that plays once it is in view ----------
-     it sits in a card on the page grid, the same sides and corners as the project cards, and
-     the card takes the film's own 1920x1076 shape so the whole frame shows, nothing cut. */
-  .film{position:relative;padding:0 6.771%;margin-top:min(146px,8.45vw)}
-  .film-stage{position:relative;aspect-ratio:1920/1076;border-radius:35px;overflow:hidden;isolation:isolate;container-type:inline-size;
+     it opens full screen and, as the page scrolls on, shrinks into a card on the page grid -
+     the sides and corners of the project cards, in the film's own shape so nothing is cut:
+     16:9 on a computer, the 9:16 portrait cut on a phone. the size is set from the scroll in js. */
+  .film{position:relative;height:200vh;height:200svh;padding:0;margin-top:min(146px,8.45vw)}
+  .film-pin{position:sticky;top:0;height:100vh;height:100svh;display:grid;place-items:center;overflow:hidden}
+  .film-stage{position:relative;width:100vw;height:100vh;height:100svh;overflow:hidden;isolation:isolate;container-type:inline-size;
     background:#000 url(work/creative/film-poster.jpg) center/cover no-repeat}
   .film-stage video{display:block;width:100%;height:100%;object-fit:cover}
   /* three words over the film, apple style: each one sharpens in from a blur, holds, and blurs
@@ -722,7 +724,7 @@
   .film-words{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
   .film-words span{grid-area:1/1;font-weight:600;font-size:clamp(22px,5.6cqw,80px);line-height:1.05;letter-spacing:-.01em;white-space:nowrap;color:#fff;
     opacity:0;will-change:opacity,transform,filter}
-  @media (max-width:768px){ .film{margin-top:60px;padding:0 14px} .film-stage{border-radius:24px} }
+  @media (max-width:768px){ .film{margin-top:60px} .film-stage{background-image:url(work/creative/film-poster-m.jpg)} .film-words span{font-size:clamp(28px,10cqw,44px)} }
 
   /* ---------- contact (figma 388:2, frame 1728) ---------- */
   .contact .head{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
@@ -1005,9 +1007,9 @@
 </section>
 
   <section class="film" id="film" aria-label="רוני בסטודיו - סרטון">
-    <div class="film-stage"><video muted playsinline preload="none" aria-hidden="true"></video>
+    <div class="film-pin"><div class="film-stage"><video muted playsinline preload="none" aria-hidden="true"></video>
       <div class="film-words" aria-hidden="true"><span>עיצוב.</span><span>אתרים.</span><span>בינה מלאכותית.</span></div>
-    </div>
+    </div></div>
   </section>
 
   <section id="contact" class="contact">
@@ -1550,12 +1552,13 @@
   (() => {
     const sec = document.getElementById('film');
     if (!sec) return;
-    const v = sec.querySelector('video');
-    v.poster = 'work/creative/film-poster.jpg';
+    const v = sec.querySelector('video'), pin = sec.querySelector('.film-pin'), stage = sec.querySelector('.film-stage');
+    const phoneQ = matchMedia('(max-width:768px)'), phone = phoneQ.matches;
+    v.poster = phone ? 'work/creative/film-poster-m.jpg' : 'work/creative/film-poster.jpg';
     /* the file is fetched only as the section comes near, and plays only while it is on screen */
     let loaded = false;
     new IntersectionObserver(es => es.forEach(e => {
-      if (e.isIntersecting && !loaded){ loaded = true; v.preload = 'auto'; v.src = 'work/creative/film.mp4'; }
+      if (e.isIntersecting && !loaded){ loaded = true; v.preload = 'auto'; v.src = phone ? 'work/creative/film-m.mp4' : 'work/creative/film.mp4'; }
     }), { rootMargin: '150% 0px' }).observe(sec);
     /* it plays once and stops on its last frame. scrolling past it and coming back up
        starts it again from the top; leaving it half-way and coming back carries on */
@@ -1568,15 +1571,39 @@
         v.pause();
         if (e.boundingClientRect.top < 0) passed = true;
       }
-    }), { threshold: .35 }).observe(sec);
-    v.addEventListener('canplay', () => { if (!v.ended && v.currentTime === 0 && sec.getBoundingClientRect().top < innerHeight * .65) v.play().catch(() => {}); }, { once: true });
+    }), { threshold: .35 }).observe(pin);
+    v.addEventListener('canplay', () => { if (!v.ended && v.currentTime === 0 && pin.getBoundingClientRect().top < innerHeight * .65) v.play().catch(() => {}); }, { once: true });
+
+    /* full screen while it scrolls in; once it pins, the next 80% of a screen of scroll eases
+       it down to the card, and the last stretch holds the card before the page moves on */
+    const ease = x => x * x * (3 - 2 * x);
+    function card(W, H){
+      if (phoneQ.matches){
+        let w = W - 28, h = w * 16 / 9;
+        if (h > H - 40){ h = H - 40; w = h * 9 / 16; }
+        return { w, h, r: 24 };
+      }
+      let w = W * (1 - 2 * .06771), h = w * 1076 / 1920;
+      if (h > H - 40){ h = H - 40; w = h * 1920 / 1076; }
+      return { w, h, r: 35 };
+    }
+    let lastSize = '';
+    function fit(){
+      const W = pin.clientWidth, H = pin.clientHeight, c = card(W, H);
+      const t = ease(Math.max(0, Math.min(1, -sec.getBoundingClientRect().top / (H * .8))));
+      const key = t.toFixed(4) + W + 'x' + H;
+      if (key === lastSize) return;
+      lastSize = key;
+      stage.style.width = (W + (c.w - W) * t).toFixed(1) + 'px';
+      stage.style.height = (H + (c.h - H) * t).toFixed(1) + 'px';
+      stage.style.borderRadius = (c.r * t).toFixed(1) + 'px';
+    }
 
     /* three words ride the clock of the film: each sharpens in from a blur, holds, and blurs
        out, and the last is gone at .42 of the 7.25s cut, just before she turns at about .44 */
     const ws = [...sec.querySelectorAll('.film-words span')];
     const SLOTS = [[.02, .16], [.16, .30], [.30, .42]];
     const still = matchMedia('(prefers-reduced-motion:reduce)');
-    const ease = x => x * x * (3 - 2 * x);
     function words(p){
       ws.forEach((w, i) => {
         const [a, b] = SLOTS[i], u = (p - a) / (b - a);
@@ -1594,6 +1621,8 @@
     }
     (function tick(){
       requestAnimationFrame(tick);
+      const r = sec.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < innerHeight) fit();
       if (v.paused || !v.duration) return;
       words(v.currentTime / v.duration);
     })();
