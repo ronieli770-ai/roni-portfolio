@@ -782,11 +782,11 @@
     .intro .row{margin-top:30px;gap:15px}
     .intro .facts{margin-top:28px;white-space:normal;max-width:360px;font-size:18px;line-height:1.45;color:#fff}
     .about{height:auto;min-height:0;display:flex;flex-direction:column;align-items:center;padding:60px 20px}
-    /* one dark band runs across the seam: the intro darkens towards its foot and the about
-       section starts from that same shade and lifts back to the page colour, so the scroll
-       from section 1 into 2 has no line. translucent, so the stars still show through */
-    .intro{background:linear-gradient(to bottom,transparent 45%,rgba(0,0,0,.6) 100%)}
-    .about{background:linear-gradient(to bottom,rgba(0,0,0,.6) 0%,transparent 65%)}
+    /* the intro's foot fades into section 2's colour, over the orange texture:
+       full page colour at the very bottom, gone a third of the way up */
+    .intro::after{content:"";position:absolute;left:0;right:0;bottom:0;height:33%;z-index:0;pointer-events:none;
+      background:linear-gradient(to top,var(--bg) 0%,rgba(29,29,32,0) 100%)}
+    .intro > :not(.fx){z-index:1}
     /* phone composition: the photo runs edge to edge and the heading sits on its faded
        foot, right-aligned and large, with the copy running on underneath */
     .about .ph{position:relative;left:auto;top:auto;width:calc(100% + 40px);max-width:560px;margin:0 -20px}
