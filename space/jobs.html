@@ -782,6 +782,11 @@
     .intro .row{margin-top:30px;gap:15px}
     .intro .facts{margin-top:28px;white-space:normal;max-width:360px;font-size:18px;line-height:1.45;color:#fff}
     .about{height:auto;min-height:0;display:flex;flex-direction:column;align-items:center;padding:60px 20px}
+    /* one dark band runs across the seam: the intro darkens towards its foot and the about
+       section starts from that same shade and lifts back to the page colour, so the scroll
+       from section 1 into 2 has no line. translucent, so the stars still show through */
+    .intro{background:linear-gradient(to bottom,transparent 45%,rgba(0,0,0,.6) 100%)}
+    .about{background:linear-gradient(to bottom,rgba(0,0,0,.6) 0%,transparent 65%)}
     .about .ph{position:relative;left:auto;top:auto;width:min(80%,360px)}
     .about .col{position:static;transform:none;width:100%;max-width:560px;margin-top:10px;gap:20px}
     .about .txt{font-size:20px}
