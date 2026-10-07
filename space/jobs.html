@@ -743,7 +743,9 @@
   .to-top:hover svg{transform:translateY(-4px)}
   @media (max-width:860px){.to-top{width:50px;height:50px;margin-top:48px}}
   /* no footer: the last section keeps the room the fixed dock needs below it */
-  #contact{padding-bottom:calc(clamp(72px,11vh,130px) + 200px)}
+  /* just the dock's own room (its bottom offset + 87px tall) and a little air under the form */
+  #contact{padding-bottom:calc(clamp(14px,6.5vh,73px) + 87px + 40px)}
+  @media (max-width:900px){#contact{padding-bottom:110px}}
 
   /* ---------- floating whatsapp + phone - copied from the main site (index.html) ---------- */
   .fabs{position:fixed;z-index:40;right:2.6vw;bottom:35px;display:flex;flex-direction:column;gap:14px}
