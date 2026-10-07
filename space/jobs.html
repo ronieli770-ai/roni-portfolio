@@ -756,7 +756,9 @@
   /* on a phone the dock runs the full width, so the buttons sit above it */
   /* on a phone the dock spans the grid, the same 20px gutter as the page and the floating buttons */
   @media (max-width:900px){
-    .dock{left:20px;right:20px;transform:none;justify-content:space-between}
+    /* overflow stays open here so the cta's glow is not cut by the dock's edge; the dock's own
+       hover glow is inset to the dock already and a phone has no hover anyway */
+    .dock{left:20px;right:20px;transform:none;justify-content:space-between;overflow:visible}
     .dock .nv{flex:1 1 0;text-align:center;justify-content:center}
     .dock .nv-cta{flex:none}
   }
