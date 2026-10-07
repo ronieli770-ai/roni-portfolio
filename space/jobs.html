@@ -328,7 +328,7 @@
     .pf-dots b.on{width:20px}
     .pf-copy{position:relative;right:auto;left:auto;top:auto;bottom:auto;width:auto;margin-top:46px;text-align:right}
     .pf-body{font-size:16px}
-    .pf-brand{font-size:18px;line-height:.85}
+    .pf-brand{font-size:18px;line-height:1.1}
     .pf-title{font-size:34px;line-height:1.08;margin-top:11px}
     .pf-body{font-size:16px;line-height:1.5;margin-top:14px}
     .pf-body strong{margin-bottom:8px}
@@ -710,6 +710,15 @@
   .masonry.open .tile.more{display:block}
   .show-more{margin-top:20px}
 
+  /* ---------- film before the contact: scrubbed by scroll, as an image sequence on canvas ----------
+     150 frames (10fps, 960px). the stage sticks for the section's length and the scroll
+     position picks the frame; the first frame is painted as a css background, so the stage
+     is never empty, and a frame that has not arrived falls back to the nearest one that has. */
+  .film{position:relative;height:420vh;padding:0}
+  .film-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#1d1d20 url(work/creative/seq/f001.jpg) center/cover no-repeat}
+  .film-stage canvas{display:block;width:100%;height:100%}
+  @media (max-width:768px){ .film{height:300vh} }
+
   /* ---------- contact (figma 388:2, frame 1728) ---------- */
   .contact .head{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
   .contact .kick{font-size:18px;line-height:.85;color:#fa9154}
@@ -989,6 +998,10 @@
     <div class="pr-invite"><img src="assets/pr-invite.webp" alt=""></div>
   </div>
 </section>
+
+  <section class="film" id="film" aria-label="רוני בסטודיו - סרטון">
+    <div class="film-stage"><canvas></canvas></div>
+  </section>
 
   <section id="contact" class="contact">
     <div class="wrap">
@@ -1524,6 +1537,65 @@
       lastW = innerWidth; clearTimeout(rz); rz = setTimeout(build, 150);
     });
     requestAnimationFrame(frame);
+  })();
+
+  /* ---------- the studio film: scroll picks the frame ---------- */
+  (() => {
+    const sec = document.getElementById('film');
+    if (!sec) return;
+    const cv = sec.querySelector('canvas'), cx = cv.getContext('2d');
+    const N = 150, src = i => `work/creative/seq/f${String(i + 1).padStart(3, '0')}.jpg`;
+    const frames = new Array(N), ready = new Array(N).fill(false);
+    let started = false, shown = -1;
+    /* coarse to fine, so a scrub works early and sharpens as frames land: every 16th,
+       then every 8th, 4th, 2nd, then the rest - four at a time, each with two retries */
+    const order = [];
+    [16, 8, 4, 2, 1].forEach(st => { for (let i = 0; i < N; i += st) if (!order.includes(i)) order.push(i); });
+    let next = 0, inflight = 0;
+    function pump(){
+      while (inflight < 4 && next < order.length){
+        const i = order[next++], im = new Image();
+        let tries = 0;
+        inflight++;
+        im.decoding = 'async';
+        im.onload = () => { ready[i] = true; frames[i] = im; inflight--; shown = -1; pump(); };
+        im.onerror = () => {
+          if (++tries <= 2){ setTimeout(() => { im.src = src(i) + '?r=' + tries; }, 800 * tries); return; }
+          inflight--; pump();
+        };
+        im.src = src(i);
+      }
+    }
+    function size(){
+      const r = devicePixelRatio || 1;
+      cv.width = Math.round(cv.clientWidth * r); cv.height = Math.round(cv.clientHeight * r);
+      shown = -1;
+    }
+    function nearest(i){
+      if (ready[i]) return i;
+      for (let d = 1; d < N; d++){
+        if (i - d >= 0 && ready[i - d]) return i - d;
+        if (i + d < N && ready[i + d]) return i + d;
+      }
+      return -1;
+    }
+    function draw(i){
+      const im = frames[i], W = cv.width, H = cv.height;
+      const k = Math.max(W / im.naturalWidth, H / im.naturalHeight);
+      const w = im.naturalWidth * k, h = im.naturalHeight * k;
+      cx.drawImage(im, (W - w) / 2, (H - h) / 2, w, h);
+    }
+    (function tick(){
+      requestAnimationFrame(tick);
+      const r = sec.getBoundingClientRect();
+      if (!started && r.top < innerHeight * 2.5){ started = true; size(); pump(); }
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      /* the last 8% of the scroll holds the final frame */
+      const p = Math.max(0, Math.min(1, -r.top / (r.height - innerHeight) / .92));
+      const want = nearest(Math.round(p * (N - 1)));
+      if (want >= 0 && want !== shown){ draw(want); shown = want; }
+    })();
+    addEventListener('resize', () => { if (started) size(); }, {passive:true});
   })();
 
   /* rotating word under the name */
