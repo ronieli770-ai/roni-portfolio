@@ -1240,6 +1240,15 @@
           /* only once this one is actually running does the next get warmed */
           v.addEventListener('playing', warmNext, { once:true });
           c.querySelector('.pf-screen').insertBefore(v, c.querySelector('.pf-glare'));
+          /* a stalled request never fires an error, it just hangs - so while this card is
+             in front and has no frames yet, the load is asked for again, three times at most */
+          let tries = 0;
+          const watch = setInterval(() => {
+            if (v.readyState >= 2 || tries >= 3){ clearInterval(watch); return; }
+            if (!c.classList.contains('is-front')) return;
+            tries++; v.load(); v.play().catch(() => {});
+          }, 6000);
+          v.addEventListener('error', () => { if (tries < 3){ tries++; setTimeout(() => { v.load(); v.play().catch(() => {}); }, 800); } });
         }
         if (v){
           v.play().catch(() => {});
