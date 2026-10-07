@@ -1004,7 +1004,7 @@
 </section>
 
   <section class="film" id="film" aria-label="רוני בסטודיו - סרטון">
-    <div class="film-stage"><video muted playsinline loop preload="none" aria-hidden="true"></video>
+    <div class="film-stage"><video muted playsinline preload="none" aria-hidden="true"></video>
       <div class="film-words" aria-hidden="true"><span>עיצוב.</span><span>אתרים.</span><span>בינה מלאכותית.</span></div>
     </div>
   </section>
@@ -1545,7 +1545,7 @@
     requestAnimationFrame(frame);
   })();
 
-  /* ---------- the studio film: plays on its own once it is in view ---------- */
+  /* ---------- the studio film: plays once on its own when it comes into view ---------- */
   (() => {
     const sec = document.getElementById('film');
     if (!sec) return;
@@ -1557,10 +1557,19 @@
     new IntersectionObserver(es => es.forEach(e => {
       if (e.isIntersecting && !loaded){ loaded = true; v.preload = 'auto'; v.src = phone ? 'work/creative/film-m.mp4' : 'work/creative/film.mp4'; }
     }), { rootMargin: '150% 0px' }).observe(sec);
+    /* it plays once and stops on its last frame. scrolling past it and coming back up
+       starts it again from the top; leaving it half-way and coming back carries on */
+    let passed = false;
     new IntersectionObserver(es => es.forEach(e => {
-      if (e.isIntersecting) v.play().catch(() => {}); else v.pause();
+      if (e.isIntersecting){
+        if (passed){ passed = false; v.currentTime = 0; }
+        if (!v.ended) v.play().catch(() => {});
+      } else {
+        v.pause();
+        if (e.boundingClientRect.top < 0) passed = true;
+      }
     }), { threshold: .35 }).observe(sec);
-    v.addEventListener('canplay', () => { if (sec.getBoundingClientRect().top < innerHeight * .65) v.play().catch(() => {}); });
+    v.addEventListener('canplay', () => { if (!v.ended && v.currentTime === 0 && sec.getBoundingClientRect().top < innerHeight * .65) v.play().catch(() => {}); }, { once: true });
 
     /* three words ride the clock of the film: each sharpens in from a blur, holds, and blurs
        out, and the last is gone at .48 of the film, just before she turns at about .5 */
