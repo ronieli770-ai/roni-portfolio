@@ -1853,9 +1853,12 @@ document.getElementById('contact-form').addEventListener('submit',function(e){
 <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 <script>
 /* smooth scroll like highzak-digital.com/studio: the wheel eases into place instead of
-   jumping. a phone keeps its own native scroll. if the library fails to load the page
-   simply scrolls as before */
-if (window.Lenis && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+   jumping. a phone keeps its own native scroll, its menu links included: lenis drove the
+   glide by setting the scroll on every frame while the page's css smooth scroll answered
+   each of those with a glide of its own, so on a phone the jump between sections stuttered.
+   there the browser's own smooth anchor scroll does it. if the library fails to load the
+   page simply scrolls as before */
+if (window.Lenis && !matchMedia('(prefers-reduced-motion: reduce)').matches && matchMedia('(hover:hover) and (pointer:fine)').matches){
   window.lenis = new Lenis({ lerp:.09, smoothWheel:true });
   (function raf(t){ lenis.raf(t); requestAnimationFrame(raf); })(performance.now());
   /* in-page links (the dock, "לתיק עבודות", "בואו נדבר") glide there too */
