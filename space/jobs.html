@@ -725,7 +725,7 @@
   .film-words{position:absolute;inset:0;display:grid;place-items:center;padding:0 6%;pointer-events:none}
   .film-words p{margin:0;font-weight:600;font-size:clamp(22px,4.6cqw,72px);line-height:1.1;letter-spacing:-.01em;text-align:center;color:#fff;
     text-shadow:0 2px 24px rgba(0,0,0,.35);will-change:opacity,transform,filter}
-  @media (max-width:768px){ .film{margin-top:60px} .film-stage{background-image:url(work/creative/film-poster-m.jpg)} .film-words p{font-size:clamp(26px,9cqw,40px)} }
+  @media (max-width:768px){ .film{margin-top:60px} .film-stage{background-image:url(work/creative/film-poster-m.jpg?v=3)} .film-words p{font-size:clamp(26px,9cqw,40px)} }
 
   /* ---------- contact (figma 388:2, frame 1728) ---------- */
   .contact .head{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
@@ -1562,11 +1562,11 @@
     if (!sec) return;
     const v = sec.querySelector('video'), pin = sec.querySelector('.film-pin'), stage = sec.querySelector('.film-stage');
     const phoneQ = matchMedia('(max-width:768px)'), phone = phoneQ.matches;
-    v.poster = phone ? 'work/creative/film-poster-m.jpg' : 'work/creative/film-poster.jpg';
+    v.poster = phone ? 'work/creative/film-poster-m.jpg?v=3' : 'work/creative/film-poster.jpg';
     /* the file is fetched only as the section comes near, and plays only while it is on screen */
     let loaded = false;
     new IntersectionObserver(es => es.forEach(e => {
-      if (e.isIntersecting && !loaded){ loaded = true; v.preload = 'auto'; v.src = phone ? 'work/creative/film-m.mp4' : 'work/creative/film.mp4'; }
+      if (e.isIntersecting && !loaded){ loaded = true; v.preload = 'auto'; v.src = phone ? 'work/creative/film-m.mp4?v=3' : 'work/creative/film.mp4'; }
     }), { rootMargin: '300% 0px' }).observe(sec);
     /* it plays once and stops on its last frame. scrolling past it and coming back up
        starts it again from the top; leaving it half-way and coming back carries on */
