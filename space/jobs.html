@@ -720,12 +720,12 @@
   .film-stage{position:relative;width:100vw;height:100vh;height:100svh;overflow:hidden;isolation:isolate;container-type:inline-size;transform-origin:50% 50%;will-change:transform;
     background:#000 url(work/creative/film-poster.jpg) center/cover no-repeat}
   .film-stage video{display:block;width:100%;height:100%;object-fit:cover}
-  /* three words over the film, apple style: each one sharpens in from a blur, holds, and blurs
-     out before the next - all three are gone before the turn to camera (frame 75 of 150) */
-  .film-words{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
-  .film-words span{grid-area:1/1;font-weight:600;font-size:clamp(22px,5.6cqw,80px);line-height:1.05;letter-spacing:-.01em;white-space:nowrap;color:#fff;
-    opacity:0;will-change:opacity,transform,filter}
-  @media (max-width:768px){ .film{margin-top:60px} .film-stage{background-image:url(work/creative/film-poster-m.jpg)} .film-words span{font-size:clamp(28px,10cqw,44px)} }
+  /* the three words as one line over the film, apple style: it sits sharp while the film is full
+     screen and blurs, lifts and fades away as the scroll eases the film down into its card */
+  .film-words{position:absolute;inset:0;display:grid;place-items:center;padding:0 6%;pointer-events:none}
+  .film-words p{margin:0;font-weight:600;font-size:clamp(22px,4.6cqw,72px);line-height:1.1;letter-spacing:-.01em;text-align:center;color:#fff;
+    text-shadow:0 2px 24px rgba(0,0,0,.35);will-change:opacity,transform,filter}
+  @media (max-width:768px){ .film{margin-top:60px} .film-stage{background-image:url(work/creative/film-poster-m.jpg)} .film-words p{font-size:clamp(26px,9cqw,40px)} }
 
   /* ---------- contact (figma 388:2, frame 1728) ---------- */
   .contact .head{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
@@ -1009,6 +1009,7 @@
 
   <section class="film" id="film" aria-label="רוני בסטודיו - סרטון">
     <div class="film-pin"><div class="film-stage"><video muted playsinline preload="none" aria-hidden="true"></video>
+      <div class="film-words"><p>עיצוב. אתרים. בינה מלאכותית.</p></div>
     </div></div>
   </section>
 
@@ -1596,6 +1597,7 @@
       if (h > H - 40){ h = H - 40; w = h * 1920 / 1076; }
       return { w, h, r: 35 };
     }
+    const line = sec.querySelector('.film-words p'), still = matchMedia('(prefers-reduced-motion:reduce)');
     let lastSize = '', lastT = -1, c = null, s0 = 1;
     function fit(){
       const W = pin.clientWidth, H = pin.clientHeight;
@@ -1606,8 +1608,14 @@
         stage.style.width = c.w.toFixed(1) + 'px'; stage.style.height = c.h.toFixed(1) + 'px';
         s0 = Math.max(W / c.w, H / c.h);
       }
-      const t = ease(Math.max(0, Math.min(1, -sec.getBoundingClientRect().top / (H * .8))));
+      const raw = -sec.getBoundingClientRect().top / (H * .8);
+      const t = ease(Math.max(0, Math.min(1, raw)));
       if (Math.abs(t - lastT) < .0005) return;
+      /* the words are gone by the time the film is halfway to its card */
+      const u = ease(Math.max(0, Math.min(1, raw / .45)));
+      line.style.opacity = (1 - u).toFixed(3);
+      line.style.filter = u && !still.matches ? `blur(${(u * 12).toFixed(1)}px)` : '';
+      line.style.transform = still.matches ? '' : `translateY(${(-u * 40).toFixed(1)}px) scale(${(1 - u * .06).toFixed(3)})`;
       lastT = t;
       const sc = s0 + (1 - s0) * t;
       stage.style.transform = `scale(${sc.toFixed(4)})`;
