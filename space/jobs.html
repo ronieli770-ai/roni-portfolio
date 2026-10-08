@@ -1618,7 +1618,8 @@
     /* three words ride the clock of the film: each sharpens in from a blur, holds, and blurs
        out, and the last is gone at .42 of the 7.25s cut, just before she turns at about .44 */
     const ws = [...sec.querySelectorAll('.film-words span')];
-    const SLOTS = [[.02, .16], [.16, .30], [.30, .42]];
+    /* the 4s cut turns to camera at 1.6s (.39), so the three words share the first part */
+    const SLOTS = [[.02, .14], [.14, .265], [.265, .39]];
     const still = matchMedia('(prefers-reduced-motion:reduce)');
     function words(p){
       ws.forEach((w, i) => {
