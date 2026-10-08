@@ -859,6 +859,11 @@
     .nv-cta{height:44px;padding:0 12px;font-size:14px;gap:6px}
     .nv-cta img{width:16px}
   }
+  /* lenis smooth scroll (same library and version as highzak-digital.com/studio) */
+  html.lenis,html.lenis body{height:auto}
+  .lenis.lenis-smooth{scroll-behavior:auto !important}
+  .lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+  .lenis.lenis-stopped{overflow:hidden}
 </style>
 </head>
 <body>
@@ -1076,11 +1081,13 @@
     paused.forEach(v => v.pause());
     body.innerHTML = html;
     lb.classList.add('on'); lb.setAttribute('aria-hidden','false');
+    if (window.lenis) lenis.stop();
     const v = body.querySelector('video');
     if (v) v.play().catch(() => { v.muted = true; v.play().catch(() => {}); });
   }
   function close(){
     lb.classList.remove('on'); lb.setAttribute('aria-hidden','true');
+    if (window.lenis) lenis.start();
     body.innerHTML = '';
     paused.forEach(v => v.play().catch(() => {})); paused = [];
   }
@@ -1842,6 +1849,25 @@ document.getElementById('contact-form').addEventListener('submit',function(e){
   location.href='mailto:ronieli770@gmail.com?subject='+encodeURIComponent('פנייה מהתיק - '+f.name.value)+'&body='+encodeURIComponent(body);
   note.textContent='נפתח חלון מייל מוכן לשליחה.';
 });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.0.42/dist/lenis.min.js"></script>
+<script>
+/* smooth scroll like highzak-digital.com/studio: the wheel eases into place instead of
+   jumping. a phone keeps its own native scroll. if the library fails to load the page
+   simply scrolls as before */
+if (window.Lenis && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+  window.lenis = new Lenis({ lerp:.09, smoothWheel:true });
+  (function raf(t){ lenis.raf(t); requestAnimationFrame(raf); })(performance.now());
+  /* in-page links (the dock, "לתיק עבודות", "בואו נדבר") glide there too */
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a || a.getAttribute('href').length < 2) return;
+    const el = document.querySelector(a.getAttribute('href'));
+    if (!el) return;
+    e.preventDefault();
+    lenis.scrollTo(el, { duration:1.4 });
+  });
+}
 </script>
 </body>
 </html>
