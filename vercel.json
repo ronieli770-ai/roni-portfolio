@@ -1,11 +1,10 @@
 {
   "outputDirectory": ".",
   "redirects": [
-    { "source": "/", "missing": [{ "type": "host", "value": "portfolio.ronieliyahu.co.il" }], "destination": "/space/index.html", "permanent": false }
+    { "source": "/", "has": [{ "type": "host", "value": "portfolio.ronieliyahu.co.il" }], "destination": "/space/jobs.html", "permanent": false },
+    { "source": "/", "destination": "/space/index.html", "permanent": false }
   ],
   "rewrites": [
-    { "source": "/", "has": [{ "type": "host", "value": "portfolio.ronieliyahu.co.il" }], "destination": "/space/jobs.html" },
-    { "source": "/:path((?!space/).*)", "has": [{ "type": "host", "value": "portfolio.ronieliyahu.co.il" }], "destination": "/space/:path" },
     { "source": "/admin", "destination": "/space/admin.html" },
     { "source": "/thank-you", "destination": "/space/thank-you.html" }
   ]
