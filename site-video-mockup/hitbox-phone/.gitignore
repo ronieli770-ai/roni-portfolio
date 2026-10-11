@@ -1,0 +1,19 @@
+# working files stay local: recordings, rendered frames, clips, the song, generated media
+*
+!.gitignore
+!package.json
+!record.js
+!blur2.py
+!destall.py
+!render5.js
+!scene5.html
+!mix5.py
+!texture-m.jpg
+!models/
+!models/yunet.onnx
+!gen/
+!gen/words1c.png
+!gen/words2c.png
+!sfx/
+!sfx/tick.wav
+!sfx/whoosh.wav

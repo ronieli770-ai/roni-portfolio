@@ -1,0 +1,250 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#050b0c}
+  #stage{position:absolute;inset:0;perspective:2400px;perspective-origin:50% 46%;overflow:hidden}
+  .abs{position:absolute}
+  #base{inset:0;background:radial-gradient(105% 72% at 50% 44%,#132628 0%,#0b1718 45%,#050b0c 100%)}
+  #tex{inset:0;background:url('texture-m.jpg') center/cover;mix-blend-mode:multiply;opacity:.45}
+  #glow{left:90px;top:330px;width:900px;height:1100px;border-radius:50%;background:#3e6e72;filter:blur(170px);opacity:.22}
+  #floor{left:190px;width:700px;height:160px;top:1650px;border-radius:50%;background:rgba(0,0,0,.6);filter:blur(60px)}
+  #vign{inset:0;background:radial-gradient(95% 70% at 50% 46%,transparent 55%,rgba(0,0,0,.6) 100%)}
+  #grain{inset:0;opacity:.06;mix-blend-mode:overlay}
+
+  #rig{left:231px;top:311px;width:618px;height:1298px;transform-style:preserve-3d}
+  .slab{position:absolute;inset:0;border-radius:98px;background:#2b2f33}
+  .slab.rim{background:linear-gradient(90deg,#8d9399,#4a4f55 18%,#2a2e32 50%,#4a4f55 82%,#a2a8ae)}
+  .slab.back{background:linear-gradient(160deg,#3a3f44,#24282b 60%,#1a1d20)}
+  .btn{position:absolute;background:linear-gradient(90deg,#9aa0a6,#5b6066);border-radius:3px}
+  #front{position:absolute;inset:0;border-radius:98px;background:#050607;box-shadow:inset 0 0 0 3px #8f959b,inset 0 0 0 5px #2a2d30}
+  #screen{position:absolute;left:16.5px;top:16px;width:585px;height:1266px;border-radius:82px;overflow:hidden;background:#101c1d}
+  #screen > img{position:absolute;left:0;top:0;width:585px;height:1266px}
+  #shade{position:absolute;inset:0;background:#06100f;opacity:0}
+  #island{position:absolute;left:50%;top:20px;width:168px;height:50px;margin-left:-84px;border-radius:25px;background:#000}
+  #glare{position:absolute;inset:0;background:linear-gradient(118deg,transparent 30%,rgba(255,255,255,.09) 46%,rgba(255,255,255,.02) 54%,transparent 64%);background-size:300% 300%;mix-blend-mode:screen}
+
+  #pops{position:absolute;left:16.5px;top:16px;width:585px;height:1266px;transform-style:preserve-3d;pointer-events:none}
+  .pop{position:absolute;overflow:hidden;opacity:0;border-radius:30px;background:#101c1d;
+       box-shadow:0 40px 80px rgba(0,0,0,.55),0 12px 26px rgba(0,0,0,.35)}
+  .pop > img.crop{position:absolute;width:585px;height:1266px}
+  /* testimonial cards: the clip in a thin glassy rim, like the reference's floating product cards */
+  .card{position:absolute;opacity:0;border-radius:26px;overflow:hidden;background:#101c1d;
+        box-shadow:inset 0 0 0 2px rgba(255,255,255,.28),0 30px 70px rgba(0,0,0,.55)}
+  .card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .card i{position:absolute;inset:0;border-radius:26px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.3);
+          background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,0) 38%)}
+  .words{position:absolute;opacity:0;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))}
+  .tap{position:absolute;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;opacity:0;
+       background:radial-gradient(circle,rgba(255,255,255,.55) 0,rgba(255,255,255,.28) 60%,rgba(255,255,255,0) 72%);
+       box-shadow:0 0 0 2px rgba(255,255,255,.75)}
+  .ring{position:absolute;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;opacity:0;box-shadow:0 0 0 3px rgba(255,255,255,.8)}
+</style></head>
+<body>
+<svg width="0" height="0" style="position:absolute"><filter id="mb" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur id="mbg" stdDeviation="0 0"/></filter></svg>
+<div id="stage">
+  <div id="base" class="abs"></div>
+  <div id="glow" class="abs"></div>
+  <div id="tex" class="abs"></div>
+  <div id="floor" class="abs"></div>
+  <div id="vign" class="abs"></div>
+  <div id="rig" class="abs">
+    <div id="slabs"></div>
+    <div id="front">
+      <div id="screen"><img id="scr2" style="opacity:0"><img id="scr"><div id="shade"></div><div id="island"></div><div id="glare"></div></div>
+    </div>
+    <div id="pops">
+      <div id="pQuiz" class="pop"><img class="crop"></div>
+      <div id="pRes" class="pop"><img class="crop"></div>
+      <img id="w1" class="words" src="gen/words1c.png"><img id="w2" class="words" src="gen/words2c.png">
+      <div id="cards"></div>
+      <div id="tap" class="tap"></div><div id="ring" class="ring"></div>
+    </div>
+  </div>
+  <canvas id="grain" class="abs" width="540" height="960"></canvas>
+</div>
+<script>
+const S = 1.5, SW = 585, SH = 1266, DEPTH = 58, STEP = 2;
+const $ = id => document.getElementById(id);
+(() => {
+  const host = $('slabs');
+  for (let z = STEP; z <= DEPTH; z += STEP) {
+    const d = document.createElement('div');
+    d.className = 'slab' + (z === DEPTH ? ' back' : (z > 6 && z < DEPTH - 6 ? ' rim' : ''));
+    d.style.transform = `translateZ(${-z}px)`;
+    host.appendChild(d);
+  }
+  const btn = (side, top, h) => {
+    const b = document.createElement('div'); b.className = 'btn';
+    b.style.cssText += `top:${top}px;height:${h}px;width:${DEPTH * .5}px;${side}:-${DEPTH * .25}px;transform:translateZ(${-DEPTH / 2}px) rotateY(90deg)`;
+    host.appendChild(b);
+  };
+  btn('left', 250, 70); btn('left', 360, 120); btn('left', 500, 120); btn('right', 380, 190);
+})();
+
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = t => (t = clamp(t), t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const easeOut = t => 1 - Math.pow(1 - clamp(t), 3);
+const easeOut5 = t => 1 - Math.pow(1 - clamp(t), 5);
+const backOut = (t, c = 1.4) => { t = clamp(t); return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+const ramp = (t, a, b) => clamp((t - a) / (b - a));
+const lift = (t, a, b, up = .45, down = .35) => t < a || t > b ? 0 : Math.min(easeOut5((t - a) / up), ease((b - t) / down));
+
+function spline(keys, t) {
+  if (t <= keys[0][0]) return keys[0].slice(1);
+  if (t >= keys.at(-1)[0]) return keys.at(-1).slice(1);
+  let i = keys.findIndex(k => k[0] > t) - 1;
+  const p0 = keys[Math.max(0, i - 1)], p1 = keys[i], p2 = keys[i + 1], p3 = keys[Math.min(keys.length - 1, i + 2)];
+  const u = (t - p1[0]) / (p2[0] - p1[0]);
+  return p1.slice(1).map((_, j) => {
+    const a = p0[j + 1], b = p1[j + 1], c = p2[j + 1], d = p3[j + 1];
+    if (b === c) return b;
+    return .5 * ((2 * b) + (-a + c) * u + (2 * a - 5 * b + 4 * c - d) * u * u + (-a + 3 * b - 3 * c + d) * u * u * u);
+  });
+}
+
+let D, KEYS, cards = [];
+window.init = data => {
+  D = data; const g = D.ev, W = g.whips;
+  //   t                 rx    ry   rz    s      x     y
+  KEYS = [
+    [g.introEnd,          6,  -16,   4,  1.12,   0,    0],
+    [g.heroB,             4,    8,  -1,  1.2,    0,  -25],   // the hero keeps moving while it is read
+    [g.tlA - 1.0,         4,   12,  -2,  1.12,   0,    0],
+    [g.tlA,               2,   -4,   0,  1.5,    0,  -20],
+    [g.tlB,               2,    4,   0,  1.5,    0,  -20],
+    [g.tlB + .9,          5,  -10,   1,  1.12,   0,    0],
+    [g.gridA - 1.0,       4,    8,  -1,  1.08,   0,    0],
+    [g.gridA + .2,        7,  -22,   3,  .86,   40,   30],
+    [W[0][0],             5,  -16,   2,  .90,   30,   30],
+    [W[0][1],             5,   16,  -3,  1.0,   10,    0],
+    [g.wordsA,            4,   10,  -2,  1.0,   16,    6],
+    [g.wordsA + .55,      3,   -1,   0,  1.8,    0,  600],
+    [g.formA,             3,    1,   0,  1.8,    0,  600],
+    [g.formA + .65,       4,    9,  -2,  1.04,   0,   40],
+    [W[1][0],             4,   11,  -2,  1.04,   0,   40],
+    [W[1][1],             3,  -10,   1,  1.42,   0, -135],
+    [W[2][0],             2,    2,   0,  1.42,   0, -135],
+    [W[2][1],             2,   -4,   0,  1.55,   0,  -30],
+    [W[3][0],             2,    4,   0,  1.55,   0,  -30],
+    [W[3][1],             8,  -22,   4,  1.0,    0,    0],
+    [g.T,                 6,  -15,   2,  1.08,   0,  -10],
+  ];
+  const host = $('cards');
+  cards = g.cells.map(c => {
+    const el = document.createElement('div'); el.className = 'card';
+    el.innerHTML = '<img><i></i>'; host.appendChild(el);
+    return { ...c, el, img: el.querySelector('img') };
+  });
+  const cx = $('grain'), x = cx.getContext('2d'); window.grains = [];
+  for (let k = 0; k < 6; k++) {
+    const im = x.createImageData(540, 960);
+    for (let i = 0; i < im.data.length; i += 4) { const v = Math.random() * 255; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; }
+    grains.push(im);
+  }
+};
+
+function place(el, r, z, extra = '') {
+  el.style.left = r[0] * S + 'px'; el.style.top = r[1] * S + 'px';
+  el.style.width = r[2] * S + 'px'; el.style.height = r[3] * S + 'px';
+  el.style.transform = `translateZ(${z}px) ${extra}`;
+  const c = el.querySelector('img.crop');
+  if (c) { c.style.left = -r[0] * S + 'px'; c.style.top = -r[1] * S + 'px'; }
+}
+
+window.draw = async f => {
+  const t = f.t, g = D.ev, waits = [];
+  const setSrc = (img, src) => { if (img.getAttribute('src') !== src) img.setAttribute('src', src); waits.push(img.decode().catch(() => { })); };
+  setSrc($('scr'), f.screen);
+  $('scr').style.transform = f.shift ? `translateY(${-f.shift * S}px)` : 'none';
+  if (f.next) { setSrc($('scr2'), f.next); $('scr2').style.opacity = 1; $('scr2').style.transform = `translateY(${-f.nextShift * S}px)`; }
+  else $('scr2').style.opacity = 0;
+  document.querySelectorAll('img.crop').forEach(i => setSrc(i, f.screen));
+
+  // ---------- camera ----------
+  let [rx, ry, rz, s, x, y] = spline(KEYS, t);
+  if (t < g.introEnd) {   // the phone shoots up and lands with a little overshoot
+    const k = backOut(t / g.introEnd, 1.5), p0 = [26, -42, 12, .86, -20, 620];   // starts already in frame
+    [rx, ry, rz, s, x, y] = [rx, ry, rz, s, x, y].map((v, j) => lerp(p0[j], v, k));
+  }
+  for (const p of g.punches) { const u = (t - p) / .4; if (u > -.08 && u < 1) s *= 1 + .07 * (u < 0 ? 1 + u / .08 : Math.pow(1 - u, 2.2)); }   // a zoom hit on the beat
+  const fl = ramp(t, g.T - 2.6, g.T - 1.6);   // the last hold breathes a little
+  rx += fl * .8 * Math.sin(t * 1.3); ry += fl * 1.2 * Math.sin(t * .9 + 1); y += fl * 8 * Math.sin(t * 1.1);
+  $('rig').style.transform = `translate3d(${x}px,${y}px,0) rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${s})`;
+  $('glare').style.backgroundPosition = `${50 + ry * 2.2}% ${50 + rx * 2}%`;
+  $('floor').style.transform = `translateX(${x * .6 - ry * 4}px) scaleX(${1 - Math.abs(ry) / 120})`;
+
+  // ---------- whips: a hard horizontal motion blur across the cut ----------
+  let mb = 0;
+  for (const [a, b] of g.whips) if (t > a && t < b) mb = Math.sin(Math.PI * (t - a) / (b - a));
+  $('mbg').setAttribute('stdDeviation', `${(mb * 70).toFixed(1)} ${(mb * 6).toFixed(1)}`);
+  $('stage').style.filter = mb > .01 ? 'url(#mb)' : 'none';
+
+  // ---------- screen focus: blurred and shaded while something is out ----------
+  const burst = t >= g.burstA - .05 && t <= g.whips[0][0] + .3;
+  const bk = burst ? easeOut((t - g.burstA) / .6) : 0;
+  const qa = lift(t, g.quizA, g.quizLastTap + .35, .45, .3);
+  const ra = lift(t, g.formA + .3, g.whips[1][0] + .25, .45, .3);
+  const wa = t >= g.wordsA + .3 && t <= g.formA + .5 ? Math.min(easeOut((t - g.wordsA - .3) / .4), 1 - ease((t - g.formA) / .5)) : 0;
+  const foc = Math.max(bk, qa, ra, wa);
+  $('scr').style.filter = $('scr2').style.filter = foc > .01 ? `blur(${(foc * 7).toFixed(2)}px)` : 'none';
+  $('shade').style.opacity = foc * .38;
+
+  // ---------- testimonials: out of the grid into three depths, then a slow float ----------
+  cards.forEach((c, i) => {
+    if (!burst) { c.el.style.opacity = 0; return; }
+    const a = g.burstA + c.delay, k = easeOut5((t - a) / .8), h = Math.max(0, t - a);
+    const to = c.to, r = c.r;
+    const dx = Math.sin(h * .7 + i) * 7 * k, dy = Math.cos(h * .55 + i * 1.7) * 9 * k, dz = Math.sin(h * .45 + i) * 25 * k;
+    const R = [lerp(r[0], to[0], k) + dx, lerp(r[1], to[1], k) + dy, lerp(r[2], to[2], k), lerp(r[3], to[3], k)];
+    place(c.el, R, to[4] * k + dz, `rotateZ(${to[5] * k + Math.sin(h * .6 + i) * 1.5 * k}deg) rotateY(${to[6] * k}deg) rotateX(${to[7] * k}deg)`);
+    c.el.style.opacity = t < a ? 0 : clamp((t - a) / .08);
+    c.el.style.filter = to[8] * k > .1 ? `blur(${(to[8] * k).toFixed(2)}px)` : 'none';
+    if (f.cards && f.cards[i]) setSrc(c.img, f.cards[i]);
+  });
+
+  // ---------- quiz: question and answers rise together as one block ----------
+  if (qa > 0 && f.quiz) {
+    place($('pQuiz'), f.quiz, 120 * qa, `scale(${1 + .06 * qa})`); $('pQuiz').style.opacity = clamp(qa * 6);
+  } else $('pQuiz').style.opacity = 0;
+  if (ra > 0) {
+    place($('pRes'), g.resRect, 110 * ra, `scale(${1 + .05 * ra})`); $('pRes').style.opacity = clamp(ra * 6);
+  } else $('pRes').style.opacity = 0;
+
+  // ---------- the result headline: the words leave the screen, hang there, then fly past the camera ----------
+  ['w1', 'w2'].forEach((id, i) => {
+    const el = $(id), a = g.wordsA + .35 + i * g.wordsStep, k = easeOut5((t - a) / .55), out = ease((t - g.formA - i * .06) / .5);
+    if (t < a || out >= 1) { el.style.opacity = 0; return; }
+    const r = g.words[i], h = Math.max(0, t - a);
+    el.style.left = lerp(r[0], r[4], k) * S + 'px'; el.style.top = r[1] * S + 'px'; el.style.width = r[2] * S + 'px';
+    el.style.transform = `translateZ(${230 * k + 1200 * out + Math.sin(h * 1.4 + i) * 12}px) translateY(${(-40 * out - i * 6 * k)}px) rotateX(${(8 - 8 * k) + 10 * out}deg) rotateZ(${(i ? 1.2 : -1.2) * k}deg) scale(${1 + .1 * k})`;
+    el.style.opacity = clamp((t - a) / .1) * (1 - out);
+  });
+
+  // ---------- the finger ----------
+  let tp = f.tap;
+  if (tp && tp.kind === 'swipe') {
+    const el = $('tap'), o = Math.min(clamp((t - tp.a + .2) / .2), clamp((tp.b + .2 - t) / .2));
+    const u = ease((t - tp.a) / (tp.b - tp.a));
+    el.style.left = lerp(tp.x0, tp.x1, u) * S + 'px'; el.style.top = tp.y * S + 'px';
+    el.style.opacity = o * .95; el.style.transform = `translateZ(4px) scale(.9)`;
+    $('ring').style.opacity = 0;
+  } else if (tp) {
+    const a = t - tp.t;
+    const zt = tp.kind === 'quiz' ? 120 * qa + 2 : 4;
+    const into = clamp((a + .25) / .25), out = clamp(1 - (a - .1) / .25);
+    const el = $('tap');
+    el.style.left = tp.x * S + 'px'; el.style.top = tp.y * S + 'px';
+    el.style.opacity = Math.min(into, out) * .95;
+    el.style.transform = `translateZ(${zt}px) scale(${a < 0 ? lerp(1.35, 1, into) : lerp(1, .82, clamp(a / .1))})`;
+    const rg = $('ring'), ar = clamp(a / .4);
+    rg.style.left = el.style.left; rg.style.top = el.style.top;
+    rg.style.opacity = a < 0 ? 0 : (1 - ar) * .9;
+    rg.style.transform = `translateZ(${zt}px) scale(${1 + ar * 1.3})`;
+  } else { $('tap').style.opacity = 0; $('ring').style.opacity = 0; }
+
+  $('grain').getContext('2d').putImageData(grains[f.i % grains.length], 0, 0);
+  await Promise.all(waits);
+};
+</script>
+</body></html>
