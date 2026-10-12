@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>AntarTrade - הירו</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  @font-face{font-family:"Reforma";src:local("FbReforma-Regular"),local("Fb Reforma");font-weight:400}
+  @font-face{font-family:"Reforma";src:local("FbReforma-Medium"),local("Fb Reforma Medium");font-weight:500}
+  @font-face{font-family:"Reforma";src:local("FbReforma-Bold");font-weight:700}
+  /* Stage = the 1728x1117 Figma frame, scaled to the window width */
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#010101;overflow:hidden;height:100%}
+  body{--reforma:'Reforma','Heebo',sans-serif;font-family:var(--reforma);color:#fff;-webkit-font-smoothing:antialiased}
+  #fit{position:fixed;inset:0;overflow:hidden}
+  #stage{position:absolute;top:0;left:0;width:1728px;height:1117px;overflow:visible;transform-origin:0 0}
+  .abs{position:absolute}
+  img{display:block}
+
+  /* Background grid + fade */
+  .grid{left:-960px;top:-349px;width:3648px;height:1825px;display:flex;flex-wrap:wrap;align-content:flex-start;overflow:hidden}
+  .cell{width:96px;height:96px;border:1px solid rgba(255,255,255,.07);flex-shrink:0}
+  .cell.lit{background:rgba(255,255,255,.03)}
+  
+  .fade{left:-960px;top:48px;width:3648px;height:1428px;background:linear-gradient(to bottom,rgba(5,7,11,0),#05070b)}
+  .glow{left:735px;top:130px;width:685px;height:685px}
+  .glow img{position:absolute;left:-128.54%;top:-128.54%;width:357.08%;height:357.08%;max-width:none}
+
+  /* Header */
+  .header{left:calc(50% - .3px);transform:translateX(-50%);top:37px;display:flex;gap:66px;align-items:center;direction:ltr}
+  .nav{display:flex;gap:28px;align-items:center}
+  .nav a{display:flex;align-items:center;gap:6px;padding:10px;font-size:20px;line-height:1.4;color:#fff;text-decoration:none;white-space:nowrap}
+  .nav a.home,.nav a.promo{font-weight:500}
+  .nav a.promo{color:#d6ecff}
+  .nav a img{width:18px;height:18px}
+  .logo{width:195px;height:43px;object-fit:cover}
+  .glass{display:flex;align-items:center;justify-content:center;height:68px;padding:7px;border-radius:999px;background:rgba(142,175,255,.06);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(6px);overflow:hidden}
+  .glass .pill{position:relative;display:flex;gap:7px;align-items:center;justify-content:center;padding:16px 45px;border-radius:999px;border:1.2px solid rgba(255,255,255,.55);box-shadow:0 6px 28px rgba(142,175,255,.3);background:linear-gradient(to bottom,rgba(142,175,255,.28),rgba(142,175,255,.1));overflow:hidden;font-size:20px;font-weight:500;line-height:1.4;color:#fff;text-decoration:none}
+  .glass .pill::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset var(--sx) calc(2px + var(--sy)) 10px rgba(255,255,255,calc(.18 + var(--ga) * .17));pointer-events:none}
+  .glass .pill img{width:16px;height:16px}
+
+  /* Main column */
+  .main{left:245px;top:227px;width:1238px;display:flex;flex-direction:column;gap:53px;align-items:center}
+  .intro{width:975px;display:flex;flex-direction:column;gap:25px;align-items:center;text-align:center}
+  .chip{padding:10px 30px;border-radius:100px;background:linear-gradient(to right,rgba(255,255,255,.2),rgba(153,153,153,.2));font-size:24px;line-height:.915;white-space:nowrap}
+  h1{font-weight:400;font-size:80px;line-height:.915;width:100%}
+  h1 .l2{display:block;background:linear-gradient(to right,#8eafff,#fff 78.365%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  h1 .l2 b{font-weight:500}
+  .sub{width:614px;font-size:30px;line-height:1.2;color:rgba(255,255,255,.6)}
+
+  /* Coupons */
+  .cards{display:flex;gap:28px;align-items:center;width:100%;direction:ltr}
+  .card{position:relative;width:394px;height:242.07px;flex-shrink:0;direction:ltr}
+  .card .ptext{position:absolute;left:136.48px;top:0;width:257.52px;height:242.07px;transform:scaleX(-1)}
+  .card .ptext img,.card .pimg img{width:100%;height:100%}
+  .card .left{position:absolute;left:0;top:0;width:136.48px;height:242.07px;overflow:hidden}
+  .card .pimg{position:absolute;left:0;top:0;width:136.48px;height:242.07px;transform:scaleX(-1)}
+  .card .rings{position:absolute;left:-47.64px;top:5.15px;width:231.77px;height:231.77px}
+  .card .pct{position:absolute;left:0;width:136.48px;top:85.62px;display:flex;flex-direction:column;align-items:center;text-align:center;font-family:'Heebo',sans-serif;white-space:nowrap}
+  .card .pct b{font-weight:900;font-size:55px;line-height:1;letter-spacing:-1.65px}
+  .card .pct span{font-weight:700;font-size:16.739px;line-height:1.1}
+  .card .brand{position:absolute}
+  .card .dot{position:absolute;left:133.91px;width:4.507px;height:4.507px}
+  .content{position:absolute;left:151.28px;display:flex;flex-direction:column;gap:16px;align-items:flex-end}
+  .tag{display:flex;gap:6px;align-items:center;justify-content:center;padding:6.44px 12.88px;border-radius:64.38px;background:linear-gradient(to right,rgba(255,255,255,.4),rgba(153,153,153,.4));font-size:14px;line-height:.915;white-space:nowrap}
+  .tag img{width:11px;height:11px}
+  .offer{display:flex;flex-direction:column;gap:3.86px;align-items:flex-end;text-align:right;white-space:nowrap}
+  .offer .t{font-size:16px;line-height:1.4;direction:rtl}
+  .price{display:flex;gap:12.88px;align-items:flex-end}
+  .price s{font-size:22px;line-height:1.04;letter-spacing:-.44px}
+  .price .now{font-size:40px;line-height:.69;letter-spacing:-.8px}
+  .row{display:flex;gap:6px;align-items:center}
+  .btn-sm{position:relative;display:flex;align-items:center;justify-content:center;padding:12.23px 11px;border-radius:57.94px;background:#8eafff;font-family:'Heebo',sans-serif;font-weight:500;font-size:12px;color:#fff;white-space:nowrap;overflow:hidden;cursor:pointer;border:0}
+  .btn-sm::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset calc(var(--sx) * .6) calc(-2.575px + var(--sy) * .6) 11.331px #fff,inset 0 -5.15px 16.996px rgba(0,0,0,.25);pointer-events:none}
+  .code{display:flex;gap:4px;align-items:center;justify-content:center;height:42.46px;padding:0 9px;border-radius:57.94px;background:rgba(142,175,255,.1);border:.966px dashed rgba(142,175,255,.8);font-family:'Heebo',sans-serif;white-space:nowrap;cursor:pointer;color:#fff}
+  .code img{width:11px;height:11px}
+  .code b{font-weight:700;font-size:12.5px;letter-spacing:1px}
+  .code span{font-size:10px;color:rgba(255,255,255,.6)}
+
+  /* CTA buttons */
+  .ctas{display:flex;gap:25px;align-items:center;direction:ltr}
+  .halo{display:flex;padding:6px;border-radius:999px;backdrop-filter:blur(6px);overflow:hidden}
+  .halo.soft{background:rgba(142,175,255,.05);border:1px solid rgba(255,255,255,.14)}
+  .halo.primary{background:rgba(142,175,255,.08);border:1px solid rgba(255,255,255,.12)}
+  .cta{position:relative;display:flex;gap:7px;align-items:center;justify-content:center;height:50px;padding:19px 25px;border-radius:90px;font-size:20px;font-weight:500;line-height:.915;color:#fff;text-decoration:none;white-space:nowrap}
+  .cta img{width:16px;height:16px}
+  .cta.outline{border:1px solid rgba(142,175,255,.5)}
+  .cta.solid{background:#8eafff;overflow:hidden}
+  .cta.solid::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset var(--sx) calc(-4px + var(--sy)) 17.6px #fff,inset 0 -8px 26.4px rgba(0,0,0,.25);pointer-events:none}
+
+  /* ===== Motion v5: GSAP choreography inspired by the references ===== */
+  .mask{display:block;overflow:hidden;padding:.06em 0 .1em;margin:-.06em 0 -.1em}
+  .w{display:inline-block;will-change:transform}
+      .cell{transition:background-color .9s ease,border-color .9s ease}
+  .cell.hot{border-color:rgba(255,255,255,.15);transition:border-color .2s}
+  .cell.glint{background:rgba(142,175,255,.075);border-color:rgba(214,236,255,.16);transition:background-color 1.6s ease-out,border-color 1.6s ease-out}
+  .cell{transition:background-color 2.2s ease,border-color 2.2s ease}
+  .price s{position:relative;text-decoration:none}
+  /* Hover: the inner shadow follows the cursor around the inside of the button */
+  @property --sx{syntax:'<length>';inherits:true;initial-value:0px}
+  @property --sy{syntax:'<length>';inherits:true;initial-value:0px}
+  @property --ga{syntax:'<number>';inherits:true;initial-value:0}
+  .cta,.glass .pill,.btn-sm{transition:--sx .35s ease-out,--sy .35s ease-out,--ga .35s ease-out}
+  .cta.outline::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset var(--sx) var(--sy) 14px rgba(142,175,255,calc(var(--ga) * .55));pointer-events:none}
+  /* keep the white text readable on the light blue fill while the glow moves under it */
+  .cta.solid,.btn-sm{text-shadow:0 1px 2px rgba(12,24,80,.55)}
+  /* the glow sits between the fill and the text, never over the letters */
+  .cta,.glass .pill,.btn-sm{isolation:isolate}
+  .cta::after,.glass .pill::after,.btn-sm::after{z-index:-1}
+  .price s::after{content:"";position:absolute;left:0;top:52%;height:1.5px;width:var(--strike,100%);background:currentColor}
+  .halo,.glass{will-change:transform}
+
+  /* ===== Light: abstract soft shapes drifting slowly, the grid shows through where they shine ===== */
+  .beams{left:-960px;top:-349px;width:3648px;height:1825px;pointer-events:none;overflow:hidden;background:#010101;isolation:isolate}
+  .beams .blob{position:absolute;left:0;top:0;filter:blur(70px);mix-blend-mode:screen;will-change:transform,border-radius}
+  .beams .b1{width:760px;height:520px;background:radial-gradient(closest-side,rgba(142,175,255,.8),rgba(142,175,255,.22) 60%,transparent);border-radius:58% 42% 63% 37%/45% 55% 45% 55%}
+  .beams .b2{width:640px;height:820px;background:radial-gradient(closest-side,rgba(30,68,160,.95),rgba(30,68,160,.3) 65%,transparent);border-radius:40% 60% 35% 65%/60% 40% 60% 40%}
+  .beams .b3{width:520px;height:380px;background:radial-gradient(closest-side,rgba(214,236,255,.6),rgba(142,175,255,.18) 60%,transparent);border-radius:50% 50% 40% 60%/55% 45% 55% 45%}
+  .beams .b4{width:900px;height:480px;background:radial-gradient(closest-side,rgba(30,68,160,.9),rgba(30,68,160,.25) 65%,transparent);border-radius:65% 35% 50% 50%/40% 60% 40% 60%}
+  /* bright grid lines blended with overlay: invisible on black, glowing where the light is */
+  .beams .gridlit{position:absolute;inset:0;display:flex;flex-wrap:wrap;align-content:flex-start;mix-blend-mode:overlay}
+  .beams .gridlit i{width:96px;height:96px;flex-shrink:0;border:1px solid rgba(255,255,255,.12)}
+  .glow{display:none}
+  #bgLight{position:absolute;left:0;top:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="fit">
+<div id="stage">
+
+  <div class="abs beams"><canvas id="bgLight"></canvas><div class="gridlit" id="gridLit"></div></div>
+  <div class="abs grid" id="grid"></div>
+  <div class="abs fade"></div>
+  <div class="abs glow"><img src="assets/glow-ellipse.svg" alt=""></div>
+
+  <header class="abs header">
+    <div class="glass"><a class="pill" href="#"><img src="assets/icon-school-nav.svg" alt="">קורסים</a></div>
+    <nav class="nav">
+      <a href="#">אודות</a>
+      <a href="#">יומן מסחר</a>
+      <a href="#">מרכז הידע</a>
+      <a href="#" class="promo"><img src="assets/icon-pricetag-nav.svg" alt="">מבצעים והגרלות</a>
+      <a href="#">השוואת חברות</a>
+      <a href="#">חברות מימון</a>
+      <a href="#" class="home">דף הבית</a>
+    </nav>
+    <img class="logo" src="assets/logo-antartrade.png" alt="AntarTrade">
+  </header>
+
+  <main class="abs main">
+    <div class="intro">
+      <div class="chip">קודי הנחה בלעדיים לכל החברות</div>
+      <h1><span class="mask l1"><span class="w">השווה</span> <span class="w">בין</span> <span class="w">חברות</span> <span class="w">מימון</span> <span class="w">למסחר</span></span><span class="mask"><span class="l2">בחר את החשבון שמתאים <b>לך</b></span></span></h1>
+      <p class="sub">משווים בין חברות המימון המובילות, מבינים את החוקים בעברית פשוטה, וקונים עם הקוד שלנו בהנחה.</p>
+    </div>
+    <div class="cards" id="cards"></div>
+    <div class="ctas">
+      <div class="halo soft"><a class="cta outline" href="#"><img src="assets/icon-school.svg" alt="">אני רוצה ללמוד</a></div>
+      <div class="halo soft"><a class="cta outline" href="#"><img src="assets/icon-pricetag.svg" alt="">למבצעים נוספים</a></div>
+      <div class="halo primary"><a class="cta solid" href="#"><img src="assets/icon-compare.svg" alt="">להשוואת החברות</a></div>
+    </div>
+  </main>
+
+</div>
+</div>
+
+<script>
+// Grid: 216 cells, lit cells as in Figma
+const litFigma = [20, 27, 50, 60, 71, 82, 91, 124, 131, 156, 165, 188];
+const COLS = 38, ROWS = 19, OFF_C = 10, OFF_R = 3;
+const lit = new Set(litFigma.map(i => (Math.floor(i / 18) + OFF_R) * COLS + (i % 18) + OFF_C));
+const grid = document.getElementById('grid');
+const gridLit = document.getElementById('gridLit');
+for (let i = 0; i < 38 * 19; i++) gridLit.appendChild(document.createElement('i'));
+for (let i = 0; i < COLS * ROWS; i++) {
+  const c = document.createElement('div');
+  c.className = 'cell' + (lit.has(i) ? ' lit' : '');
+  grid.appendChild(c);
+}
+
+// Coupons (values from the Figma file)
+const cards = [
+  {k:'tp', pct:'40%', title:'חשבון ממומן בלי חוק עקביות', was:'$105', now:'$95', top:46.93,
+   brand:'<div class="brand" style="left:20.1%;right:20.1%;top:39.58px;aspect-ratio:81.618/34.121"><img src="assets/logo-takeprofit.png" alt="TakeProfit" style="width:100%;height:100%;object-fit:contain"></div>'},
+  {k:'lucid', pct:'30%', title:'חשבון פרו 50 אלף דולר בלוסיד', was:'$167', now:'$115', top:44.43,
+   brand:'<div class="brand" style="left:16.67%;right:17.38%;top:41.64px;aspect-ratio:90/30;overflow:hidden"><img src="assets/logo-lucid.png" alt="Lucid" style="position:absolute;height:253.08%;left:-30%;top:-72.8%;width:151.14%;max-width:none"></div>'},
+  {k:'fn', pct:'50%', title:'מסלולי Rapid Pro ו-Rapid Daily', was:'$167', now:'$115', top:46.93,
+   brand:'<div class="brand" style="left:11.13%;right:11.13%;top:36.17px;aspect-ratio:106.104/40.945"><img src="assets/logo-fundednext.png" alt="FundedNext" style="width:100%;height:100%;object-fit:contain"></div>'},
+];
+const textPanel = {tp:'panel-text-tp.svg', lucid:'panel-text.svg', fn:'panel-text.svg'};
+let html = '';
+for (const c of cards) {
+  let dots = '';
+  for (let i = 0; i < 11; i++) dots += `<img class="dot" style="top:${(31.87 + i * 17.382).toFixed(2)}px" src="assets/dot.svg" alt="">`;
+  html += `<article class="card">
+    <div class="ptext"><img src="assets/${textPanel[c.k]}" alt=""></div>
+    <div class="content" style="top:${c.top}px">
+      <div class="tag">הכי פופולארי<img src="assets/icon-star-${c.k}.svg" alt=""></div>
+      <div class="offer"><p class="t">${c.title}</p><div class="price"><s>${c.was}</s><span class="now">${c.now}</span></div></div>
+      <div class="row"><button class="btn-sm">קבל את ההטבה</button><button class="code" data-code="ANTAR"><img src="assets/icon-copy-${c.k}.svg" alt=""><b>ANTAR</b><span>קוד הנחה</span></button></div>
+    </div>
+    <div class="left">
+      <div class="pimg"><img src="assets/panel-image-${c.k}.svg" alt=""></div>
+      <img class="rings abs" src="assets/rings-${c.k}.svg" alt="">
+      <div class="pct"><b>${c.pct}</b><span>הנחה<br>בלעדית<br>עם הקוד</span></div>
+      ${c.brand}
+    </div>
+    ${dots}
+  </article>`;
+}
+document.getElementById('cards').innerHTML = html;
+
+// Copy code
+document.querySelectorAll('.code').forEach(b => b.addEventListener('click', () => {
+  navigator.clipboard && navigator.clipboard.writeText(b.dataset.code);
+  const s = b.querySelector('span'), t = s.textContent; s.textContent = 'הועתק'; setTimeout(() => s.textContent = t, 1400);
+}));
+
+// Scale the 1728px stage to the window width
+const fit = document.getElementById('fit'), stage = document.getElementById('stage');
+function scale() {
+  const w = innerWidth, h = innerHeight, k = Math.min(w / 1728, h / 1117);
+  stage.style.transform = `translate(${(w - 1728 * k) / 2}px, ${(h - 1117 * k) / 2}px) scale(${k})`;
+}
+addEventListener('resize', scale); scale();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || !window.gsap) return;
+
+  const q = s => document.querySelectorAll(s);
+  const cards = [...q('.card')];
+
+  // starting states
+  gsap.set('.header', {yPercent: -60, opacity: 0});
+  gsap.set('.chip', {y: 20, opacity: 0, filter: 'blur(8px)'});
+  gsap.set('h1 .w', {yPercent: 110});
+  gsap.set('h1 .l2', {yPercent: 110});
+  gsap.set('.sub', {y: 18, opacity: 0, filter: 'blur(8px)'});
+  gsap.set(cards, {autoAlpha: 0});
+  gsap.set('.ctas > *', {y: 30, opacity: 0, scale: .9});
+  gsap.set('.glow', {opacity: 0, scale: .6});
+  q('.price s').forEach(el => el.style.setProperty('--strike', '0%'));
+
+  const tl = gsap.timeline({defaults: {ease: 'power3.out'}});
+  tl
+    .to('.glow', {opacity: 1, scale: 1, duration: 1.6, ease: 'power2.out'}, '-=.5')
+    .to('.header', {yPercent: 0, opacity: 1, duration: .8}, '<')
+    .to('.chip', {y: 0, opacity: 1, filter: 'blur(0px)', duration: .6}, '-=.6')
+    .to('h1 .w', {yPercent: 0, duration: .8, stagger: .07}, '-=.4')
+    .to('h1 .l2', {yPercent: 0, duration: .9}, '-=.55')
+    .to('.sub', {y: 0, opacity: 1, filter: 'blur(0px)', duration: .7}, '-=.6')
+    .add(() => playEntrance(current), '-=.45')
+    .to('.ctas > *', {y: 0, opacity: 1, scale: 1, duration: .6, stagger: .08}, '-=.7')
+    .add(startIdle);
+
+
+  // ===== Coupon entrance: the side coupons start hidden behind the middle one and slide out =====
+  let current = 'shir';
+  const parts = c => ({stub: c.querySelector('.left'), body: [c.querySelector('.ptext'), c.querySelector('.content')], dots: [...c.querySelectorAll('.dot')]});
+  function resetCards() {
+    cards.forEach(c => { const p = parts(c); gsap.killTweensOf([c, p.stub, ...p.body, ...p.dots]); gsap.set([c, p.stub, ...p.body, ...p.dots], {clearProps: 'transform,opacity,visibility,filter,clipPath,zIndex,transformOrigin,position'}); });
+    q('.price s').forEach(el => el.style.setProperty('--strike', '0%'));
+    q('.price .now').forEach(n => { if (n.dataset.v) n.textContent = n.dataset.v; });
+  }
+  const entrances = {
+    // F. like the reference: the side coupons start hidden behind the middle one and slide out to their places
+    shir(tl) {
+      // the row fades in as one layer, so the side coupons never show through the middle one;
+      // all three rise together, then the sides slide out from behind the middle coupon
+      const k = new DOMMatrix(getComputedStyle(document.getElementById('stage')).transform).a;
+      const mid = cards[1].getBoundingClientRect();
+      const row = document.querySelector('.cards');
+      tl.set(cards, {autoAlpha: 1}, 0).set(cards[1], {zIndex: 3}, 0).set([cards[0], cards[2]], {zIndex: 1}, 0)
+        .fromTo(row, {opacity: 0}, {opacity: 1, duration: .5, ease: 'power1.out', clearProps: 'opacity'}, 0)
+        .fromTo(cards[1], {y: 35}, {y: 0, duration: 1.3, ease: 'power3.inOut'}, 0);
+      // one tween per side coupon for both axes, so x and y never fight over the transform
+      [0, 2].forEach(i => {
+        const r = cards[i].getBoundingClientRect();
+        tl.fromTo(cards[i], {x: (mid.left - r.left) / k, y: 35}, {x: 0, y: 0, duration: 1.3, ease: 'power3.inOut'}, 0);
+      });
+    }
+  };
+  function playEntrance(name) {
+    current = name; resetCards();
+    const tl = gsap.timeline();
+    entrances.shir(tl);
+    tl.add(priceCountdown, '-=.35');
+    tl.add(() => cards.forEach(c => { const p = parts(c); gsap.set([c, p.stub, ...p.body, ...p.dots], {clearProps: 'transform,filter,clipPath,zIndex,transformOrigin'}); }));
+    return tl;
+  }
+  window.playEntrance = playEntrance;
+
+  // price: count down from the old price to the deal price, then strike the old one
+  function priceCountdown() {
+    cards.forEach((card, i) => {
+      const was = card.querySelector('.price s'), now = card.querySelector('.price .now');
+      if (!now.dataset.v) now.dataset.v = now.textContent; now.textContent = now.dataset.v;
+      const from = parseFloat(was.textContent.replace(/[^\d.]/g, '')), to = parseFloat(now.dataset.v.replace(/[^\d.]/g, ''));
+      const o = {v: from};
+      gsap.to(o, {v: to, duration: 1.1, delay: i * .15, ease: 'power2.out', onUpdate: () => now.textContent = '$' + Math.round(o.v)});
+      gsap.to(was, {'--strike': '100%', duration: .4, delay: .7 + i * .15, ease: 'power2.inOut'});
+    });
+  }
+
+  // idle life: cards float, mouse parallax, hover tilt, magnetic buttons, grid spotlight
+  function startIdle() {
+
+    const stage = document.getElementById('stage');
+    const rectScale = () => { const m = new DOMMatrix(getComputedStyle(stage).transform); return {k: m.a, tx: m.e, ty: m.f}; };
+    const cardsX = gsap.quickTo('.cards', 'x', {duration: .8, ease: 'power3'}), cardsY = gsap.quickTo('.cards', 'y', {duration: .8, ease: 'power3'});
+    const glowX = gsap.quickTo('.glow', 'x', {duration: 1.4, ease: 'power3'}), glowY = gsap.quickTo('.glow', 'y', {duration: 1.4, ease: 'power3'});
+
+    const cells = [...q('.cell')];
+
+    // grid: now and then a few cells brighten softly and fade back
+    const twinkle = () => {
+      const pool = cells.filter((c, i) => { const r = Math.floor(i / 38), col = i % 38; return r >= 3 && r < 15 && col >= 10 && col < 28; });
+      const c = pool[Math.floor(Math.random() * pool.length)];
+      if (c.classList.contains('glint')) return setTimeout(twinkle, 100);
+      // fill in, hold a moment, fade back out slowly (the base .cell transition is 2.2s)
+      c.classList.add('glint'); setTimeout(() => c.classList.remove('glint'), 2400 + Math.random() * 1200);
+      setTimeout(twinkle, 350 + Math.random() * 650);
+    };
+    twinkle();
+
+    // buttons: the inner shadow slides toward the cursor (glow sits on the cursor's side)
+    q('.cta, .glass .pill, .btn-sm').forEach(b => {
+      b.addEventListener('mousemove', e => {
+        const r = b.getBoundingClientRect();
+        const nx = (e.clientX - r.left) / r.width - .5, ny = (e.clientY - r.top) / r.height - .5;
+        b.style.setProperty('--sx', (-nx * 16).toFixed(1) + 'px');
+        b.style.setProperty('--sy', (-ny * 12).toFixed(1) + 'px');
+        b.style.setProperty('--ga', 1);
+      });
+      b.addEventListener('mouseleave', () => { b.style.setProperty('--sx', '0px'); b.style.setProperty('--sy', '0px'); b.style.setProperty('--ga', 0); });
+    });
+  }
+})();
+</script>
+
+<script src="assets/bg-light.js"></script>
+<script>
+(() => {
+  // the light fills exactly the visible part of the stage, like the reference's full-window background
+  const cv = document.getElementById('bgLight'), stage = document.getElementById('stage');
+  function place() {
+    const m = new DOMMatrix(getComputedStyle(stage).transform), k = m.a || 1;
+    Object.assign(cv.style, {left: (960 - m.e / k) + 'px', top: (349 - m.f / k) + 'px', width: (innerWidth / k) + 'px', height: (innerHeight / k) + 'px'});
+  }
+  place();
+  // [cool accent, outer glow, middle band, core, hotspot]
+  const light = window.startBgLight && window.startBgLight(cv, ['#4fd8ff', '#0a1a8c', '#8eafff', '#3d5cff', '#dcecff']);
+  if (!light) return;
+  addEventListener('resize', () => { place(); light.resize(); });
+  // fade in with the page
+  cv.style.opacity = 0; cv.style.transition = 'opacity 1.5s ease-out';
+  setTimeout(() => cv.style.opacity = 1, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1600);
+})();
+</script>
+</body>
+</html>
