@@ -4,140 +4,125 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>AntarTrade - הירו</title>
+<title>AntarTrade - הירו - גרסה 9</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Heebo:wght@400;500;700;900&family=IBM+Plex+Sans+Hebrew:wght@400;500&display=swap" rel="stylesheet">
 <style>
   @font-face{font-family:"Reforma";src:local("FbReforma-Regular"),local("Fb Reforma");font-weight:400}
   @font-face{font-family:"Reforma";src:local("FbReforma-Medium"),local("Fb Reforma Medium");font-weight:500}
   @font-face{font-family:"Reforma";src:local("FbReforma-Bold");font-weight:700}
-  /* Stage = the 1728x1117 Figma frame, scaled to the window width */
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:#010101;overflow:hidden;height:100%}
-  body{--reforma:'Reforma','Heebo',sans-serif;font-family:var(--reforma);color:#fff;-webkit-font-smoothing:antialiased}
+  html,body{background:#03050a;overflow:hidden;height:100%}
+  body{--reforma:'Reforma','Heebo',sans-serif;--blue:#8eafff;--ice:#d6ecff;font-family:var(--reforma);color:#fff;-webkit-font-smoothing:antialiased}
   #fit{position:fixed;inset:0;overflow:hidden}
-  #stage{position:absolute;top:0;left:0;width:1728px;height:1117px;overflow:visible;transform-origin:0 0}
+  #stage{position:absolute;top:0;left:0;width:1728px;height:1117px;transform-origin:0 0}
   .abs{position:absolute}
   img{display:block}
 
-  /* Background grid + fade */
+  /* Background: the original hero - grid, slow drifting light, fade */
+  html,body{background:#010101}
   .grid{left:-960px;top:-349px;width:3648px;height:1825px;display:flex;flex-wrap:wrap;align-content:flex-start;overflow:hidden}
-  .cell{width:96px;height:96px;border:1px solid rgba(255,255,255,.07);flex-shrink:0}
+  .cell{width:96px;height:96px;border:1px solid rgba(255,255,255,.05);flex-shrink:0;transition:background-color 2.4s ease-in-out}
   .cell.lit{background:rgba(255,255,255,.03)}
-  
-  .fade{left:-960px;top:48px;width:3648px;height:1428px;background:linear-gradient(to bottom,rgba(5,7,11,0),#05070b)}
-  .glow{left:735px;top:130px;width:685px;height:685px}
+  /* a square fills softly; its border keeps the grid colour */
+  .cell.glint{background:rgba(142,175,255,.22);transition:background-color 1.2s ease-in-out}
+  .fade{left:-960px;top:109px;width:3648px;height:1088px;background:linear-gradient(to bottom,rgba(5,7,11,0),#05070b)}
+  /* Figma 70:1298: blue glow ellipse, 685px at (735,130); it drifts toward the cursor */
+  .glow{left:735px;top:130px;width:685px;height:685px;pointer-events:none;will-change:transform;opacity:.5}
   .glow img{position:absolute;left:-128.54%;top:-128.54%;width:357.08%;height:357.08%;max-width:none}
 
   /* Header */
-  .header{left:calc(50% - .3px);transform:translateX(-50%);top:37px;display:flex;gap:66px;align-items:center;direction:ltr}
-  .nav{display:flex;gap:28px;align-items:center}
-  .nav a{display:flex;align-items:center;gap:6px;padding:10px;font-size:20px;line-height:1.4;color:#fff;text-decoration:none;white-space:nowrap}
+  .header{left:50%;transform:translateX(-50%);top:37px;display:flex;gap:66px;align-items:center;direction:ltr}
+  .nav{display:flex;gap:25px;align-items:center}
+  .nav a{display:flex;align-items:center;gap:6px;padding:10px;font-size:18px;line-height:1.4;color:#fff;text-decoration:none;white-space:nowrap}
   .nav a.home,.nav a.promo{font-weight:500}
-  .nav a.promo{color:#d6ecff}
+  .nav a.promo{color:var(--ice)}
   .nav a img{width:18px;height:18px}
   .logo{width:195px;height:43px;object-fit:cover}
-  .glass{display:flex;align-items:center;justify-content:center;height:68px;padding:7px;border-radius:999px;background:rgba(142,175,255,.06);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(6px);overflow:hidden}
-  .glass .pill{position:relative;display:flex;gap:7px;align-items:center;justify-content:center;padding:16px 45px;border-radius:999px;border:1.2px solid rgba(255,255,255,.55);box-shadow:0 6px 28px rgba(142,175,255,.3);background:linear-gradient(to bottom,rgba(142,175,255,.28),rgba(142,175,255,.1));overflow:hidden;font-size:20px;font-weight:500;line-height:1.4;color:#fff;text-decoration:none}
-  .glass .pill::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset var(--sx) calc(2px + var(--sy)) 10px rgba(255,255,255,calc(.18 + var(--ga) * .17));pointer-events:none}
-  .glass .pill img{width:16px;height:16px}
 
-  /* Main column */
-  .main{left:245px;top:227px;width:1238px;display:flex;flex-direction:column;gap:53px;align-items:center}
-  .intro{width:975px;display:flex;flex-direction:column;gap:25px;align-items:center;text-align:center}
-  .chip{padding:10px 30px;border-radius:100px;background:linear-gradient(to right,rgba(255,255,255,.2),rgba(153,153,153,.2));font-size:24px;line-height:.915;white-space:nowrap}
-  h1{font-weight:400;font-size:80px;line-height:.915;width:100%}
-  h1 .l2{display:block;background:linear-gradient(to right,#8eafff,#fff 78.365%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  /* Intro: Figma 70:1300, right-aligned column 591px wide */
+  .intro{left:1008px;top:179px;height:672px;justify-content:center;width:576px;display:flex;flex-direction:column;gap:25px;align-items:flex-start;text-align:right}
+  .chip{display:flex;align-items:center;padding:10px 30px;border-radius:100px;background:linear-gradient(to right,rgba(255,255,255,.2),rgba(153,153,153,.2));font-size:26px;line-height:.915;white-space:nowrap}
+  h1{font-weight:400;font-size:88px;line-height:.915;width:100%;background:linear-gradient(to right,var(--blue),#c9d5f2 78.365%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 2.8px rgba(255,255,255,.25))}
+  h1 .l2{display:block}
   h1 .l2 b{font-weight:500}
-  .sub{width:614px;font-size:30px;line-height:1.2;color:rgba(255,255,255,.6)}
-
-  /* Coupons */
-  .cards{display:flex;gap:28px;align-items:center;width:100%;direction:ltr}
-  .card{position:relative;width:394px;height:242.07px;flex-shrink:0;direction:ltr}
-  .card .ptext{position:absolute;left:136.48px;top:0;width:257.52px;height:242.07px;transform:scaleX(-1)}
-  .card .ptext img,.card .pimg img{width:100%;height:100%}
-  .card .left{position:absolute;left:0;top:0;width:136.48px;height:242.07px;overflow:hidden}
-  .card .pimg{position:absolute;left:0;top:0;width:136.48px;height:242.07px;transform:scaleX(-1)}
-  .card .rings{position:absolute;left:-47.64px;top:5.15px;width:231.77px;height:231.77px}
-  .card .pct{position:absolute;left:0;width:136.48px;top:85.62px;display:flex;flex-direction:column;align-items:center;text-align:center;font-family:'Heebo',sans-serif;white-space:nowrap}
-  .card .pct b{font-weight:900;font-size:55px;line-height:1;letter-spacing:-1.65px}
-  .card .pct span{font-weight:700;font-size:16.739px;line-height:1.1}
-  .card .brand{position:absolute}
-  .card .dot{position:absolute;left:133.91px;width:4.507px;height:4.507px}
-  .content{position:absolute;left:151.28px;display:flex;flex-direction:column;gap:16px;align-items:flex-end}
-  .tag{display:flex;gap:6px;align-items:center;justify-content:center;padding:6.44px 12.88px;border-radius:64.38px;background:linear-gradient(to right,rgba(255,255,255,.4),rgba(153,153,153,.4));font-size:14px;line-height:.915;white-space:nowrap}
-  .tag img{width:11px;height:11px}
-  .offer{display:flex;flex-direction:column;gap:3.86px;align-items:flex-end;text-align:right;white-space:nowrap}
-  .offer .t{font-size:16px;line-height:1.4;direction:rtl}
-  .price{display:flex;gap:12.88px;align-items:flex-end}
-  .price s{font-size:22px;line-height:1.04;letter-spacing:-.44px}
-  .price .now{font-size:40px;line-height:.69;letter-spacing:-.8px}
-  .row{display:flex;gap:6px;align-items:center}
-  .btn-sm{position:relative;display:flex;align-items:center;justify-content:center;padding:12.23px 11px;border-radius:57.94px;background:#8eafff;font-family:'Heebo',sans-serif;font-weight:500;font-size:12px;color:#fff;white-space:nowrap;overflow:hidden;cursor:pointer;border:0}
-  .btn-sm::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset calc(var(--sx) * .6) calc(-2.575px + var(--sy) * .6) 11.331px #fff,inset 0 -5.15px 16.996px rgba(0,0,0,.25);pointer-events:none}
-  .code{display:flex;gap:4px;align-items:center;justify-content:center;height:42.46px;padding:0 9px;border-radius:57.94px;background:rgba(142,175,255,.1);border:.966px dashed rgba(142,175,255,.8);font-family:'Heebo',sans-serif;white-space:nowrap;cursor:pointer;color:#fff}
-  .code img{width:11px;height:11px}
-  .code b{font-weight:700;font-size:12.5px;letter-spacing:1px}
-  .code span{font-size:10px;color:rgba(255,255,255,.6)}
-
-  /* CTA buttons */
-  .ctas{display:flex;gap:25px;align-items:center;direction:ltr}
+  .mask{display:block;overflow:hidden;padding:.06em 0 .12em;margin:-.06em 0 -.12em}
+  .w{display:inline-block}
+  .sub{width:480px;font-size:30px;line-height:1.2;color:rgba(255,255,255,.7)}
+  .ctas{display:flex;gap:10px;align-items:center;direction:rtl}
   .halo{display:flex;padding:6px;border-radius:999px;backdrop-filter:blur(6px);overflow:hidden}
   .halo.soft{background:rgba(142,175,255,.05);border:1px solid rgba(255,255,255,.14)}
   .halo.primary{background:rgba(142,175,255,.08);border:1px solid rgba(255,255,255,.12)}
-  .cta{position:relative;display:flex;gap:7px;align-items:center;justify-content:center;height:50px;padding:19px 25px;border-radius:90px;font-size:20px;font-weight:500;line-height:.915;color:#fff;text-decoration:none;white-space:nowrap}
+  .cta{position:relative;display:flex;gap:7px;align-items:center;justify-content:center;height:50px;padding:19px 25px;border-radius:90px;font-size:20px;font-weight:500;line-height:.915;color:#fff;text-decoration:none;white-space:nowrap;isolation:isolate}
   .cta img{width:16px;height:16px}
   .cta.outline{border:1px solid rgba(142,175,255,.5)}
-  .cta.solid{background:#8eafff;overflow:hidden}
-  .cta.solid::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset var(--sx) calc(-4px + var(--sy)) 17.6px #fff,inset 0 -8px 26.4px rgba(0,0,0,.25);pointer-events:none}
-
-  /* ===== Motion v5: GSAP choreography inspired by the references ===== */
-  .mask{display:block;overflow:hidden;padding:.06em 0 .1em;margin:-.06em 0 -.1em}
-  .w{display:inline-block;will-change:transform}
-      .cell{transition:background-color .9s ease,border-color .9s ease}
-  .cell.hot{border-color:rgba(255,255,255,.15);transition:border-color .2s}
-  .cell.glint{background:rgba(142,175,255,.075);border-color:rgba(214,236,255,.16);transition:background-color 1.6s ease-out,border-color 1.6s ease-out}
-  .cell{transition:background-color 2.2s ease,border-color 2.2s ease}
-  .price s{position:relative;text-decoration:none}
-  /* Hover: the inner shadow follows the cursor around the inside of the button */
+  .cta.solid{background:var(--blue);overflow:hidden;text-shadow:0 1px 2px rgba(12,24,80,.55)}
+  .cta.solid::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;box-shadow:inset var(--sx) calc(-4px + var(--sy)) 17.6px #fff,inset 0 -8px 26.4px rgba(0,0,0,.25);pointer-events:none}
+  .cta.outline::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;box-shadow:inset var(--sx) var(--sy) 14px rgba(142,175,255,calc(var(--ga) * .55));pointer-events:none}
   @property --sx{syntax:'<length>';inherits:true;initial-value:0px}
   @property --sy{syntax:'<length>';inherits:true;initial-value:0px}
   @property --ga{syntax:'<number>';inherits:true;initial-value:0}
-  .cta,.glass .pill,.btn-sm{transition:--sx .35s ease-out,--sy .35s ease-out,--ga .35s ease-out}
-  .cta.outline::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset var(--sx) var(--sy) 14px rgba(142,175,255,calc(var(--ga) * .55));pointer-events:none}
-  /* keep the white text readable on the light blue fill while the glow moves under it */
-  .cta.solid,.btn-sm{text-shadow:0 1px 2px rgba(12,24,80,.55)}
-  /* the glow sits between the fill and the text, never over the letters */
-  .cta,.glass .pill,.btn-sm{isolation:isolate}
-  .cta::after,.glass .pill::after,.btn-sm::after{z-index:-1}
-  .price s::after{content:"";position:absolute;left:0;top:52%;height:1.5px;width:var(--strike,100%);background:currentColor}
-  .halo,.glass{will-change:transform}
+  .cta{transition:--sx .35s ease-out,--sy .35s ease-out,--ga .35s ease-out}
 
-  /* ===== Light: abstract soft shapes drifting slowly, the grid shows through where they shine ===== */
-  .beams{left:-960px;top:-349px;width:3648px;height:1825px;pointer-events:none;overflow:hidden;background:#010101;isolation:isolate}
-  .beams .blob{position:absolute;left:0;top:0;filter:blur(70px);mix-blend-mode:screen;will-change:transform,border-radius}
-  .beams .b1{width:760px;height:520px;background:radial-gradient(closest-side,rgba(142,175,255,.8),rgba(142,175,255,.22) 60%,transparent);border-radius:58% 42% 63% 37%/45% 55% 45% 55%}
-  .beams .b2{width:640px;height:820px;background:radial-gradient(closest-side,rgba(30,68,160,.95),rgba(30,68,160,.3) 65%,transparent);border-radius:40% 60% 35% 65%/60% 40% 60% 40%}
-  .beams .b3{width:520px;height:380px;background:radial-gradient(closest-side,rgba(214,236,255,.6),rgba(142,175,255,.18) 60%,transparent);border-radius:50% 50% 40% 60%/55% 45% 55% 45%}
-  .beams .b4{width:900px;height:480px;background:radial-gradient(closest-side,rgba(30,68,160,.9),rgba(30,68,160,.25) 65%,transparent);border-radius:65% 35% 50% 50%/40% 60% 40% 60%}
-  /* bright grid lines blended with overlay: invisible on black, glowing where the light is */
-  .beams .gridlit{position:absolute;inset:0;display:flex;flex-wrap:wrap;align-content:flex-start;mix-blend-mode:overlay}
-  .beams .gridlit i{width:96px;height:96px;flex-shrink:0;border:1px solid rgba(255,255,255,.12)}
-  .glow{display:none}
-  #bgLight{position:absolute;left:0;top:0;pointer-events:none}
+  /* ===== Head-to-head card, after Figma 76:1644: grey glass, soft cards, light "vs", ruled table =====
+     7x7 grid cells (672px) at stage scale 1; Figma insets: title 54, cards 106, table 283 */
+  .win{left:144px;top:179px;width:672px;height:672px;border-radius:25px;overflow:hidden;background:linear-gradient(to bottom,rgba(255,255,255,.02),rgba(255,255,255,.07));backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}
+  .view{position:absolute;inset:0;overflow:hidden}
+  .cam{position:absolute;left:0;top:0;width:100%;padding:50px 62px 0}
+  .top{display:flex;justify-content:flex-start;margin-bottom:30px}
+  .top h3{font-weight:500;font-size:24px;line-height:.915}
+  .slots{display:grid;grid-template-columns:224px 1fr 224px;align-items:center;margin-bottom:32px}
+  .slot{position:relative;height:145px;border-radius:15px;background:linear-gradient(to bottom,rgba(255,255,255,.04),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.05);backdrop-filter:blur(13.4px);display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .slot .empty{font:400 16px Roboto,'Reforma',sans-serif;color:rgba(255,255,255,.5);padding:8px 14px;border-radius:10px;transition:background .25s}
+  .slot .empty.on{background:rgba(255,255,255,.06)}
+  .slot .full{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding-top:8px;opacity:0}
+  .slot .nm{font:400 16px Roboto,sans-serif;line-height:.915;color:rgba(255,255,255,.5);transition:color .4s}
+  .slot.won .nm{color:#4ade80}
+  .slot .sc{position:absolute;top:12px;left:14px;font:400 12px Roboto,sans-serif;color:rgba(255,255,255,.4);display:flex;gap:4px;align-items:baseline}
+  .slot .sc b{font-weight:500;font-size:16px;color:#fff}
+  .slot .badge{position:absolute;top:10px;right:10px}
+  .vs{justify-self:center;font:300 24px Roboto,sans-serif;color:rgba(255,255,255,.5)}
+  .mark{position:relative;width:80px;height:60px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .mark img{display:block;max-width:100%;max-height:100%;width:auto;height:auto}
+  .mets{border:1px solid rgba(255,255,255,.05);border-radius:15px;margin-bottom:24px}
+  .met{position:relative;display:grid;grid-template-columns:1fr 150px 1fr;align-items:center;height:53px;text-align:center}
+  .met+.met{border-top:1px solid rgba(255,255,255,.05)}
+  .met .lb{font:300 12px Roboto,'Reforma',sans-serif;color:rgba(255,255,255,.5)}
+  .met .v{justify-self:center;display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:99px;font:400 16px Roboto,sans-serif;font-variant-numeric:tabular-nums;color:#fff;opacity:0}
+  .met .v.he{font-family:Roboto,'Reforma',sans-serif;font-size:14px}
+  .met .v.lose{color:rgba(255,255,255,.4)}
+  .met .v.best{background:rgba(34,197,94,.12);color:#4ade80}
+  .met .v i{font-style:normal;width:16px;height:16px;border-radius:50%;background:#4ade80;color:#04210f;font-size:10px;display:none;place-items:center}
+  .met .v.best i{display:grid}
+  .sum{display:flex;align-items:center;justify-content:space-between;opacity:0}
+  .sum p{font:400 16px Roboto,'Reforma',sans-serif;color:rgba(255,255,255,.7)}
+  .sum p b{font-weight:500;color:#4ade80}
+  .sum .acts{display:flex;gap:8px;align-items:center}
+  .code{display:flex;gap:6px;align-items:center;height:38px;padding:0 14px;border-radius:99px;background:rgba(255,255,255,.07);font:400 13px Roboto,'Reforma',sans-serif}
+  .code b{font-weight:500;letter-spacing:1px}
+  .code span{font-size:12px;color:rgba(255,255,255,.55)}
+  .get{height:38px;padding:0 18px;border-radius:99px;display:flex;align-items:center;background:var(--blue);font-weight:500;font-size:15px;box-shadow:inset 0 -6px 18px rgba(0,0,0,.22),inset 0 2px 10px rgba(255,255,255,.6);text-shadow:0 1px 2px rgba(12,24,80,.55);white-space:nowrap}
+  /* company picker: opens right under the "choose company" button */
+  .dd{position:absolute;z-index:7;width:250px;border-radius:14px;background:rgba(22,22,26,.96);border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 70px rgba(0,0,0,.7);padding:6px;opacity:0;visibility:hidden}
+  .dd .q{height:36px;border-radius:9px;background:rgba(255,255,255,.05);display:flex;align-items:center;padding:0 12px;margin-bottom:4px;font:14px 'IBM Plex Sans Hebrew',sans-serif;color:rgba(255,255,255,.35)}
+  .dd .o{display:flex;align-items:center;gap:10px;height:40px;padding:0 10px;border-radius:9px;font:400 14px Roboto,sans-serif;transition:background .2s,opacity .2s}
+  .dd .o .mark{width:30px;height:22px}
+  .dd .o.hov{background:rgba(255,255,255,.08)}
+  .dd .o.off{opacity:.3}
+  .badge{font:500 11px 'Reforma',sans-serif;padding:4px 9px;border-radius:99px;background:rgba(34,197,94,.14);color:#4ade80;opacity:0}
+  .toast{position:absolute;left:50%;transform:translateX(-50%);z-index:8;padding:9px 16px;border-radius:99px;background:rgba(30,30,36,.95);border:1px solid rgba(255,255,255,.1);font-size:14px;opacity:0;white-space:nowrap}
+  .cur{position:absolute;left:0;top:0;z-index:9;width:22px;height:22px;pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6))}
+  .ripple{position:absolute;z-index:9;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:2px solid #fff;opacity:0;pointer-events:none}
 </style>
 </head>
 <body>
-<div id="fit">
-<div id="stage">
-
-  <div class="abs beams"><canvas id="bgLight"></canvas><div class="gridlit" id="gridLit"></div></div>
+<div id="fit"><div id="stage">
   <div class="abs grid" id="grid"></div>
   <div class="abs fade"></div>
-  <div class="abs glow"><img src="assets/glow-ellipse.svg" alt=""></div>
+  <div class="abs glow" id="glow"><img src="assets/glow-ellipse.svg" alt=""></div>
 
   <header class="abs header">
-    <div class="glass"><a class="pill" href="#"><img src="assets/icon-school-nav.svg" alt="">קורסים</a></div>
+    <div class="halo soft"><a class="cta outline" href="#"><img src="assets/icon-school-nav.svg" alt="">קורסים</a></div>
     <nav class="nav">
       <a href="#">אודות</a>
       <a href="#">יומן מסחר</a>
@@ -150,218 +135,293 @@
     <img class="logo" src="assets/logo-antartrade.png" alt="AntarTrade">
   </header>
 
-  <main class="abs main">
-    <div class="intro">
-      <div class="chip">קודי הנחה בלעדיים לכל החברות</div>
-      <h1><span class="mask l1"><span class="w">השווה</span> <span class="w">בין</span> <span class="w">חברות</span> <span class="w">מימון</span> <span class="w">למסחר</span></span><span class="mask"><span class="l2">בחר את החשבון שמתאים <b>לך</b></span></span></h1>
-      <p class="sub">משווים בין חברות המימון המובילות, מבינים את החוקים בעברית פשוטה, וקונים עם הקוד שלנו בהנחה.</p>
-    </div>
-    <div class="cards" id="cards"></div>
+  <div class="abs intro">
+    <div class="chip">קודי הנחה בלעדיים לכל החברות</div>
+    <h1><span class="mask"><span class="w">השווה</span> <span class="w">בין</span> <span class="w">חברות</span> <span class="w">מימון</span> <span class="w">למסחר</span></span><span class="mask"><span class="l2">בחר את החשבון שמתאים <b>לך</b></span></span></h1>
+    <p class="sub">משווים בין חברות המימון המובילות, מבינים את החוקים בעברית פשוטה, וקונים עם הקוד שלנו בהנחה.</p>
     <div class="ctas">
-      <div class="halo soft"><a class="cta outline" href="#"><img src="assets/icon-school.svg" alt="">אני רוצה ללמוד</a></div>
-      <div class="halo soft"><a class="cta outline" href="#"><img src="assets/icon-pricetag.svg" alt="">למבצעים נוספים</a></div>
       <div class="halo primary"><a class="cta solid" href="#"><img src="assets/icon-compare.svg" alt="">להשוואת החברות</a></div>
+      <div class="halo soft"><a class="cta outline" href="#"><img src="assets/icon-pricetag.svg" alt="">למבצעים נוספים</a></div>
+      <div class="halo soft"><a class="cta outline" href="#"><img src="assets/icon-school.svg" alt="">אני רוצה ללמוד</a></div>
     </div>
-  </main>
+  </div>
 
-</div>
-</div>
-
+  <div class="abs win" id="win">
+    <div class="view" id="view">
+      <div class="cam" id="cam">
+        <div class="top"><h3>השוואה ראש בראש</h3></div>
+        <div class="slots">
+          <div class="slot" id="s0"><span class="empty">+ בחר חברה</span><div class="full"></div></div>
+          <div class="vs">vs</div>
+          <div class="slot" id="s1"><span class="empty">+ בחר חברה</span><div class="full"></div></div>
+        </div>
+        <div class="mets" id="mets"></div>
+        <div class="sum" id="sum"><p id="sumTxt"></p><div class="acts"><div class="code" id="code"><b>ANTAR</b><span>העתק קוד</span></div><div class="get" id="get">קבל את ההטבה</div></div></div>
+      </div>
+      <div class="dd" id="dd"><div class="q">חפש חברה...</div><div id="ddList"></div></div>
+      <div class="toast" id="toast" style="bottom:40px">הקוד הועתק, אפשר להדביק בקופה</div>
+    </div>
+    <svg class="cur" id="cur" viewBox="0 0 22 22"><path d="M3 2l15 8.2-6.6 1.6L8.6 18z" fill="#fff" stroke="#0a1226" stroke-width="1.3" stroke-linejoin="round"/></svg>
+    <div class="ripple" id="ripple"></div>
+  </div>
+</div></div>
 <script>
-// Grid: 216 cells, lit cells as in Figma
-const litFigma = [20, 27, 50, 60, 71, 82, 91, 124, 131, 156, 165, 188];
-const COLS = 38, ROWS = 19, OFF_C = 10, OFF_R = 3;
-const lit = new Set(litFigma.map(i => (Math.floor(i / 18) + OFF_R) * COLS + (i % 18) + OFF_C));
-const grid = document.getElementById('grid');
-const gridLit = document.getElementById('gridLit');
-for (let i = 0; i < 38 * 19; i++) gridLit.appendChild(document.createElement('i'));
-for (let i = 0; i < COLS * ROWS; i++) {
-  const c = document.createElement('div');
-  c.className = 'cell' + (lit.has(i) ? ' lit' : '');
-  grid.appendChild(c);
-}
-
-// Coupons (values from the Figma file)
-const cards = [
-  {k:'tp', pct:'40%', title:'חשבון ממומן בלי חוק עקביות', was:'$105', now:'$95', top:46.93,
-   brand:'<div class="brand" style="left:20.1%;right:20.1%;top:39.58px;aspect-ratio:81.618/34.121"><img src="assets/logo-takeprofit.png" alt="TakeProfit" style="width:100%;height:100%;object-fit:contain"></div>'},
-  {k:'lucid', pct:'30%', title:'חשבון פרו 50 אלף דולר בלוסיד', was:'$167', now:'$115', top:44.43,
-   brand:'<div class="brand" style="left:16.67%;right:17.38%;top:41.64px;aspect-ratio:90/30;overflow:hidden"><img src="assets/logo-lucid.png" alt="Lucid" style="position:absolute;height:253.08%;left:-30%;top:-72.8%;width:151.14%;max-width:none"></div>'},
-  {k:'fn', pct:'50%', title:'מסלולי Rapid Pro ו-Rapid Daily', was:'$167', now:'$115', top:46.93,
-   brand:'<div class="brand" style="left:11.13%;right:11.13%;top:36.17px;aspect-ratio:106.104/40.945"><img src="assets/logo-fundednext.png" alt="FundedNext" style="width:100%;height:100%;object-fit:contain"></div>'},
+// ?debug drives frames from a timer, so a headless browser can screenshot the motion
+if (location.search.includes('debug')) window.requestAnimationFrame = cb => setTimeout(() => cb(performance.now()), 16);
+// Figures from Noam's live comparison table (antartrade.co.il), October 2026.
+const mono = (t, n) => `<i class="mono">${t}</i><span>${n}</span>`;
+const CO = [
+  {id:'tp', name:'Take Profit Trader', logo:'<img src="assets/logo-takeprofit.png" alt="" style="width:30px;left:auto;right:0"><span>Take Profit Trader</span>', rate:4.4, price:90, adv:'משיכות יומיות מהיום הראשון', accts:5, plat:11, deal:'40% הנחה', pct:40, cons:false},
+  {id:'apex', name:'Apex Trader Funding', logo:mono('A', 'Apex Trader Funding'), rate:4.2, price:16.70, adv:'עד 20 חשבונות ממומנים', accts:20, plat:11, deal:'עד 90% הנחה', pct:90, cons:false},
+  {id:'bx', name:'Bulenox', logo:'<img src="assets/logo-bulenox.png" alt="" style="width:30px;left:auto;right:0"><span>Bulenox</span>', rate:4.7, price:13.05, adv:'100% רווח עד $10K', accts:5, plat:18, deal:'עד 91% הנחה', pct:91, cons:false},
+  {id:'lucid', name:'Lucid Trading', logo:'<img src="assets/logo-lucid.png" alt="Lucid Trading" style="inset:auto;right:-26px;top:-30px;width:165px;height:auto;max-width:none;object-fit:initial">', rate:4.4, price:50.30, adv:'מגוון רחב של מסלולים', accts:5, plat:9, deal:'30% הנחה', pct:30, cons:false},
+  {id:'fn', name:'FundedNext Futures', logo:'<img src="assets/logo-fundednext.png" alt="FundedNext Futures" style="height:18px;top:6px">', rate:4.5, price:71.01, adv:'ללא חוק עקביות במסלול Flex', accts:5, plat:3, deal:'עד 50% הנחה', pct:50, cons:true},
+  {id:'ts', name:'Topstep', logo:mono('T', 'Topstep'), rate:3.6, price:49, adv:'מסחר בפלטפורמת TopstepX', accts:5, plat:1, deal:'', pct:0, cons:false},
 ];
-const textPanel = {tp:'panel-text-tp.svg', lucid:'panel-text.svg', fn:'panel-text.svg'};
-let html = '';
-for (const c of cards) {
-  let dots = '';
-  for (let i = 0; i < 11; i++) dots += `<img class="dot" style="top:${(31.87 + i * 17.382).toFixed(2)}px" src="assets/dot.svg" alt="">`;
-  html += `<article class="card">
-    <div class="ptext"><img src="assets/${textPanel[c.k]}" alt=""></div>
-    <div class="content" style="top:${c.top}px">
-      <div class="tag">הכי פופולארי<img src="assets/icon-star-${c.k}.svg" alt=""></div>
-      <div class="offer"><p class="t">${c.title}</p><div class="price"><s>${c.was}</s><span class="now">${c.now}</span></div></div>
-      <div class="row"><button class="btn-sm">קבל את ההטבה</button><button class="code" data-code="ANTAR"><img src="assets/icon-copy-${c.k}.svg" alt=""><b>ANTAR</b><span>קוד הנחה</span></button></div>
-    </div>
-    <div class="left">
-      <div class="pimg"><img src="assets/panel-image-${c.k}.svg" alt=""></div>
-      <img class="rings abs" src="assets/rings-${c.k}.svg" alt="">
-      <div class="pct"><b>${c.pct}</b><span>הנחה<br>בלעדית<br>עם הקוד</span></div>
-      ${c.brand}
-    </div>
-    ${dots}
-  </article>`;
-}
-document.getElementById('cards').innerHTML = html;
-
-// Copy code
-document.querySelectorAll('.code').forEach(b => b.addEventListener('click', () => {
-  navigator.clipboard && navigator.clipboard.writeText(b.dataset.code);
-  const s = b.querySelector('span'), t = s.textContent; s.textContent = 'הועתק'; setTimeout(() => s.textContent = t, 1400);
-}));
-
-// Scale the 1728px stage to the window width
-const fit = document.getElementById('fit'), stage = document.getElementById('stage');
+// a square mark per company for the slots and the picker
+const MARK = {
+  tp: '<img src="assets/firm-tp-color.png" alt="">', apex: '<img src="assets/firm-apex-color.png" alt="">', bx: '<img src="assets/firm-bx.png" alt="">',
+  lucid: '<img src="assets/firm-lucid.webp" alt="">', fn: '<img src="assets/firm-fn.png" alt="">', ts: '<img src="assets/firm-ts.svg" alt="">',
+};
+const SHORT = {tp:'Take Profit Trader', apex:'Apex Trader Funding', bx:'Bulenox', lucid:'Lucid Trading', fn:'FundedNext Futures', ts:'Topstep'};
+const usd = n => '$' + (Number.isInteger(n) ? n : n.toFixed(2));
+const MET = [
+  {t:'דירוג', f:c => '★ ' + c.rate, v:c => c.rate, hi:true},
+  {t:'מחיר החל מ-', f:c => usd(c.price), v:c => c.price, hi:false},
+  {t:'חשבונות במקביל', f:c => c.accts, v:c => c.accts, hi:true},
+  {t:'פלטפורמות מסחר', f:c => c.plat > 1 ? c.plat + '+' : '1', v:c => c.plat, hi:true},
+  {t:'הנחה עם הקוד', f:c => c.deal || 'אין מבצע', v:c => c.pct, hi:true, he:true},
+];
+const PAIRS = [['bx', 'tp'], ['apex', 'lucid'], ['fn', 'ts']];
+const $ = id => document.getElementById(id);
+const byId = id => CO.find(c => c.id === id);
+const markHtml = id => `<div class="mark">${MARK[id]}</div>`;
+$('mets').innerHTML = MET.map(m => `<div class="met"><div class="v${m.he ? ' he' : ''}"><i>✓</i><span></span></div><div class="lb">${m.t}</div><div class="v${m.he ? ' he' : ''}"><i>✓</i><span></span></div></div>`).join('');
+$('ddList').innerHTML = CO.map(c => `<div class="o" data-id="${c.id}">${markHtml(c.id)}${SHORT[c.id]}</div>`).join('');
+const litFigma = [20, 27, 50, 60, 71, 82, 91, 124, 131, 156, 165, 188];
+const GC = 38, GR = 19, lit = new Set(litFigma.map(i => (Math.floor(i / 18) + 3) * GC + (i % 18) + 10));
+for (let i = 0; i < GC * GR; i++) { const c = document.createElement('div'); c.className = 'cell'; $('grid').appendChild(c); }
+const stage = $('stage');
+let K = 1;
 function scale() {
-  const w = innerWidth, h = innerHeight, k = Math.min(w / 1728, h / 1117);
-  stage.style.transform = `translate(${(w - 1728 * k) / 2}px, ${(h - 1117 * k) / 2}px) scale(${k})`;
+  const w = innerWidth, h = innerHeight; K = Math.min(w / 1728, h / 1040);
+  stage.style.transform = `translate(${(w - 1728 * K) / 2}px, ${(h - 1040 * K) / 2}px) scale(${K})`;
 }
 addEventListener('resize', scale); scale();
 </script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
-(() => {
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce || !window.gsap) return;
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches || location.search.includes('still');
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const win = $('win'), view = $('view'), cam = $('cam'), cur = $('cur'), WS = 1;
+// position of an element inside the window, in stage pixels
+function pos(el, fx = .5, fy = .5, rel = win) {
+  const w = rel.getBoundingClientRect(), r = el.getBoundingClientRect();
+  return {x: (r.left - w.left + r.width * fx) / (K * WS), y: (r.top - w.top + r.height * fy) / (K * WS)};
+}
+const moveTo = (el, fx, fy, d = 1) => { const p = pos(el, fx, fy); return gsap.to(cur, {x: p.x, y: p.y, duration: d, ease: 'power2.inOut'}); };
+async function click() {
+  const x = gsap.getProperty(cur, 'x'), y = gsap.getProperty(cur, 'y');
+  gsap.fromTo('#ripple', {left: x, top: y, scale: .3, opacity: .9}, {scale: 1.4, opacity: 0, duration: .5, ease: 'power2.out'});
+  await gsap.to(cur, {scale: .82, duration: .09, yoyo: true, repeat: 1});
+}
 
-  const q = s => document.querySelectorAll(s);
-  const cards = [...q('.card')];
-
-  // starting states
-  gsap.set('.header', {yPercent: -60, opacity: 0});
-  gsap.set('.chip', {y: 20, opacity: 0, filter: 'blur(8px)'});
-  gsap.set('h1 .w', {yPercent: 110});
-  gsap.set('h1 .l2', {yPercent: 110});
-  gsap.set('.sub', {y: 18, opacity: 0, filter: 'blur(8px)'});
-  gsap.set(cards, {autoAlpha: 0});
-  gsap.set('.ctas > *', {y: 30, opacity: 0, scale: .9});
-  gsap.set('.glow', {opacity: 0, scale: .6});
-  q('.price s').forEach(el => el.style.setProperty('--strike', '0%'));
-
-  const tl = gsap.timeline({defaults: {ease: 'power3.out'}});
-  tl
-    .to('.glow', {opacity: 1, scale: 1, duration: 1.6, ease: 'power2.out'}, '-=.5')
-    .to('.header', {yPercent: 0, opacity: 1, duration: .8}, '<')
-    .to('.chip', {y: 0, opacity: 1, filter: 'blur(0px)', duration: .6}, '-=.6')
-    .to('h1 .w', {yPercent: 0, duration: .8, stagger: .07}, '-=.4')
-    .to('h1 .l2', {yPercent: 0, duration: .9}, '-=.55')
-    .to('.sub', {y: 0, opacity: 1, filter: 'blur(0px)', duration: .7}, '-=.6')
-    .add(() => playEntrance(current), '-=.45')
-    .to('.ctas > *', {y: 0, opacity: 1, scale: 1, duration: .6, stagger: .08}, '-=.7')
-    .add(startIdle);
+// camera: zoom so that element sits in the middle of the visible part of the window
+function focus(el, s, d = 1.2) {
+  if (!el) return gsap.to(cam, {x: 0, y: 0, scale: 1, duration: d, ease: 'power3.inOut'});
+  const cs = gsap.getProperty(cam, 'scale'), cr = cam.getBoundingClientRect(), r = el.getBoundingClientRect();
+  const px = (r.left - cr.left + r.width / 2) / (K * cs * WS), py = (r.top - cr.top + r.height / 2) / (K * cs * WS);
+  const W = view.offsetWidth, H = view.offsetHeight;
+  const x = Math.min(0, Math.max(W - s * W, W / 2 - s * px)), y = Math.min(0, H / 2 - s * py);
+  return gsap.to(cam, {x, y, scale: s, duration: d, ease: 'power3.inOut'});
+}
 
 
-  // ===== Coupon entrance: the side coupons start hidden behind the middle one and slide out =====
-  let current = 'shir';
-  const parts = c => ({stub: c.querySelector('.left'), body: [c.querySelector('.ptext'), c.querySelector('.content')], dots: [...c.querySelectorAll('.dot')]});
-  function resetCards() {
-    cards.forEach(c => { const p = parts(c); gsap.killTweensOf([c, p.stub, ...p.body, ...p.dots]); gsap.set([c, p.stub, ...p.body, ...p.dots], {clearProps: 'transform,opacity,visibility,filter,clipPath,zIndex,transformOrigin,position'}); });
-    q('.price s').forEach(el => el.style.setProperty('--strike', '0%'));
-    q('.price .now').forEach(n => { if (n.dataset.v) n.textContent = n.dataset.v; });
+let pair = [], score = [0, 0];
+function fill(side, id) {
+  pair[side] = byId(id);
+  const s = $('s' + side), full = s.querySelector('.full');
+  full.innerHTML = `<span class="sc"><b>0</b>/5</span><span class="badge">המנצחת</span>${markHtml(id)}<div class="nm">${SHORT[id]}</div>`;
+  s.classList.add('filled');
+  gsap.set(s.querySelector('.empty'), {opacity: 0});
+  return gsap.fromTo(full, {opacity: 0, scale: .9}, {opacity: 1, scale: 1, duration: .45, ease: 'back.out(1.6)'});
+}
+function reveal(i, instant) {
+  const m = MET[i], vs = $('mets').children[i].querySelectorAll('.v');
+  const a = m.v(pair[0]), b = m.v(pair[1]);
+  const w = a === b ? -1 : ((a > b) === m.hi ? 0 : 1);
+  [0, 1].forEach(k => {
+    const el = vs[k === 0 ? 0 : 1];
+    el.querySelector('span').textContent = m.f(pair[k]);
+    el.classList.toggle('best', w === k); el.classList.toggle('lose', w !== -1 && w !== k);
+  });
+  if (w !== -1) score[w]++;
+  [0, 1].forEach(k => $('s' + k).querySelector('.sc b').textContent = score[k]);
+  if (instant) { gsap.set(vs, {opacity: 1}); return; }
+  gsap.fromTo(vs, {opacity: 0, y: 10}, {opacity: 1, y: 0, duration: .4, stagger: .08, ease: 'power3.out'});
+  if (w !== -1) {
+    gsap.fromTo(vs[w], {scale: .85}, {scale: 1, duration: .5, delay: .3, ease: 'back.out(2.5)'});
+    gsap.fromTo($('s' + w).querySelector('.sc b'), {scale: 1.6, color: '#4ade80'}, {scale: 1, color: '#fff', duration: .5, delay: .3});
   }
-  const entrances = {
-    // F. like the reference: the side coupons start hidden behind the middle one and slide out to their places
-    shir(tl) {
-      // the row fades in as one layer, so the side coupons never show through the middle one;
-      // all three rise together, then the sides slide out from behind the middle coupon
-      const k = new DOMMatrix(getComputedStyle(document.getElementById('stage')).transform).a;
-      const mid = cards[1].getBoundingClientRect();
-      const row = document.querySelector('.cards');
-      tl.set(cards, {autoAlpha: 1}, 0).set(cards[1], {zIndex: 3}, 0).set([cards[0], cards[2]], {zIndex: 1}, 0)
-        .fromTo(row, {opacity: 0}, {opacity: 1, duration: .5, ease: 'power1.out', clearProps: 'opacity'}, 0)
-        .fromTo(cards[1], {y: 35}, {y: 0, duration: 1.3, ease: 'power3.inOut'}, 0);
-      // one tween per side coupon for both axes, so x and y never fight over the transform
-      [0, 2].forEach(i => {
-        const r = cards[i].getBoundingClientRect();
-        tl.fromTo(cards[i], {x: (mid.left - r.left) / k, y: 35}, {x: 0, y: 0, duration: 1.3, ease: 'power3.inOut'}, 0);
-      });
-    }
-  };
-  function playEntrance(name) {
-    current = name; resetCards();
-    const tl = gsap.timeline();
-    entrances.shir(tl);
-    tl.add(priceCountdown, '-=.35');
-    tl.add(() => cards.forEach(c => { const p = parts(c); gsap.set([c, p.stub, ...p.body, ...p.dots], {clearProps: 'transform,filter,clipPath,zIndex,transformOrigin'}); }));
-    return tl;
+}
+function finish(instant) {
+  const w = score[0] >= score[1] ? 0 : 1, c = pair[w];
+  $('s' + w).classList.add('won');
+  $('sumTxt').innerHTML = `<b>${SHORT[c.id]}</b> מובילה ב-${score[w]} מתוך 5`;
+  const badge = $('s' + w).querySelector('.badge');
+  if (instant) { gsap.set(['#sum', badge], {opacity: 1}); return; }
+  gsap.fromTo(badge, {opacity: 0, scale: .6}, {opacity: 1, scale: 1, duration: .45, ease: 'back.out(2)'});
+  gsap.fromTo('#sum', {opacity: 0, y: 14}, {opacity: 1, y: 0, duration: .5, ease: 'power3.out'});
+}
+async function reset() {
+  await gsap.to(['.slot .full', '.met .v', '#sum'], {opacity: 0, duration: .35});
+  document.querySelectorAll('.slot').forEach(s => s.classList.remove('filled', 'won'));
+  gsap.to('.slot .empty', {opacity: 1, duration: .3});
+  score = [0, 0];
+}
+async function pick(side, id) {
+  const s = $('s' + side), dd = $('dd');
+  await moveTo(s.querySelector('.empty'), .5, .5, .9); await click();
+  const btn = s.querySelector('.empty'), p = pos(btn, .5, 1, view);
+  btn.classList.add('on');
+  gsap.set(dd, {left: p.x - 125, top: p.y + 6});
+  const opts = [...dd.querySelectorAll('.o')];
+  opts.forEach(o => o.classList.remove('hov', 'off'));
+  if (pair[1 - side]) opts.find(o => o.dataset.id === pair[1 - side].id).classList.add('off');
+  gsap.to('.mets', {filter: 'blur(4px)', opacity: .5, duration: .3});
+  await gsap.fromTo(dd, {autoAlpha: 0, y: -8}, {autoAlpha: 1, y: 0, duration: .35, ease: 'power3.out'});
+  const o = opts.find(o => o.dataset.id === id);
+  await moveTo(o, .7, .5, .8);
+  o.classList.add('hov'); await wait(250); await click();
+  gsap.to(dd, {autoAlpha: 0, duration: .25});
+  btn.classList.remove('on');
+  gsap.to('.mets', {filter: 'blur(0px)', opacity: 1, duration: .3});
+  await fill(side, id);
+}
+async function loop() {
+  for (let n = 0; ; n++) {
+    const [a, b] = PAIRS[n % PAIRS.length];
+    if (n) await reset();
+    pair = [];
+    await pick(0, a);
+    await pick(1, b);
+    await moveTo($('mets'), .5, .9, .8);
+    for (let i = 0; i < MET.length; i++) { reveal(i); await wait(520); }
+    await wait(300);
+    finish();
+    await wait(700);
+    await moveTo($('code'), .5, .5, .8); await click();
+    $('code').querySelector('span').textContent = 'הועתק';
+    gsap.fromTo('#toast', {opacity: 0, y: 10}, {opacity: 1, y: 0, duration: .35});
+    await wait(1400);
+    gsap.to('#toast', {opacity: 0, duration: .3});
+    $('code').querySelector('span').textContent = 'העתק קוד';
+    await moveTo($('get'), .5, .5, .6); await click();
+    await wait(1500);
   }
-  window.playEntrance = playEntrance;
+}
 
-  // price: count down from the old price to the deal price, then strike the old one
-  function priceCountdown() {
-    cards.forEach((card, i) => {
-      const was = card.querySelector('.price s'), now = card.querySelector('.price .now');
-      if (!now.dataset.v) now.dataset.v = now.textContent; now.textContent = now.dataset.v;
-      const from = parseFloat(was.textContent.replace(/[^\d.]/g, '')), to = parseFloat(now.dataset.v.replace(/[^\d.]/g, ''));
-      const o = {v: from};
-      gsap.to(o, {v: to, duration: 1.1, delay: i * .15, ease: 'power2.out', onUpdate: () => now.textContent = '$' + Math.round(o.v)});
-      gsap.to(was, {'--strike': '100%', duration: .4, delay: .7 + i * .15, ease: 'power2.inOut'});
-    });
-  }
-
-  // idle life: cards float, mouse parallax, hover tilt, magnetic buttons, grid spotlight
-  function startIdle() {
-
-    const stage = document.getElementById('stage');
-    const rectScale = () => { const m = new DOMMatrix(getComputedStyle(stage).transform); return {k: m.a, tx: m.e, ty: m.f}; };
-    const cardsX = gsap.quickTo('.cards', 'x', {duration: .8, ease: 'power3'}), cardsY = gsap.quickTo('.cards', 'y', {duration: .8, ease: 'power3'});
-    const glowX = gsap.quickTo('.glow', 'x', {duration: 1.4, ease: 'power3'}), glowY = gsap.quickTo('.glow', 'y', {duration: 1.4, ease: 'power3'});
-
-    const cells = [...q('.cell')];
-
-    // grid: now and then a few cells brighten softly and fade back
-    const twinkle = () => {
-      const pool = cells.filter((c, i) => { const r = Math.floor(i / 38), col = i % 38; return r >= 3 && r < 15 && col >= 10 && col < 28; });
-      const c = pool[Math.floor(Math.random() * pool.length)];
-      if (c.classList.contains('glint')) return setTimeout(twinkle, 100);
-      // fill in, hold a moment, fade back out slowly (the base .cell transition is 2.2s)
-      c.classList.add('glint'); setTimeout(() => c.classList.remove('glint'), 2400 + Math.random() * 1200);
-      setTimeout(twinkle, 350 + Math.random() * 650);
-    };
-    twinkle();
-
-    // buttons: the inner shadow slides toward the cursor (glow sits on the cursor's side)
-    q('.cta, .glass .pill, .btn-sm').forEach(b => {
-      b.addEventListener('mousemove', e => {
-        const r = b.getBoundingClientRect();
-        const nx = (e.clientX - r.left) / r.width - .5, ny = (e.clientY - r.top) / r.height - .5;
-        b.style.setProperty('--sx', (-nx * 16).toFixed(1) + 'px');
-        b.style.setProperty('--sy', (-ny * 12).toFixed(1) + 'px');
-        b.style.setProperty('--ga', 1);
-      });
-      b.addEventListener('mouseleave', () => { b.style.setProperty('--sx', '0px'); b.style.setProperty('--sy', '0px'); b.style.setProperty('--ga', 0); });
-    });
-  }
-})();
+gsap.set(cur, {x: 400, y: 600});
+if (still || !window.gsap) {
+  if (window.gsap) { fill(0, PAIRS[0][0]); fill(1, PAIRS[0][1]); MET.forEach((m, i) => reveal(i, true)); finish(true); }
+} else {
+  // entrance: the light first - the glow swells in, then the content settles in calmly
+  gsap.set(cur, {opacity: 0});
+  gsap.timeline({defaults: {ease: 'power3.out'}})
+    .fromTo('#glow', {opacity: 0, scale: .6}, {opacity: .5, scale: 1, duration: 1.4, ease: 'power2.out'})
+    .from('.header', {opacity: 0, duration: .8}, '-=.8')
+    .from(['.chip', 'h1', '.sub', '.ctas > *', '#win'], {opacity: 0, y: 14, duration: 1.2, stagger: .08, ease: 'power2.out'}, '-=.6')
+    .to(cur, {opacity: 1, duration: .4})
+    .add(() => loop());
+}
 </script>
-
-<script src="assets/bg-light.js"></script>
+<script>
+document.querySelectorAll('.cta').forEach(b => {
+  b.addEventListener('mousemove', e => {
+    const r = b.getBoundingClientRect();
+    b.style.setProperty('--sx', (-((e.clientX - r.left) / r.width - .5) * 16).toFixed(1) + 'px');
+    b.style.setProperty('--sy', (-((e.clientY - r.top) / r.height - .5) * 12).toFixed(1) + 'px');
+    b.style.setProperty('--ga', 1);
+  });
+  b.addEventListener('mouseleave', () => { b.style.setProperty('--sx', '0px'); b.style.setProperty('--sy', '0px'); b.style.setProperty('--ga', 0); });
+});
+</script>
 <script>
 (() => {
-  // the light fills exactly the visible part of the stage, like the reference's full-window background
-  const cv = document.getElementById('bgLight'), stage = document.getElementById('stage');
-  function place() {
-    const m = new DOMMatrix(getComputedStyle(stage).transform), k = m.a || 1;
-    Object.assign(cv.style, {left: (960 - m.e / k) + 'px', top: (349 - m.f / k) + 'px', width: (innerWidth / k) + 'px', height: (innerHeight / k) + 'px'});
+  // the glow follows the cursor with a soft lag; its centre tracks the pointer across the stage
+  const glow = $('glow');
+  if (!still && window.gsap) {
+    const gx = gsap.quickTo(glow, 'x', {duration: 1.6, ease: 'power3.out'}), gy = gsap.quickTo(glow, 'y', {duration: 1.6, ease: 'power3.out'});
+    addEventListener('mousemove', e => {
+      const m = new DOMMatrix(getComputedStyle(stage).transform), k = m.a || 1;
+      const sx = (e.clientX - m.e) / k, sy = (e.clientY - m.f) / k;
+      gx(sx - (735 + 342.5)); gy(sy - (130 + 342.5));
+    });
   }
-  place();
-  // [cool accent, outer glow, middle band, core, hotspot]
-  const light = window.startBgLight && window.startBgLight(cv, ['#4fd8ff', '#0a1a8c', '#8eafff', '#3d5cff', '#dcecff']);
-  if (!light) return;
-  addEventListener('resize', () => { place(); light.resize(); });
-  // fade in with the page
-  cv.style.opacity = 0; cv.style.transition = 'opacity 1.5s ease-out';
-  setTimeout(() => cv.style.opacity = 1, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1600);
+  // squares light up inside the glow: a burst whenever the glow moves, plus a slow sprinkle while it rests
+  const cells = [...document.querySelectorAll('.cell')];
+  const R = 420; // reach of the glow, in stage px
+  // at most 2 lit at once, and never close to each other (at least two empty squares between any two)
+  const MAX_LIT = 2, MIN_GAP = 3, lit = new Map(); // cell -> {col,row}
+  function lightOne() {
+    if (lit.size >= MAX_LIT) return;
+    const cx = 735 + 342.5 + (gsap.getProperty(glow, 'x') || 0), cy = 130 + 342.5 + (gsap.getProperty(glow, 'y') || 0);
+    for (let tries = 0; tries < 16; tries++) {
+      const ang = Math.random() * Math.PI * 2, d = R * Math.sqrt(Math.random());
+      const col = Math.floor((cx + Math.cos(ang) * d + 960) / 96), row = Math.floor((cy + Math.sin(ang) * d + 349) / 96);
+      if (col < 0 || col >= 38) continue;
+      // keep clear of the header strip and of the animation card (no lit squares under either)
+      const x0 = -960 + col * 96, y0 = -349 + row * 96;
+      if (y0 < 131) continue;
+      if (x0 < 816 && x0 + 96 > 144 && y0 < 851 && y0 + 96 > 179) continue;
+      if ([...lit.values()].some(p => Math.max(Math.abs(p.col - col), Math.abs(p.row - row)) < MIN_GAP)) continue;
+      // the page is RTL, so the grid's flex rows fill from the right: column 0 in the DOM is the rightmost one
+      const c = cells[row * 38 + (37 - col)];
+      if (!c) continue;
+      lit.set(c, {col, row}); c.classList.add('glint');
+      setTimeout(() => c.classList.remove('glint'), 2200 + Math.random() * 800);
+      setTimeout(() => lit.delete(c), 4600);
+      return;
+    }
+  }
+  let lastBurst = 0;
+  addEventListener('mousemove', () => {
+    const now = performance.now();
+    if (now - lastBurst < 450) return;
+    lastBurst = now; lightOne();
+  });
+  const sprinkle = () => { lightOne(); setTimeout(sprinkle, 1400 + Math.random() * 1200); };
+  if (!still && window.gsap) setTimeout(sprinkle, 2500);
+})();
+</script>
+<script>
+// Shiny text on the headline (ported from React Bits <ShinyText />, vanilla JS):
+// a soft band of light sweeps across the letters, layered over the brand gradient.
+(() => {
+  const h1 = document.querySelector('h1');
+  if (!h1 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const BASE = 'linear-gradient(to right, #8eafff, #c9d5f2 78.365%)';
+  const S = {speed: 2.2, delay: 1.4, angle: 90, width: 30, softness: .55, color: '255,255,255', strength: 1};
+  const FALL = [0, .2, .4, .6, .8, 1];
+  const half = S.width / 2, core = half * (1 - S.softness), fade = half - core, ext = half + 2;
+  const ease = t => .5 - Math.cos(Math.PI * t) / 2;
+  function band(pos) {
+    const stops = [];
+    for (const side of [-1, 1]) for (const f of FALL) stops.push([pos + side * (core + fade * (1 - f)), f * f * (3 - 2 * f) * S.strength]);
+    stops.sort((a, b) => a[0] - b[0]);
+    return `linear-gradient(${S.angle}deg, rgba(${S.color},0) 0%, ${stops.map(([at, a]) => `rgba(${S.color},${a.toFixed(3)}) ${at.toFixed(2)}%`).join(', ')}, rgba(${S.color},0) 100%)`;
+  }
+  // the light travels right to left, the way the headline reads
+  const from = 100 + ext, to = -ext;
+  let start = performance.now() + 2600; // first sweep once the entrance has settled
+  function tick(now) {
+    requestAnimationFrame(tick);
+    if (now < start) { h1.style.backgroundImage = BASE; return; }
+    const t = (now - start) / (S.speed * 1000);
+    if (t >= 1) { h1.style.backgroundImage = BASE; start = now + S.delay * 1000; return; }
+    h1.style.backgroundImage = band(from + (to - from) * ease(t)) + ', ' + BASE;
+  }
+  requestAnimationFrame(tick);
 })();
 </script>
 </body>
