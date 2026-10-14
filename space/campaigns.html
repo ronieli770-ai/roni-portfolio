@@ -151,16 +151,15 @@
   .mstrip .tile__img img{width:100%;height:100%;object-fit:contain}
   .mstrip--wide{height:auto;margin-top:14px}
   .mstrip--wide .tile__img img{height:auto}
-  /* on a phone each project is one row that swipes sideways, every item at the same height */
+  /* on a phone each project is a two-column grid, wide signs span the row, thin ones keep a sane height */
   @media (max-width:900px){
-    .mstrip{height:300px;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-inline:-20px;padding-inline:20px}
-    .mstrip::-webkit-scrollbar{display:none}
-    .mstrip .tile{flex:none !important;scroll-snap-align:start}
-    .mstrip .tile__img{padding:10px}
-    .mstrip .tile__img img{width:auto;height:100%}
-    .mstrip--wide{height:auto;overflow:visible;margin-inline:0;padding-inline:0}
-    .mstrip--wide .tile{flex:1 1 auto !important}
-    .mstrip--wide .tile__img img{width:100%;height:auto}
+    .mstrip{display:grid;grid-template-columns:1fr 1fr;grid-auto-flow:dense;height:auto;gap:10px;align-items:start}
+    .mstrip .tile{flex:none !important}
+    .mstrip .tile.wide{grid-column:1 / -1}
+    .mstrip .tile__img{height:auto;padding:10px}
+    .mstrip .tile__img img{width:100%;height:auto}
+    .mstrip .tile.thin .tile__img img{width:auto;max-width:100%;max-height:380px;margin-inline:auto}
+    .mstrip--wide{display:block;margin-top:10px}
   }
 
   /* ---------- video ---------- */
@@ -285,7 +284,10 @@
     .grid{gap:10px}
     .s3,.s4,.s5{grid-column:span 6}
     .s6,.s7,.s8,.s12{grid-column:span 12}
-    .h1{height:200px}.h2{height:260px}.h3{height:440px}
+    .h1,.h2,.h3{height:auto}
+    .tile__img img{width:100%;height:auto}
+    .tile--cover .tile__img img{height:auto;object-fit:initial}
+    .stack > .tile{flex:none}
     .tile{border-radius:18px}
     .tile__img{padding:12px}
     figcaption{padding:0 14px 12px;font-size:14px}
@@ -380,7 +382,7 @@
           <div>
             <span class="cmp__num">02</span>
             <div class="cmp__client">האחים מאיה · יזמות ובנייה</div>
-            <h3 class="grad">חמישה פרויקטים, חמש שפות, מהגדר ועד המנוף</h3>
+            <h3 class="grad">ארבעה פרויקטים, ארבע שפות, מהגדר ועד המנוף</h3>
           </div>
           <div>
             <p class="cmp__text">חברת יזמות שבונה כמה פרויקטים במקביל בפתח תקווה. לכל פרויקט יש שפה משלו, עם צבעים, לוגו וטון אחרים. השפה הזאת עוברת מהשלט על המנוף ומדבקות הגדר באתר הבנייה ועד המודעה בפיד, כך שכל פרויקט מזוהה מרחוק. <b>עיצבתי את השילוט באתרי הבנייה, את שלטי החוצות ואת המודעות של כל הפרויקטים.</b></p>
@@ -389,24 +391,20 @@
         </div>
         <div class="mp rv">
           <div class="mp-head"><b>מגדלי ספיר</b><span>מדבקות לגדר, שלט על המנוף ומודעה</span></div>
-          <div class="mstrip"><figure class="tile" style="flex:2.22"><div class="tile__img"><img src="assets/ag/sp-sticker.webp" alt="מדבקת גדר" loading="lazy"></div></figure><figure class="tile" style="flex:0.5"><div class="tile__img"><img src="assets/ag/sp-sticker-v.webp" alt="מדבקת גדר לאורך" loading="lazy"></div></figure><figure class="tile thin" style="flex:0.4"><div class="tile__img"><img src="assets/ag/sp-crane.webp" alt="שלט מנוף" loading="lazy"></div></figure><figure class="tile" style="flex:0.83"><div class="tile__img"><img src="assets/ag/sp-ad.webp" alt="מודעה" loading="lazy"></div></figure></div>
+          <div class="mstrip"><figure class="tile wide" style="flex:2.22"><div class="tile__img"><img src="assets/ag/sp-sticker.webp" alt="מדבקת גדר" loading="lazy"></div></figure><figure class="tile" style="flex:0.5"><div class="tile__img"><img src="assets/ag/sp-sticker-v.webp" alt="מדבקת גדר לאורך" loading="lazy"></div></figure><figure class="tile thin" style="flex:0.4"><div class="tile__img"><img src="assets/ag/sp-crane.webp" alt="שלט מנוף" loading="lazy"></div></figure><figure class="tile" style="flex:0.83"><div class="tile__img"><img src="assets/ag/sp-ad.webp" alt="מודעה" loading="lazy"></div></figure></div>
           <div class="mstrip mstrip--wide"><figure class="tile" style="flex:1"><div class="tile__img"><img src="assets/ag/sp-strip.webp" alt="פס מדבקות לאורך הגדר" loading="lazy"></div></figure></div>
         </div>
         <div class="mp rv">
           <div class="mp-head"><b>הצנחנים 16</b><span>שלטי חוצות, שלטי עמודים ומודעות</span></div>
-          <div class="mstrip"><figure class="tile thin" style="flex:0.19"><div class="tile__img"><img src="assets/ag/ts-poles.webp" alt="שלטי עמודים" loading="lazy"></div></figure><figure class="tile" style="flex:1.67"><div class="tile__img"><img src="assets/ag/ts-bill.webp" alt="שלט חוצות" loading="lazy"></div></figure><figure class="tile" style="flex:1"><div class="tile__img"><img src="assets/ag/ts-ad1.webp" alt="מודעה" loading="lazy"></div></figure><figure class="tile" style="flex:0.83"><div class="tile__img"><img src="assets/ag/ts-ad2.webp" alt="מודעה" loading="lazy"></div></figure></div>
+          <div class="mstrip"><figure class="tile thin" style="flex:0.19"><div class="tile__img"><img src="assets/ag/ts-poles.webp" alt="שלטי עמודים" loading="lazy"></div></figure><figure class="tile wide" style="flex:1.67"><div class="tile__img"><img src="assets/ag/ts-bill.webp" alt="שלט חוצות" loading="lazy"></div></figure><figure class="tile" style="flex:1"><div class="tile__img"><img src="assets/ag/ts-ad1.webp" alt="מודעה" loading="lazy"></div></figure><figure class="tile" style="flex:0.83"><div class="tile__img"><img src="assets/ag/ts-ad2.webp" alt="מודעה" loading="lazy"></div></figure></div>
         </div>
         <div class="mp rv">
           <div class="mp-head"><b>קיש 23</b><span>מדבקות לגדר ומודעה</span></div>
-          <div class="mstrip"><figure class="tile" style="flex:2.35"><div class="tile__img"><img src="assets/ag/ks-fence.webp" alt="מדבקת גדר" loading="lazy"></div></figure><figure class="tile" style="flex:0.555"><div class="tile__img"><img src="assets/ag/ks-fence-v.webp" alt="מדבקת גדר לאורך" loading="lazy"></div></figure><figure class="tile" style="flex:1"><div class="tile__img"><img src="assets/ag/ks-ad.webp" alt="מודעה" loading="lazy"></div></figure></div>
+          <div class="mstrip"><figure class="tile wide" style="flex:2.35"><div class="tile__img"><img src="assets/ag/ks-fence.webp" alt="מדבקת גדר" loading="lazy"></div></figure><figure class="tile" style="flex:0.555"><div class="tile__img"><img src="assets/ag/ks-fence-v.webp" alt="מדבקת גדר לאורך" loading="lazy"></div></figure><figure class="tile" style="flex:1"><div class="tile__img"><img src="assets/ag/ks-ad.webp" alt="מודעה" loading="lazy"></div></figure></div>
         </div>
         <div class="mp rv">
           <div class="mp-head"><b>הרב ניימן 8</b><span>שלטי עמודים ומודעות</span></div>
           <div class="mstrip"><figure class="tile thin" style="flex:0.09"><div class="tile__img"><img src="assets/ag/nm-pole1.webp" alt="שלט עמוד" loading="lazy"></div></figure><figure class="tile thin" style="flex:0.21"><div class="tile__img"><img src="assets/ag/nm-pole2.webp" alt="שלט עמוד" loading="lazy"></div></figure><figure class="tile" style="flex:0.83"><div class="tile__img"><img src="assets/ag/nm-ad1.webp" alt="מודעה" loading="lazy"></div></figure><figure class="tile" style="flex:0.83"><div class="tile__img"><img src="assets/ag/nm-ad2.webp" alt="מודעה" loading="lazy"></div></figure></div>
-        </div>
-        <div class="mp rv">
-          <div class="mp-head"><b>רוטשילד 160</b><span>שלט באתר ומודעה</span></div>
-          <div class="mstrip"><figure class="tile" style="flex:4.36"><div class="tile__img"><img src="assets/ag/rt-sign.webp" alt="שלט באתר הבנייה" loading="lazy"></div></figure><figure class="tile" style="flex:1"><div class="tile__img"><img src="assets/ag/rt-ad.webp" alt="מודעה" loading="lazy"></div></figure></div>
         </div>
       </div>
     </section>
