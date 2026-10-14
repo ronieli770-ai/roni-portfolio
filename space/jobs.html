@@ -648,6 +648,18 @@
   /* section headings over branding, ads and print - same treatment as "הפרוייקטים שלי":
      60px semibold on the 6.771% page margin, 146px of air above, 51px to the content */
   .gd-head{position:relative;z-index:1;padding:min(146px,8.45vw) 6.771% 0}
+  /* hidden video-ads block (?ai) */
+  #g-video{position:relative;z-index:1}
+  #g-video .vid-lead{margin:min(24px,1.4vw) 6.771% 0;max-width:640px;color:#81848e;font-size:min(22px,1.3vw);line-height:1.5;text-align:right}
+  #g-video .vid-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:min(28px,1.62vw);padding:min(44px,2.55vw) 6.771% 0}
+  #g-video figure{margin:0}
+  #g-video video,#g-video img{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:18px;background:#000;border:1px solid rgba(255,255,255,.12)}
+  #g-video figcaption{margin-top:12px;color:#C9D2DE;font-size:min(18px,1.1vw);text-align:right}
+  @media (max-width:900px){
+    #g-video .vid-lead{margin:16px 14px 0;font-size:15px}
+    #g-video .vid-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:24px 14px 0}
+    #g-video figcaption{font-size:13px}
+  }
   .gd-head .proj-head{margin-bottom:0}
   /* the first branding composition carries 16.38% of empty stage above its cards, so it
      is pulled up to leave the same 51px between heading and cards as the projects */
@@ -1019,6 +1031,19 @@
     <div class="as-title"><h2 class="proj-head">מודעות גרפיות</h2></div>
   </div>
 </section>
+
+<!-- video ads - hidden unless the page is opened with ?ai (sent only to roles that ask for video) -->
+<div id="g-video" hidden>
+  <div class="gd-head"><h2 class="proj-head">מודעות וידאו</h2></div>
+  <p class="vid-lead">מודעה אחת בשתי פתיחות, מוכנה לבדיקה בפייסבוק ובאינסטגרם. נבנתה בקלוד קוד כמנוע מודעות: כותרת או צבע חדשים הופכים לגרסה חדשה תוך דקות.</p>
+  <div class="vid-grid">
+    <figure><video src="ai-ads/ad-a.mp4" poster="ai-ads/poster-a.jpg" controls muted playsinline preload="none"></video><figcaption>גרסה א' · פתיחה בשאלה</figcaption></figure>
+    <figure><video src="ai-ads/ad-b.mp4" poster="ai-ads/poster-b.jpg" controls muted playsinline preload="none"></video><figcaption>גרסה ב' · פתיחה בהבטחה</figcaption></figure>
+    <figure><img src="ai-ads/static-a.jpg" alt="" loading="lazy"><figcaption>סטטי · גרסה א'</figcaption></figure>
+    <figure><img src="ai-ads/static-b.jpg" alt="" loading="lazy"><figcaption>סטטי · גרסה ב'</figcaption></figure>
+  </div>
+</div>
+<script>if (new URLSearchParams(location.search).has('ai')) document.getElementById('g-video').hidden = false;</script>
 
 <div class="gd-head" id="g-print"><h2 class="proj-head">גרפיקה לדפוס</h2></div>
 <section class="gd-sec" data-gd="8">
