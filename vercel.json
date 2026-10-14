@@ -5,6 +5,7 @@
   ],
   "rewrites": [
     { "source": "/", "has": [{ "type": "host", "value": "portfolio.ronieliyahu.co.il" }], "destination": "/space/jobs.html" },
+    { "source": "/campaigns", "has": [{ "type": "host", "value": "portfolio.ronieliyahu.co.il" }], "destination": "/space/campaigns.html" },
     { "source": "/:path((?!space/).*)", "has": [{ "type": "host", "value": "portfolio.ronieliyahu.co.il" }], "destination": "/space/:path" },
     { "source": "/admin", "destination": "/space/admin.html" },
     { "source": "/thank-you", "destination": "/space/thank-you.html" }
