@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>AntarTrade - הירו - גרסה 13</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=IBM+Plex+Sans+Hebrew:wght@400&display=swap" rel="stylesheet">
+<style>
+  @font-face{font-family:"Reforma";src:local("FbReforma-Regular"),local("Fb Reforma");font-weight:400}
+  @font-face{font-family:"Reforma";src:local("FbReforma-Medium"),local("Fb Reforma Medium");font-weight:500}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff;overflow:hidden;height:100%}
+  body{--blue:#8eafff;font-family:'Reforma','Heebo',sans-serif;color:#fff;-webkit-font-smoothing:antialiased}
+  #fit{position:fixed;inset:0;overflow:hidden}
+  #stage{position:absolute;left:0;top:0;width:1728px;height:1117px;transform-origin:0 0}
+  .abs{position:absolute}
+  img{display:block}
+
+  /* ===== Figma 84:1648 ===== */
+  .glow{pointer-events:none;will-change:transform}
+  .glow img{position:absolute;max-width:none}
+  .glow-a{left:1085px;top:-14px;width:747px;height:702px}
+  .glow-a img{left:-35.21%;top:-37.46%;width:170.42%;height:174.92%}
+  .glow-b{left:866px;top:-87px;width:499px;height:468px}
+  .glow-b img{left:-52.71%;top:-56.2%;width:205.42%;height:212.4%}
+  .herobg{left:-1500px;top:-64px;width:4728px;height:890.5px;overflow:hidden}
+  .herobg .shape{position:absolute;left:0;top:-59px;width:4876px;height:834px}
+  .photo{left:1484px;top:-108px;width:841px;height:774px;overflow:hidden;will-change:transform}
+  .photo .inner{position:absolute;inset:0;will-change:transform}
+  .photo img{position:absolute;left:-.05%;top:0;width:100.1%;height:145.66%;max-width:none}
+  /* light that sweeps over the trading screen now and then */
+  .photo .sheen{position:absolute;left:0;top:0;width:60%;height:100%;background:linear-gradient(100deg,transparent 30%,rgba(200,215,255,.35) 50%,transparent 70%);mix-blend-mode:overlay;transform:translateX(-120%);pointer-events:none}
+  /* soft fade where the photo meets the page */
+  .photo::after{content:"";position:absolute;inset:0;background:linear-gradient(to left,#12161f 0%,rgba(18,22,31,0) 22%),linear-gradient(to top,#12161f 0%,rgba(18,22,31,0) 30%);pointer-events:none}
+
+  .header{left:50%;top:37px;transform:translateX(-50%);display:flex;gap:66px;align-items:center;direction:ltr}
+  .nav{display:flex;gap:25px;align-items:center}
+  .nav a{position:relative;display:flex;align-items:center;gap:6px;padding:10px;font-size:18px;line-height:1.4;color:#fff;text-decoration:none;white-space:nowrap}
+  .nav a.home,.nav a.promo{font-weight:500}
+  .nav a.promo{color:#d6ecff}
+  .nav a img{width:16px;height:16px}
+  .nav a::after{content:"";position:absolute;left:10px;right:10px;bottom:6px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+  .nav a:hover::after{transform:scaleX(1)}
+  .logo{width:195px;height:43px;object-fit:cover}
+
+  .halo{display:flex;padding:6px;border-radius:999px;backdrop-filter:blur(6px);overflow:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+  .halo:hover{transform:translateY(-3px)}
+  .halo.soft{background:rgba(142,175,255,.05);border:1px solid rgba(255,255,255,.14)}
+  .halo.primary{background:rgba(142,175,255,.08);border:1px solid rgba(255,255,255,.12)}
+  .cta{position:relative;isolation:isolate;overflow:hidden;display:flex;gap:7px;align-items:center;justify-content:center;height:50px;padding:19px 25px;border-radius:90px;font-size:20px;font-weight:500;line-height:.915;color:#fff;text-decoration:none;white-space:nowrap}
+  .cta img{width:16px;height:16px}
+  .cta.outline{border:1px solid rgba(142,175,255,.5)}
+  .cta.white{background:#fff;color:#000;line-height:1.4}
+  .cta.solid{background:var(--blue);text-shadow:0 1px 2px rgba(12,24,80,.55)}
+  .cta::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none}
+  .cta.solid::after{box-shadow:inset var(--sx) calc(-4px + var(--sy)) 17.6px #fff,inset 0 -8px 26.4px rgba(0,0,0,.25)}
+  .cta.outline::after{box-shadow:inset var(--sx) var(--sy) 14px rgba(142,175,255,calc(var(--ga) * .55))}
+  .cta.white::after{box-shadow:inset var(--sx) var(--sy) 14px rgba(142,175,255,calc(var(--ga) * .45))}
+  @property --sx{syntax:'<length>';inherits:true;initial-value:0px}
+  @property --sy{syntax:'<length>';inherits:true;initial-value:0px}
+  @property --ga{syntax:'<number>';inherits:true;initial-value:0}
+  .cta{transition:--sx .35s ease-out,--sy .35s ease-out,--ga .35s ease-out}
+
+  .intro{left:928px;top:150px;width:666px;display:flex;flex-direction:column;gap:20px;align-items:flex-start;text-align:right}
+  h1{font-weight:400;width:100%}
+  h1 .line{display:block;overflow:hidden;padding:.06em 0 .14em;margin:-.06em 0 -.14em}
+  /* Figma gradient (to right: #8eafff -> white at 78.365%) across the full width of the headline box.
+     Each line spans the whole box, so the gradient runs continuously from line to line.
+     Animated: the gradient is drawn a bit wider than the box and drifts slowly left and right. */
+  h1 .line span{display:block;width:100%;text-align:right;--base:linear-gradient(to right,#8eafff 0%,#fff 78.365%);background:var(--base);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;will-change:transform}
+  /* over the headline, a pool of blue trails the cursor; it fades back to the Figma gradient on leave */
+  @property --ma{syntax:'<number>';inherits:true;initial-value:0}
+  h1{transition:--ma .5s ease}
+  h1:hover{--ma:1}
+  h1 .line span{background-image:radial-gradient(circle 220px at var(--mx,50%) var(--my,50%),rgba(142,175,255,var(--ma)) 0%,rgba(142,175,255,calc(var(--ma) * .55)) 35%,rgba(142,175,255,0) 75%),var(--base)}
+  h1 .line{text-align:right}
+  h1 .big{font-weight:500;font-size:90px;line-height:.915}
+  h1 .small{font-size:60px;line-height:1.07}
+  .sub{font-size:20px;line-height:1.2;color:rgba(255,255,255,.7)}
+  .ctas{display:flex;gap:10px;align-items:center;direction:rtl}
+  .search{width:100%;height:45px;display:flex;align-items:center;gap:10px;padding:0 20px;position:relative;border:0;border-radius:10px;background:none}
+  .search::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(to right,#8eafff,#fff);opacity:.5;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+  .search img{width:20px;height:20px;flex-shrink:0}
+  /* typed text in a field uses IBM Plex, never the display font */
+  .search .typed{font:400 16px 'IBM Plex Sans Hebrew',sans-serif;color:#fff;white-space:nowrap}
+  .search .caret{width:1.5px;height:20px;background:#fff;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  .partners{left:134px;top:759px;width:1460px;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+  .partners h2{font-weight:500;font-size:30px;line-height:1.2;color:#000}
+  .partners p{font-size:20px;line-height:1.2;color:rgba(0,0,0,.7)}
+  .marquee{width:1196px;height:74px;overflow:hidden;direction:ltr;-webkit-mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent)}
+  .track{display:flex;width:max-content;height:100%;animation:scroll 32s linear infinite}
+  .marquee:hover .track{animation-play-state:paused}
+  .set{display:flex;align-items:center;gap:60px;padding-right:60px;height:100%}
+  .set img{opacity:.9;transition:opacity .3s,transform .3s}
+  .set img:hover{opacity:1;transform:translateY(-2px)}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* fine film grain over everything - the "printed" finish of award sites */
+  .grain{position:absolute;inset:-50%;pointer-events:none;z-index:1;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain 1s steps(6) infinite}
+  @keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
+  @media (prefers-reduced-motion: reduce){.track,.grain,.search .caret{animation:none}}
+</style>
+</head>
+<body>
+<div id="fit"><div id="stage">
+  <div class="abs herobg"><svg class="shape" viewBox="0 0 4876 834" preserveAspectRatio="none"><path d="M0 0H4876V478.1L3376 766.1C3376 766.1 3021.54 834 2438 834C1854.46 834 1500 766.1 1500 766.1L0 478.1Z" fill="#12161F"/></svg><div class="abs photo" id="photo"><div class="inner" id="photoInner"><img src="assets/v11/hero-trader.jpg" alt=""></div><div class="sheen" id="sheen"></div></div><div class="grain"></div></div>
+  <div class="abs glow glow-a" id="glowA"><img src="assets/v11/glow-a.svg" alt=""></div>
+  <div class="abs glow glow-b" id="glowB"><img src="assets/v11/glow-b.svg" alt=""></div>
+
+  <header class="abs header">
+    <div class="halo soft"><a class="cta white" href="#"><img src="assets/v11/icon-school-dark.svg" alt="">קורסים</a></div>
+    <nav class="nav">
+      <a href="#">אודות</a><a href="#">יומן מסחר</a><a href="#">מרכז הידע</a>
+      <a href="#" class="promo"><img src="assets/v11/icon-pricetag-nav.svg" alt="">מבצעים והגרלות</a>
+      <a href="#">השוואת חברות</a><a href="#">חברות מימון</a><a href="#" class="home">דף הבית</a>
+    </nav>
+    <img class="logo" src="assets/v11/logo-antartrade.png" alt="AntarTrade">
+  </header>
+
+  <main class="abs intro">
+    <h1>
+      <span class="line big"><span>השווה בין חברות</span></span>
+      <span class="line big"><span>מימון למסחר</span></span>
+      <span class="line small"><span>בחר את החשבון שמתאים לך</span></span>
+    </h1>
+    <p class="sub">מחירים, כללים, מבצעים ותנאי משיכה של חברות המימון המובילות - במקום אחד.</p>
+    <div class="ctas">
+      <div class="halo primary"><a class="cta solid" href="#"><img src="assets/v11/icon-compare.svg" alt="">להשוואת החברות</a></div>
+      <div class="halo soft"><a class="cta outline" href="#"><img src="assets/v11/icon-pricetag.svg" alt="">למבצעים נוספים</a></div>
+      <div class="halo soft"><a class="cta outline" href="#"><img src="assets/v11/icon-school.svg" alt="">אני רוצה ללמוד</a></div>
+    </div>
+    <div class="search" id="search"><img src="assets/v11/icon-search.svg" alt=""><span class="typed" id="typed"></span><span class="caret"></span></div>
+  </main>
+
+  <section class="abs partners">
+    <h2>השותפים שלנו בעולם המסחר</h2>
+    <p>חברות מימון, פלטפורמות וכלים שאנחנו עובדים איתם</p>
+    <div class="marquee"><div class="track" id="track"></div></div>
+  </section>
+</div></div>
+
+<script>
+// Stage: the 1728px Figma frame, fitted to the content (header to the logo strip)
+const stage = document.getElementById('stage');
+const fitEl = document.getElementById('fit');
+function fit() {
+  // uniform scale: the whole composition (header to logo strip, 925px) always fits the window
+  const w = innerWidth, h = innerHeight, k = Math.min(w / 1728, h / 925);
+  stage.style.transform = `translate(${(w - 1728 * k) / 2}px, 0px) scale(${k})`;
+}
+addEventListener('resize', fit); fit();
+
+// Logo strip: two identical sets, the track moves by exactly one set - a seamless linear loop
+const LOGOS = [['takeprofit', 40], ['fundednext', 34], ['bulenox', 44], ['lucid', 44], ['topstep', 36], ['apex', 46]];
+const set = hidden => `<div class="set"${hidden ? ' aria-hidden="true"' : ''}>` + LOGOS.map(([k, h]) => `<img src="assets/wordmarks/light-${k}.png" alt="${hidden ? '' : k}" style="height:${h}px">`).join('') + '</div>';
+document.getElementById('track').innerHTML = set(false) + set(true);
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(() => {
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const typed = document.getElementById('typed');
+  const QUESTIONS = ['מהו חוק העקביות באפקס?', 'איזו חברה הכי משתלמת עכשיו?', 'מה ההבדל בין סטופ סוף יום לתוך יומי?', 'איפה אפשר למשוך כסף כבר מהיום הראשון?'];
+  if (still || !window.gsap) { typed.textContent = QUESTIONS[0]; document.querySelector('h1').classList.add('in'); return; }
+
+  // ===== Entrance: the photo is unveiled, the headline rises line by line, the rest follows =====
+  gsap.set('.header > *', {y: -24, opacity: 0});
+  gsap.set('h1 .line span', {yPercent: 110, rotate: 2});
+  gsap.set('.sub', {y: 16, opacity: 0, filter: 'blur(8px)'});
+  gsap.set('.ctas > *', {y: 22, opacity: 0});
+  gsap.set('#search', {clipPath: 'inset(0 0 0 100% round 10px)', opacity: 0});
+  gsap.set('.partners > *', {y: 24, opacity: 0});
+  gsap.set(['#glowA', '#glowB'], {opacity: 0, scale: .7});
+  gsap.set('#photo', {clipPath: 'inset(0 100% 0 0)'});
+  gsap.set('#photoInner', {scale: 1.18});
+
+  const tl = gsap.timeline({defaults: {ease: 'expo.out'}});
+  tl.to(['#glowA', '#glowB'], {opacity: 1, scale: 1, duration: 2.2, ease: 'power2.out', stagger: .15})
+    .to('#photo', {clipPath: 'inset(0 0% 0 0)', duration: 1.6, ease: 'expo.inOut'}, .1)
+    .to('#photoInner', {scale: 1, duration: 2.6, ease: 'power3.out'}, .1)
+    .to('.header > *', {y: 0, opacity: 1, duration: 1, stagger: .06, clearProps: 'transform'}, .5)
+    .to('h1 .line span', {yPercent: 0, rotate: 0, duration: 1.3, stagger: .12}, .7)
+    .to('.sub', {y: 0, opacity: 1, filter: 'blur(0px)', duration: 1}, 1.15)
+    .to('.ctas > *', {y: 0, opacity: 1, duration: .9, stagger: .08, clearProps: 'transform'}, 1.3)
+    .to('#search', {clipPath: 'inset(0 0 0 0% round 10px)', opacity: 1, duration: 1, ease: 'expo.inOut', clearProps: 'clipPath'}, 1.45)
+    .add(startTyping, 2.3)
+    .add(sweep, 2.6);
+
+  // ===== Partners: rise in when scrolled into view =====
+  const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); gsap.to('.partners > *', {y: 0, opacity: 1, duration: 1, stagger: .1, ease: 'expo.out', delay: .2}); } }, {threshold: .3});
+  io.observe(document.querySelector('.partners'));
+
+  // ===== The search bar types real questions, one after another =====
+  async function startTyping() {
+    const wait = ms => new Promise(r => setTimeout(r, ms));
+    for (let i = 0; ; i = (i + 1) % QUESTIONS.length) {
+      for (const ch of QUESTIONS[i]) { typed.textContent += ch; await wait(55 + Math.random() * 45); }
+      await wait(2200);
+      while (typed.textContent.length) { typed.textContent = typed.textContent.slice(0, -1); await wait(22); }
+      await wait(400);
+    }
+  }
+
+  // ===== A sheen of light passes over the trading screen every few seconds =====
+  function sweep() {
+    gsap.fromTo('#sheen', {xPercent: -120}, {xPercent: 220, duration: 2.4, ease: 'power2.inOut', onComplete: () => gsap.delayedCall(4.5, sweep)});
+  }
+
+  // ===== Depth: photo, glows and text drift at different speeds with the cursor =====
+  const qx = (t, d) => gsap.quickTo(t, 'x', {duration: d, ease: 'power3.out'}), qy = (t, d) => gsap.quickTo(t, 'y', {duration: d, ease: 'power3.out'});
+  const layers = [
+    ['#photoInner', -14, -10, 1.2], ['#glowA', 40, 30, 2], ['#glowB', -30, 24, 2.4], ['.intro', 6, 4, 1.4],
+  ].map(([t, ax, ay, d]) => ({mx: qx(t, d), my: qy(t, d), ax, ay}));
+  addEventListener('mousemove', e => {
+    const nx = e.clientX / innerWidth - .5, ny = e.clientY / innerHeight - .5;
+    layers.forEach(l => { l.mx(nx * l.ax); l.my(ny * l.ay); });
+  });
+
+  // ===== Buttons: the inner shadow follows the cursor =====
+  document.querySelectorAll('.cta').forEach(b => {
+    b.addEventListener('mousemove', e => {
+      const r = b.getBoundingClientRect();
+      b.style.setProperty('--sx', (-((e.clientX - r.left) / r.width - .5) * 16).toFixed(1) + 'px');
+      b.style.setProperty('--sy', (-((e.clientY - r.top) / r.height - .5) * 12).toFixed(1) + 'px');
+      b.style.setProperty('--ga', 1);
+    });
+    b.addEventListener('mouseleave', () => { b.style.setProperty('--sx', '0px'); b.style.setProperty('--sy', '0px'); b.style.setProperty('--ga', 0); });
+  });
+
+  // ===== Headline: the blue follows the cursor (eased, per line) =====
+  const h1el = document.querySelector('h1'), spans = [...h1el.querySelectorAll('.line span')];
+  const pos = {x: 0, y: 0}, cur = {x: 0, y: 0};
+  h1el.addEventListener('mousemove', e => { pos.x = e.clientX; pos.y = e.clientY; });
+  h1el.addEventListener('mouseenter', e => { cur.x = pos.x = e.clientX; cur.y = pos.y = e.clientY; });
+  gsap.ticker.add(() => {
+    cur.x += (pos.x - cur.x) * .12; cur.y += (pos.y - cur.y) * .12;
+    spans.forEach(sp => { const r = sp.getBoundingClientRect(), k = r.width / sp.offsetWidth || 1;
+      sp.style.setProperty('--mx', ((cur.x - r.left) / k) + 'px'); sp.style.setProperty('--my', ((cur.y - r.top) / k) + 'px'); });
+  });
+})();
+</script>
+</body>
+</html>
