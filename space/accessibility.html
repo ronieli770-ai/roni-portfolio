@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>הצהרת נגישות · סטודיו רוני</title>
+<meta name="description" content="הצהרת הנגישות של אתר סטודיו רוני: מה נעשה כדי שהאתר יהיה נגיש, ואיך פונים אם משהו לא עובד.">
+<link rel="icon" href="assets/icon/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#050506;color:#fff;font-family:'IBM Plex Sans Hebrew',system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.7}
+  a{color:#FA9154}
+  a:focus-visible,button:focus-visible{outline:2px solid #FA9154;outline-offset:3px;border-radius:6px}
+  .top{display:flex;justify-content:space-between;align-items:center;padding:24px 6.771%}
+  .top img{height:44px;display:block}
+  .back{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px;border-radius:100px;border:1px solid rgba(250,145,84,.6);color:#fff;text-decoration:none;font-size:16px}
+  .back svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  main{max-width:820px;margin:0 auto;padding:40px 16px 100px}
+  .kick{display:block;color:#FA9154;font-size:16px;margin-bottom:10px}
+  h1{margin:0 0 30px;font-weight:400;font-size:clamp(38px,4.5vw,65px);line-height:1.1;background:linear-gradient(to right,#8da8cb,#fff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;padding-bottom:.08em}
+  h2{margin:44px 0 10px;font-weight:500;font-size:22px;line-height:1.3}
+  p,li{font-size:18px;color:rgba(255,255,255,.78)}
+  ul{padding-inline-start:22px;margin:8px 0}
+  li{margin:6px 0}
+  .card{margin-top:44px;padding:28px;border-radius:20px;background:rgba(255,255,255,.06)}
+  .card p{margin:4px 0}
+  .ltr{direction:ltr;unicode-bidi:isolate;font-family:'Roboto',sans-serif}
+  .upd{margin-top:40px;font-size:16px;color:rgba(255,255,255,.5)}
+  @media (max-width:860px){ .top{padding:18px 16px} .top img{height:38px} p,li{font-size:16px} }
+</style>
+</head>
+<body>
+<header class="top">
+  <a href="/" aria-label="חזרה לדף הבית"><img src="assets/logo-sm.webp" alt="סטודיו רוני" width="86" height="41"></a>
+  <a class="back" href="/"><span>חזרה לאתר</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
+</header>
+<main id="main">
+  <span class="kick">נגישות</span>
+  <h1>הצהרת נגישות</h1>
+
+  <p>חשוב לי שכל אחד יוכל להכיר את העבודה שלי וליצור קשר בקלות, כולל אנשים עם מוגבלות. האתר נבנה מתוך כוונה לעמוד בדרישות תקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע"ג 2013, ובהנחיות התקן הישראלי 5568, שמבוסס על הנחיות WCAG 2.0 ברמה AA.</p>
+
+  <h2>מה נעשה באתר</h2>
+  <ul>
+    <li>האתר כתוב בעברית ובכיוון מימין לשמאל, עם מבנה כותרות מסודר.</li>
+    <li>אפשר לנווט בין הקישורים והכפתורים גם בעזרת המקלדת, ולכל רכיב פעיל יש סימון ברור כשמגיעים אליו.</li>
+    <li>לתמונות שמעבירות מידע יש טקסט חלופי, ולכפתורים עם אייקון בלבד יש תיאור לקוראי מסך.</li>
+    <li>הטקסט כתוב בצבע בהיר על רקע כהה, בניגודיות שנועדה לאפשר קריאה נוחה.</li>
+    <li>האתר מותאם לטלפון, לטאבלט ולמחשב, ואפשר להגדיל בו את הטקסט בעזרת הגדלת הדפדפן.</li>
+    <li>מי שהגדיר במכשיר שלו הפחתת תנועה, יקבל את רוב האנימציות באתר בגרסה שקטה יותר.</li>
+    <li>בטופס יצירת הקשר יש לכל שדה תיאור לקוראי מסך, והודעות השגיאה מוקראות.</li>
+  </ul>
+
+  <h2>מה עוד לא מושלם</h2>
+  <p>האתר מציג עבודות באמצעות סרטונים ואנימציות. לסרטונים אין קול ואין בהם מידע שלא מופיע גם בטקסט שלידם, אבל ייתכן שחלק מהאנימציות עדיין לא נוחות לכל משתמש. אני ממשיכה לשפר את האתר, ואם נתקלתם בחלק שלא נגיש לכם, אשמח לדעת ולתקן.</p>
+
+  <h2>נתקלתם בבעיה?</h2>
+  <p>אם משהו באתר לא עובד לכם, או שאתם צריכים מידע בדרך אחרת, אפשר לפנות אליי ישירות. אחזור אליכם בהקדם ואעזור.</p>
+  <div class="card">
+    <p><b>רכזת הנגישות:</b> רוני אליהו</p>
+    <p><b>טלפון:</b> <a class="ltr" href="tel:0502463500">050-2463500</a></p>
+    <p><b>מייל:</b> <a class="ltr" href="mailto:ronieli770@gmail.com">ronieli770@gmail.com</a></p>
+  </div>
+
+  <p class="upd">ההצהרה עודכנה בתאריך <span class="ltr">13.11.2026</span></p>
+</main>
+</body>
+</html>
