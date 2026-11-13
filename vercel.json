@@ -1,12 +1,59 @@
 {
   "outputDirectory": ".",
   "rewrites": [
-    { "source": "/", "has": [{ "type": "host", "value": "portfolio.ronieliyahu.co.il" }], "destination": "/space/jobs.html" },
-    { "source": "/campaigns", "has": [{ "type": "host", "value": "portfolio.ronieliyahu.co.il" }], "destination": "/space/campaigns.html" },
-    { "source": "/", "has": [{ "type": "host", "value": "space.ronieliyahu.co.il" }], "destination": "/space/index.html" },
-    { "source": "/", "destination": "/space/sites.html" },
-    { "source": "/admin", "destination": "/space/admin.html" },
-    { "source": "/thank-you", "destination": "/space/thank-you.html" },
-    { "source": "/:path((?!space/|api/).*)", "destination": "/space/:path" }
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "portfolio.ronieliyahu.co.il"
+        }
+      ],
+      "destination": "/space/jobs.html"
+    },
+    {
+      "source": "/campaigns",
+      "has": [
+        {
+          "type": "host",
+          "value": "portfolio.ronieliyahu.co.il"
+        }
+      ],
+      "destination": "/space/campaigns.html"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "space.ronieliyahu.co.il"
+        }
+      ],
+      "destination": "/space/index.html"
+    },
+    {
+      "source": "/",
+      "destination": "/space/sites.html"
+    },
+    {
+      "source": "/space-site",
+      "destination": "/space/index.html"
+    },
+    {
+      "source": "/old-site",
+      "destination": "/space/sites-old.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/space/admin.html"
+    },
+    {
+      "source": "/thank-you",
+      "destination": "/space/thank-you.html"
+    },
+    {
+      "source": "/:path((?!space/|api/).*)",
+      "destination": "/space/:path"
+    }
   ]
 }

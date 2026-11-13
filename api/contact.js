@@ -49,6 +49,26 @@ async function store(lead) {
   return true;
 }
 
+/* A WhatsApp note to Roni about the new lead, sent through Green-API from her
+   own linked WhatsApp to her own number. It only runs once the two keys are in
+   the project's environment, and a failure here never blocks the mail. */
+async function whatsapp(lead) {
+  const id = process.env.GREEN_API_ID, token = process.env.GREEN_API_TOKEN;
+  if (!id || !token) return;
+  const host = process.env.GREEN_API_HOST || 'https://api.green-api.com';
+  const to = (process.env.WA_NOTIFY_TO || '972502463500').replace(/\D/g, '');
+  const message = `*פנייה חדשה מהאתר*\nשם: ${lead.name}\nטלפון: ${lead.phone}` + (lead.business ? `\nעסק: ${lead.business}` : '') + (lead.goal ? `\n${lead.goal}` : '');
+  try {
+    const r = await fetch(`${host}/waInstance${id}/sendMessage/${token}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chatId: `${to}@c.us`, message }),
+      signal: AbortSignal.timeout ? AbortSignal.timeout(5000) : undefined,
+    });
+    if (!r.ok) console.error('green-api refused the whatsapp note:', r.status, await r.text());
+  } catch (err) { console.error('could not reach green-api:', err); }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -71,6 +91,7 @@ export default async function handler(req, res) {
     goal:     String(b.goal     || '').trim() || null,
   };
 
+  const wa = whatsapp(lead);
   let stored = false;
   try { stored = await store(lead); }
   catch (err) { console.error('could not reach the database:', err); }
@@ -82,7 +103,7 @@ export default async function handler(req, res) {
       <table style="border-collapse:collapse;width:100%;max-width:560px;font-size:15px">
         ${row('שם מלא', name)}
         ${row('טלפון', phone)}
-        ${row('שם העסק או אתר קיים', lead.business)}
+        ${row('שם העסק ותחום', lead.business)}
         ${row('תחום העסק', lead.field)}
         ${row('יעד האתר', lead.goal)}
       </table>
@@ -105,11 +126,14 @@ export default async function handler(req, res) {
          that it failed, so nothing about the account leaks into the page */
       console.error('resend rejected the message:', r.status, await r.text());
       /* a stored lead is not a lost one, so the visitor still gets a yes */
+      await wa;
       return stored ? res.status(200).json({ ok: true }) : res.status(502).json({ error: 'send_failed' });
     }
+    await wa;
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error('could not reach resend:', err);
+    await wa;
     return stored ? res.status(200).json({ ok: true }) : res.status(502).json({ error: 'send_failed' });
   }
 }
