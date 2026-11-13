@@ -1658,6 +1658,17 @@
   }
   /* phone: the whatsapp button steps aside while the process section fills the screen */
   @media (max-width:860px){ .fabs{transition:opacity .35s} html.in-proc .fabs{opacity:0;pointer-events:none} }
+  /* contact thank-you (13.11): what happens next, three steps in cards, so the wait before the call feels planned */
+  .ct-next{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:1100px;text-align:right}
+  .ct-next li{padding:28px 28px 30px;border-radius:20px;background:rgba(255,255,255,.06)}
+  .ct-next .n{display:block;font-family:'Roboto',sans-serif;font-weight:500;font-size:15px;color:#FA9154;direction:ltr;text-align:right}
+  .ct-next h3{margin:14px 0 0;font-weight:500;font-size:22px;line-height:1.2;color:#fff}
+  .ct-next p{margin:10px 0 0;font-size:16px;line-height:1.6;color:rgba(255,255,255,.7)}
+  @media (max-width:860px){
+    .ct-next{grid-template-columns:1fr;gap:12px;margin-top:8px}
+    .ct-next li{padding:20px 20px 22px}
+    .ct-next h3{margin-top:8px}
+  }
 </style>
 </head>
 <body>
@@ -1766,7 +1777,12 @@
     </div>
     <div class="ct-step" data-s="4">
       <div class="sec-t"><span class="sec-kick">הפרטים התקבלו</span><h2 class="grad" id="ct-thx">תודה!</h2></div>
-      <p class="ct-lead">תודה שהשארת פרטים. אחזור אליך באופן אישי בוואטסאפ בקרוב.</p>
+      <p class="ct-lead">תודה שהשארת פרטים. ככה זה ממשיך מכאן:</p>
+      <ol class="ct-next">
+        <li><span class="n">01</span><h3>הודעה בוואטסאפ</h3><p>תוך יום עסקים אשלח לך הודעה אישית, ונקבע זמן שנוח לך לשיחה.</p></li>
+        <li><span class="n">02</span><h3>שיחת היכרות קצרה</h3><p>כ-20 דקות על העסק, על הלקוחות שלך ועל מה שהאתר צריך להביא. בלי התחייבות.</p></li>
+        <li><span class="n">03</span><h3>הצעה מסודרת</h3><p>תקבל ממני הצעה עם מה שנבנה, לוח זמנים ומחיר סופי, כדי שתוכל להחליט בראש שקט.</p></li>
+      </ol>
     </div>
   </section>
   <footer class="sf">
