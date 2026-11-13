@@ -48,7 +48,7 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true
 renderer.setPixelRatio(DPR); renderer.setClearColor(0, 0);
 const scene = new THREE.Scene();
 const camera = new THREE.OrthographicCamera(0, 1, 0, 1, -4000, 4000);
-const imgs = await Promise.all(STEPS.map((_, i) => new Promise(res => { const im = new Image(); im.onload = () => res(im); im.src = 'assets/process-launch/web/step-' + (i + 1) + '.webp'; })));
+const imgs = await Promise.all(STEPS.map((_, i) => new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => { im.onerror = null; im.src += '?r=1'; }; im.src = 'assets/process-launch/' + (PHONE ? 'web-m' : 'web') + '/step-' + (i + 1) + '.webp'; })));
 const texs = imgs.map(im => { const t = new THREE.Texture(im); t.flipY = false; t.generateMipmaps = false; t.minFilter = t.magFilter = THREE.LinearFilter; t.colorSpace = THREE.NoColorSpace; t.needsUpdate = true; return t; });
 
 /* each particle carries its own square of the picture: at rest they tile edge to edge and are the picture, in motion they fly and glow */

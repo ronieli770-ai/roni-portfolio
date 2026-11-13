@@ -53,11 +53,25 @@ async function store(lead) {
    own linked WhatsApp to her own number. It only runs once the two keys are in
    the project's environment, and a failure here never blocks the mail. */
 async function whatsapp(lead) {
+  const to = (process.env.WA_NOTIFY_TO || '972502463500').replace(/\D/g, '');
+  const message = `*פנייה חדשה מהאתר*\nשם: ${lead.name}\nטלפון: ${lead.phone}` + (lead.business ? `\nעסק: ${lead.business}` : '') + (lead.goal ? `\n${lead.goal}` : '');
+
+  /* CallMeBot's free bot writes to her from its own number, so the note rings
+     like any message. It runs once CALLMEBOT_KEY (the key the bot replied with)
+     is in the project's environment, and takes the place of Green-API. */
+  const cmb = process.env.CALLMEBOT_KEY;
+  if (cmb) {
+    try {
+      const u = `https://api.callmebot.com/whatsapp.php?phone=%2B${to}&text=${encodeURIComponent(message)}&apikey=${encodeURIComponent(cmb)}`;
+      const r = await fetch(u, { signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined });
+      if (!r.ok) console.error('callmebot refused the whatsapp note:', r.status, await r.text());
+    } catch (err) { console.error('could not reach callmebot:', err); }
+    return;
+  }
+
   const id = process.env.GREEN_API_ID, token = process.env.GREEN_API_TOKEN;
   if (!id || !token) return;
   const host = process.env.GREEN_API_HOST || 'https://api.green-api.com';
-  const to = (process.env.WA_NOTIFY_TO || '972502463500').replace(/\D/g, '');
-  const message = `*פנייה חדשה מהאתר*\nשם: ${lead.name}\nטלפון: ${lead.phone}` + (lead.business ? `\nעסק: ${lead.business}` : '') + (lead.goal ? `\n${lead.goal}` : '');
   try {
     const r = await fetch(`${host}/waInstance${id}/sendMessage/${token}`, {
       method: 'POST',

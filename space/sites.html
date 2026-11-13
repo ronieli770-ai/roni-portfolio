@@ -1720,7 +1720,7 @@
 
   <section class="about" id="about">
     <div class="ab-glow" aria-hidden="true"><img class="g-line" src="assets/about-glow/line.svg" alt=""><img class="g-e1" src="assets/about-glow/ellipse1.svg" alt=""><img class="g-e2" src="assets/about-glow/ellipse2.svg" alt=""></div>
-    <div class="ph"><div class="fig"><picture><source media="(max-width:900px)" srcset="assets/jobs-portrait-m.webp"><img class="calm" src="assets/jobs-portrait.webp?v=2" alt="רוני אליהו" loading="lazy"></picture><picture><source media="(max-width:900px)" srcset="assets/jobs-portrait-smile-m.webp"><img class="smile" src="assets/jobs-portrait-smile.webp" alt="" loading="lazy"></picture></div></div>
+    <div class="ph"><div class="fig"><picture><source media="(max-width:900px)" srcset="assets/jobs-portrait-m.webp?v=3"><img class="calm" src="assets/jobs-portrait.webp?v=2" alt="רוני אליהו" fetchpriority="high"></picture><picture><source media="(max-width:900px)" srcset="assets/jobs-portrait-smile-m.webp?v=3"><img class="smile" src="assets/jobs-portrait-smile.webp" alt="" loading="lazy"></picture></div></div>
     <div class="af">
       <h2 class="af-t"><span class="af-a">נעים מאוד,</span> <span class="af-b">אני <b>רוני</b></span></h2>
       <p class="af-p1"><span class="t-d"><b>מי שמשווה</b> בין עסקים רואה אתרים שנראים אותו דבר. <b>בסוף הוא בוחר במי שהסביר לו הכי טוב.</b></span><span class="t-m"><b>מי שמשווה</b> בין עסקים רואה אתרים שנראים אותו דבר. <b>בסוף הוא בוחר במי שהסביר לו הכי טוב.</b></span></p>
@@ -1863,17 +1863,19 @@
   ];
   const projSections = [...document.querySelectorAll('#work .proj-section')];
   const pvVids = [];
+  /* phones get the 720px cuts of the clips and stills (about a fifth of the weight) */
+  const PV_M = matchMedia('(max-width:900px)').matches;
   PROJECTS.forEach((pr, i) => {
     const box = projSections[i] && projSections[i].querySelector('.pv');
     if (!box) return;
     box.innerHTML = '<div class="proj-grain"></div><div class="pf-copy"><span class="pf-brand"></span><h2 class="pf-title"></h2><div class="pf-body"></div>' +
       (pr.url ? '<a class="pf-cta" target="_blank" rel="noopener" href="' + pr.url + '">למעבר לפרוייקט</a>' : '') + '</div>' +
-      '<div class="pv-screen"' + (pr.ar ? ' style="aspect-ratio:' + pr.ar + '"' : '') + '><img src="work/pv/' + pr.v + '.jpg?v=6" alt="" decoding="async"><video muted playsinline loop preload="none"></video></div>';
+      '<div class="pv-screen"' + (pr.ar ? ' style="aspect-ratio:' + pr.ar + '"' : '') + '><img src="work/pv/' + pr.v + (PV_M ? '-m.webp?v=7' : '.jpg?v=6') + '" alt="" decoding="async" fetchpriority="' + (i ? 'auto' : 'high') + '"><video muted playsinline loop preload="none"></video></div>';
     box.querySelector('.pf-brand').textContent = pr.brand;
     box.querySelector('.pf-title').textContent = pr.title;
     box.querySelector('.pf-body').textContent = pr.body;
     const v = box.querySelector('video');
-    v.dataset.src = 'work/pv/' + pr.v + '.mp4?v=6';
+    v.dataset.src = 'work/pv/' + pr.v + (PV_M ? '-m.mp4?v=7' : '.mp4?v=6');
     v.addEventListener('playing', () => v.classList.add('on'));
     pvVids.push(v);
   });
@@ -1894,7 +1896,7 @@
   const near = new IntersectionObserver(es => es.forEach(e => {
     const v = e.target.querySelector('video'); if (!v || pvSeen.has(v)) return;
     if (e.isIntersecting){ pvSeen.add(v); pvQueue.unshift(v); pvNext(); }
-  }), { rootMargin:'60% 0px' });
+  }), { rootMargin: PV_M ? '200% 0px' : '60% 0px' });
   const inView = new IntersectionObserver(es => es.forEach(e => {
     const v = e.target.querySelector('video'); if (!v) return;
     if (e.isIntersecting){ pvLoad(v).then(() => v.play().catch(() => {})); } else v.pause();
@@ -2206,7 +2208,8 @@
     stV += ((stHover ? 0 : 22) - stV) * .06; stOff += stV * dt;
     const stPh = innerWidth <= 860, sdy = scrollY - stY; stY = scrollY;
     stB += (Math.abs(sdy) * 1.6 - stB) * .35; stOff += stB;
-    const stSk = Math.min(18, stB * .55), stBl = Math.min(6, stB * .16);
+    /* the stretch and blur are for phones only; on a computer the covers just speed up and stay sharp */
+    const stSk = stPh ? Math.min(18, stB * .55) : 0, stBl = stPh ? Math.min(6, stB * .16) : 0;
     if (scrollY < innerHeight * 1.2){
       const W = innerWidth, TW = stripCards[0].offsetWidth, step = TW + (W < 769 ? 14 : 24), span = stripCards.length * step;
       const R = W * (W < 769 ? 1.15 : .8);
@@ -2489,9 +2492,9 @@ if (window.Lenis && !matchMedia('(prefers-reduced-motion: reduce)').matches && m
   addEventListener('resize', () => { if (starsOn) initStars(); });
 })();
 </script>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js"}}</script>
 <script>
-new IntersectionObserver(function(es,o){ if(es[0].isIntersecting){ o.disconnect(); import('./js/process.js?v=11'); } },{rootMargin:'150% 0px'}).observe(document.getElementById('process'));
+new IntersectionObserver(function(es,o){ if(es[0].isIntersecting){ o.disconnect(); import('./js/process.js?v=12'); } },{rootMargin:'400% 0px'}).observe(document.getElementById('process'));
 </script>
 <script>
 /* button hover: fill from the cursor */
