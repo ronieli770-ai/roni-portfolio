@@ -1,4 +1,6 @@
-/* Takes a submission from the contact form, files it in the database and
+import { ready, putLead, newId } from './_store.js';
+
+/* Takes a submission from the contact form, files it in the lead database (api/_store.js) and
    mails it on through Resend. Both keys live in the project's environment
    variables and are read here, on Vercel's side, never in the browser. */
 
@@ -7,7 +9,6 @@ const TO = process.env.CONTACT_TO || 'ronieli770@gmail.com';
    inbox rather than in spam */
 const FROM = process.env.CONTACT_FROM || 'noreply@mail.ronieliyahu.co.il';
 
-const DB_URL = process.env.SUPABASE_URL || 'https://mgnvvtevbzepxnbkekpv.supabase.co';
 
 /* the values land inside an html mail, so they are escaped rather than trusted */
 const esc = v => String(v == null ? '' : v)
@@ -22,30 +23,12 @@ const row = (label, value) => value
      </tr>`
   : '';
 
-/* Files the lead away first, because a mail that fails can be resent from the
-   admin page, while a lead that was never stored is simply gone. */
+/* Files the lead away first, so it waits on the admin page even if the mail
+   fails. The database gets four seconds and then gets out of the way. */
 async function store(lead) {
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!key) { console.error('no supabase key, the lead was not stored'); return false; }
-
-  /* the free tier pauses a quiet project, and a paused one can leave the
-     request hanging rather than refusing it. the mail is what matters here,
-     so the filing gets four seconds and then gets out of the way. */
-  const bail = AbortSignal.timeout ? AbortSignal.timeout(4000) : undefined;
-
-  const r = await fetch(`${DB_URL}/rest/v1/leads`, {
-    method: 'POST',
-    headers: {
-      apikey: key,
-      Authorization: `Bearer ${key}`,
-      'Content-Type': 'application/json',
-      Prefer: 'return=minimal',
-    },
-    body: JSON.stringify(lead),
-    signal: bail,
-  });
-
-  if (!r.ok) { console.error('the database refused the lead:', r.status, await r.text()); return false; }
+  if (!ready()) { console.error('no lead database connected, the lead was not stored'); return false; }
+  const row = { id: newId(), created_at: new Date().toISOString(), status: 'new', notes: [], follow_up: null, value: null, ...lead };
+  await Promise.race([putLead(row), new Promise((_, no) => setTimeout(() => no(new Error('db timeout')), 4000))]);
   return true;
 }
 
@@ -103,6 +86,7 @@ export default async function handler(req, res) {
     business: String(b.business || '').trim() || null,
     field:    String(b.field    || '').trim() || null,
     goal:     String(b.goal     || '').trim() || null,
+    source:   String(b.source   || '').trim().slice(0, 300) || null,
   };
 
   const wa = whatsapp(lead);
@@ -120,6 +104,7 @@ export default async function handler(req, res) {
         ${row('שם העסק ותחום', lead.business)}
         ${row('תחום העסק', lead.field)}
         ${row('יעד האתר', lead.goal)}
+        ${row('הגיע מ', lead.source)}
       </table>
     </div>`;
 

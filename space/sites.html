@@ -2375,6 +2375,13 @@
     var k=btn.parentNode.dataset.k; f[k].value=btn.dataset.a;
     go(k==='need'?2:3); }); });
   document.querySelectorAll('#contact [data-back]').forEach(function(b){ b.addEventListener('click',function(){ if(cur>1) go(cur-1); }); });
+  /* where the visitor came from, for the admin page: the campaign tags of the first visit, or the site that sent them */
+  function leadSource(){ try{ var s=sessionStorage.getItem('lead-src'); if(s) return s; }catch(e){}
+    var q=new URLSearchParams(location.search), u=['utm_source','utm_medium','utm_campaign'].map(function(k){return q.get(k)}).filter(Boolean).join(' / ');
+    var r=''; try{ r=document.referrer?new URL(document.referrer).hostname:''; }catch(e){}
+    if(q.get('fbclid')&&!u) u='facebook'; if(q.get('gclid')&&!u) u='google ads';
+    return u||(r&&r.indexOf(location.hostname)<0?r:'')||'ישיר'; }
+  try{ if(!sessionStorage.getItem('lead-src')) sessionStorage.setItem('lead-src',leadSource()); }catch(e){}
   f.addEventListener('submit',function(e){
     e.preventDefault();
     var note=document.getElementById('cf-note'), name=f.name.value.trim();
@@ -2382,7 +2389,7 @@
     note.textContent='';
     var btn=f.querySelector('[type=submit]'); btn.disabled=true; btn.textContent='שולח...';
     fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name:name,phone:f.phone.value.trim(),business:f.business.value.trim(),goal:f.need.value+' · '+f.goal.value})})
+      body:JSON.stringify({name:name,phone:f.phone.value.trim(),business:f.business.value.trim(),goal:f.need.value+' · '+f.goal.value,source:leadSource()})})
     .then(function(r){ if(!r.ok) throw 0;
       document.getElementById('ct-thx').textContent='תודה, '+name.split(' ')[0]+'!'; go(4); })
     .catch(function(){ note.innerHTML='משהו לא עבד. אפשר לכתוב לי ישירות <a href="https://wa.me/972502463500?text=%D7%94%D7%99%D7%99%20%D7%A8%D7%95%D7%A0%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%A4%D7%A8%D7%98%D7%99%D7%9D%20%D7%A2%D7%9C%20%D7%90%D7%AA%D7%A8%20%D7%9C%D7%A2%D7%A1%D7%A7%20%D7%A9%D7%9C%D7%99" target="_blank" rel="noopener" style="color:#FA9154">בוואטסאפ</a>.'; })

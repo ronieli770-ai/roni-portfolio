@@ -2,106 +2,174 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>פניות מהאתר</title>
+<title>הלידים שלי</title>
+<link rel="icon" href="assets/logo-sm.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@400;500;600&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#0a0d18; --card:#141a2e; --line:#242c45; --ink:#eef1f8; --dim:#8b95b0;
-    --accent:#FA9154; --accent-2:#E0783C; --ok:#3ecf8e;
-  }
+  :root{--bg:#1d1d20;--deep:#121214;--card:rgba(255,255,255,.05);--card2:rgba(255,255,255,.08);--ink:#fff;--dim:#8C97A8;--soft:#C9D2DE;
+    --o1:#FA9154;--o2:#E0783C;--ok:#3ecf8e;--ease:cubic-bezier(.2,.8,.2,1)}
   *{box-sizing:border-box}
-  body{
-    margin:0;background:var(--bg);color:var(--ink);
-    font-family:'IBM Plex Sans Hebrew',system-ui,-apple-system,sans-serif;
-    font-size:15px;line-height:1.55;
-  }
-  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 80px}
+  html{background:var(--bg)}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Hebrew',system-ui,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .num{font-family:'Roboto',sans-serif;font-weight:500;direction:ltr;unicode-bidi:isolate}
+  button,input,select,textarea{font-family:'IBM Plex Sans Hebrew',system-ui,sans-serif;font-size:16px;color:var(--ink)}
+  button{cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  .hidden{display:none!important}
+  svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
-  /* ---------- gate ---------- */
-  #gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-  .gate-card{
-    width:100%;max-width:380px;background:var(--card);border:1px solid var(--line);
-    border-radius:16px;padding:30px 26px;
-  }
-  .gate-card h1{margin:0 0 4px;font-size:22px;font-weight:600}
-  .gate-card p{margin:0 0 22px;color:var(--dim);font-size:14px}
-  label{display:block;margin:0 0 6px;font-size:13px;color:var(--dim)}
-  input[type=email],input[type=password],input[type=search],textarea{
-    width:100%;background:#0e1424;border:1px solid var(--line);border-radius:9px;
-    padding:11px 13px;color:var(--ink);font-family:inherit;font-size:15px;
-  }
-  input:focus,textarea:focus{outline:none;border-color:var(--accent)}
-  .field{margin:0 0 16px}
-  button{
-    font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;
-    border:0;border-radius:9px;padding:11px 18px;color:#fff;
-    background:linear-gradient(to left,var(--accent-2),var(--accent));
-  }
-  button:disabled{opacity:.55;cursor:default}
-  button.ghost{background:none;border:1px solid var(--line);color:var(--dim);font-weight:500}
-  .err{margin:14px 0 0;color:#ff8080;font-size:14px;min-height:20px}
+  /* buttons: icon on the left of the label */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 20px;border:0;border-radius:100px;font-weight:500;white-space:nowrap;
+    background:var(--card2);color:var(--ink);transition:transform .3s var(--ease),background .2s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn.fill{background:linear-gradient(to left,var(--o2),var(--o1));color:#fff}
+  .btn.wa{background:#25D366;color:#fff}
+  .btn.sq{width:48px;padding:0}
+  .btn.sm{height:40px;padding:0 16px;font-size:15px}
+  .btn:disabled{opacity:.5;cursor:default;transform:none}
+  .field{width:100%;height:48px;padding:0 16px;border:0;border-radius:14px;background:var(--deep);outline:none}
+  .field:focus{box-shadow:0 0 0 2px rgba(250,145,84,.5)}
+  textarea.field{height:auto;min-height:96px;padding:12px 16px;resize:vertical;line-height:1.5}
 
-  /* ---------- head ---------- */
-  header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 22px}
-  header h1{margin:0;font-size:24px;font-weight:600}
-  .count{
-    background:var(--card);border:1px solid var(--line);border-radius:999px;
-    padding:5px 13px;font-size:13px;color:var(--dim)
-  }
-  .count b{color:var(--accent);font-weight:600}
-  .spacer{margin-inline-start:auto}
-  .tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 18px}
-  .tools input[type=search]{max-width:280px}
+  /* ---------- sign in ---------- */
+  #gate{min-height:100svh;display:grid;place-items:center;padding:20px;
+    background:radial-gradient(80% 60% at 50% 100%,rgba(224,120,60,.22),transparent 70%),var(--bg)}
+  .gate{width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px;text-align:center}
+  .gate img{width:110px;margin:0 auto 10px}
+  .gate h1{margin:0;font-weight:500;font-size:30px}
+  .gate p{margin:0;color:var(--dim)}
+  .gate .err{color:#ff9a8a;min-height:24px;font-size:15px}
 
-  /* ---------- cards ---------- */
-  .lead{
-    background:var(--card);border:1px solid var(--line);border-radius:14px;
-    padding:18px 20px;margin:0 0 12px;
+  /* ---------- page ---------- */
+  .wrap{max-width:1240px;margin:0 auto;padding:28px 24px 120px}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+  header img{width:72px}
+  header h1{margin:0 12px 0 0;font-weight:500;font-size:30px;flex:1}
+  .live{display:inline-flex;align-items:center;gap:6px;font-size:15px;color:var(--dim)}
+  .live i{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+  .stat{padding:20px 22px;border-radius:20px;background:var(--card)}
+  .stat .k{font-size:15px;color:var(--dim)}
+  .stat .v{display:block;margin-top:6px;font-size:38px;line-height:1;text-align:right}
+  .stat .s{display:block;margin-top:8px;font-size:15px;color:var(--soft)}
+  .stat.hot{background:linear-gradient(135deg,rgba(250,145,84,.22),rgba(224,74,33,.08))}
+  .stat.hot .v{color:var(--o1)}
+
+  .due{margin-bottom:24px;padding:20px 22px;border-radius:20px;background:rgba(250,145,84,.1)}
+  .due h2{margin:0 0 12px;font-weight:500;font-size:22px}
+  .due .row{display:flex;gap:10px;flex-wrap:wrap}
+  .chip-l{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:100px;background:var(--card2);font-size:15px}
+  .chip-l b{font-weight:500}
+  .chip-l .late{color:#ff9a8a}
+
+  .tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .tools .search{flex:1;min-width:220px;position:relative}
+  .tools .search svg{position:absolute;right:16px;top:14px;color:var(--dim)}
+  .tools .search .field{padding-right:46px}
+  .tools select.field{width:auto;min-width:150px;padding:0 14px;appearance:none;-webkit-appearance:none;cursor:pointer}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:18px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chips button{flex:none;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border:0;border-radius:100px;background:var(--card);color:var(--soft);font-size:15px}
+  .chips button.on{background:#fff;color:var(--bg)}
+  .chips button .num{font-size:14px;opacity:.7}
+
+  /* the leads: one card per lead, every text block on the same top line */
+  .list{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;align-items:start}
+  .lead{position:relative;display:flex;flex-direction:column;gap:12px;padding:20px 22px;border-radius:20px;background:var(--card);cursor:pointer;transition:background .2s,transform .3s var(--ease)}
+  .lead:hover{background:var(--card2);transform:translateY(-2px)}
+  .lead .top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .lead h3{margin:0;font-weight:500;font-size:22px;line-height:1.2}
+  .lead .when{font-size:15px;color:var(--dim);white-space:nowrap}
+  .lead .biz{font-size:16px;color:var(--soft)}
+  .lead .goal{font-size:15px;color:var(--dim)}
+  .lead .meta{display:flex;gap:8px;flex-wrap:wrap}
+  .tag{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:100px;font-size:15px;background:var(--card2);color:var(--soft)}
+  .tag svg{width:15px;height:15px}
+  .tag.fu-late{background:rgba(255,120,100,.16);color:#ffb3a6}
+  .tag.fu-today{background:rgba(250,145,84,.18);color:#FFC4A1}
+  .lead .acts{display:flex;gap:8px;margin-top:4px}
+  .lead.is-new::before{content:"";position:absolute;top:22px;left:-4px;width:8px;height:8px;border-radius:50%;background:var(--o1);box-shadow:0 0 0 4px rgba(250,145,84,.2)}
+
+  .st{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:100px;font-size:15px;white-space:nowrap}
+  .st::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+  .st-new{color:#FFC4A1;background:rgba(250,145,84,.16)}
+  .st-talking{color:#B9CCE4;background:rgba(141,168,203,.16)}
+  .st-call{color:#9FD6FF;background:rgba(125,198,255,.14)}
+  .st-offer{color:#F2D08C;background:rgba(242,208,140,.14)}
+  .st-won{color:#7EE2B5;background:rgba(62,207,142,.16)}
+  .st-lost{color:#9aa0ab;background:rgba(255,255,255,.07)}
+  .empty{grid-column:1/-1;padding:80px 20px;text-align:center;color:var(--dim)}
+
+  /* ---------- one lead, opened ---------- */
+  #veil{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .3s}
+  #veil.on{opacity:1;pointer-events:auto}
+  #pane{position:fixed;top:0;bottom:0;right:0;z-index:41;width:min(520px,100%);overflow-y:auto;background:var(--bg);box-shadow:-30px 0 80px rgba(0,0,0,.5);
+    translate:105% 0;transition:translate .45s var(--ease);padding:24px 24px 60px}
+  #pane.on{translate:0 0}
+  .p-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:6px}
+  .p-top h2{flex:1;margin:0;font-weight:500;font-size:30px;line-height:1.15}
+  .p-sub{color:var(--dim);font-size:15px;margin-bottom:20px}
+  .p-acts{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+  .sec{margin-bottom:24px}
+  .sec > .k{display:block;margin-bottom:10px;font-size:15px;color:var(--o1)}
+  .facts{display:grid;gap:10px}
+  .fact{padding:14px 16px;border-radius:14px;background:var(--card)}
+  .fact .k{font-size:15px;color:var(--dim)}
+  .fact .v{margin-top:2px;white-space:pre-wrap;overflow-wrap:anywhere}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .steps button{height:44px;border:0;border-radius:12px;background:var(--card);color:var(--soft);font-size:15px}
+  .steps button.on{background:#fff;color:var(--bg);font-weight:500}
+  .fu{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .fu .field{width:auto;flex:1;min-width:160px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .money{position:relative}
+  .money span{position:absolute;left:16px;top:12px;color:var(--dim)}
+  .money .field{padding-left:36px;font-family:'Roboto',sans-serif;direction:ltr;text-align:left}
+  .notes{display:grid;gap:10px;margin-top:12px}
+  .note{padding:12px 16px;border-radius:14px;background:var(--card)}
+  .note time{display:block;font-size:14px;color:var(--dim);margin-bottom:2px}
+  .note p{margin:0;white-space:pre-wrap}
+  .tpl{display:grid;gap:8px}
+  .tpl button{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:48px;padding:10px 16px;border:0;border-radius:14px;background:var(--card);color:var(--ink);text-align:right}
+  .tpl button svg{color:#25D366}
+  .del{margin-top:12px;background:none;border:0;color:#ff9a8a;font-size:15px;padding:8px 0}
+  .toast{position:fixed;left:50%;bottom:28px;z-index:60;translate:-50% 20px;opacity:0;padding:12px 20px;border-radius:100px;background:#fff;color:var(--bg);font-weight:500;transition:.3s var(--ease);pointer-events:none}
+  .toast.on{translate:-50% 0;opacity:1}
+
+  @media (max-width:900px){
+    .stats{grid-template-columns:repeat(2,1fr);gap:10px}
+    .stat{padding:16px 18px}
+    .stat .v{font-size:30px}
   }
-  .lead.done{opacity:.5}
-  .lead-top{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
-  .who{font-size:18px;font-weight:600}
-  .when{color:var(--dim);font-size:13px}
-  .phone{
-    color:var(--accent);text-decoration:none;font-weight:600;
-    font-variant-numeric:tabular-nums;direction:ltr;display:inline-block
+  @media (max-width:600px){
+    .wrap{padding:18px 16px 100px}
+    header img{width:56px}
+    header h1{font-size:22px;margin-right:4px;white-space:nowrap}
+    .live{display:none}
+    header .btn.lbl span{display:none}
+    header .btn.lbl{width:48px;padding:0}
+    .list{grid-template-columns:1fr}
+    .tools select.field{flex:1}
+    #pane{padding:18px 16px 60px}
+    .steps{grid-template-columns:repeat(2,1fr)}
   }
-  .phone:hover{text-decoration:underline}
-  .grid{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:14px;margin:14px 0 0;align-items:start;
-  }
-  .cell{align-self:start}
-  .cell .k{color:var(--dim);font-size:12px;margin:0 0 3px}
-  .cell .v{white-space:pre-wrap;overflow-wrap:anywhere}
-  .row-actions{display:flex;gap:10px;align-items:center;margin:16px 0 0;flex-wrap:wrap}
-  .check{display:flex;align-items:center;gap:7px;color:var(--dim);font-size:14px;cursor:pointer;user-select:none}
-  .check input{width:16px;height:16px;accent-color:var(--ok);cursor:pointer}
-  .empty{color:var(--dim);text-align:center;padding:60px 0}
-  /* the gate is an id, so hiding it has to outrank it */
-  .hidden{display:none !important}
 </style>
 </head>
 <body>
 
 <!-- ---------- sign in ---------- -->
-<div id="gate">
-  <form class="gate-card" id="gate-form">
-    <h1>פניות מהאתר</h1>
-    <p>העמוד פרטי. התחברי כדי לראות את הפניות.</p>
-    <div class="field">
-      <label for="em">אימייל</label>
-      <input id="em" type="email" autocomplete="username" required>
-    </div>
-    <div class="field">
-      <label for="pw">סיסמה</label>
-      <input id="pw" type="password" autocomplete="current-password" required>
-    </div>
-    <button id="go" type="submit">כניסה</button>
+<div id="gate" class="hidden">
+  <form class="gate" id="gate-form">
+    <img src="assets/logo-sm.webp" alt="סטודיו רוני">
+    <h1>הלידים שלי</h1>
+    <p>העמוד פרטי. הכניסה בסיסמה.</p>
+    <input class="field" id="pw" type="password" autocomplete="current-password" placeholder="סיסמה" aria-label="סיסמה" required>
+    <button class="btn fill" id="go" type="submit">כניסה</button>
     <p class="err" id="gate-err"></p>
   </form>
 </div>
@@ -109,198 +177,258 @@
 <!-- ---------- the leads ---------- -->
 <div class="wrap hidden" id="app">
   <header>
-    <h1>פניות מהאתר</h1>
-    <span class="count" id="count"></span>
-    <span class="spacer"></span>
-    <button class="ghost" id="refresh" type="button">רענון</button>
-    <button class="ghost" id="out" type="button">יציאה</button>
+    <img src="assets/logo-sm.webp" alt="">
+    <h1>הלידים שלי</h1>
+    <span class="live" id="live"><i></i><span id="live-t">מעודכן</span></span>
+    <button class="btn sq" id="refresh" type="button" aria-label="רענון"><svg class="i" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg></button>
+    <button class="btn lbl" id="csv" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M5 20h14"/></svg><span>ייצוא לאקסל</span></button>
+    <button class="btn lbl" id="out" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M15 8l-4 4 4 4M11 12h9"/></svg><span>יציאה</span></button>
   </header>
 
-  <div class="tools">
-    <input type="search" id="q" placeholder="חיפוש לפי שם, טלפון או עסק">
-    <label class="check"><input type="checkbox" id="only-new"> רק שלא טופלו</label>
-  </div>
+  <section class="stats" id="stats"></section>
+  <section class="due hidden" id="due"><h2>לחזור אליהם היום</h2><div class="row" id="due-row"></div></section>
 
-  <div id="list"></div>
+  <div class="tools">
+    <div class="search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+      <input class="field" type="search" id="q" placeholder="חיפוש לפי שם, טלפון, עסק או הערה" aria-label="חיפוש"></div>
+    <select class="field" id="period" aria-label="תקופה">
+      <option value="0">כל הזמן</option><option value="7">7 ימים אחרונים</option><option value="30">30 ימים אחרונים</option><option value="90">3 חודשים אחרונים</option>
+    </select>
+    <select class="field" id="sort" aria-label="מיון">
+      <option value="new">החדשים קודם</option><option value="fu">לחזור בקרוב קודם</option><option value="value">הסכום הגבוה קודם</option>
+    </select>
+  </div>
+  <div class="chips" id="chips"></div>
+  <section class="list" id="list"></section>
 </div>
 
-<script>
-/* The public key below is meant to sit in a page - on its own it opens
-   nothing. The rows are guarded in the database, which hands leads only to a
-   signed in session belonging to the site's owner. */
-const DB  = 'https://mgnvvtevbzepxnbkekpv.supabase.co';
-const KEY = 'sb_publishable_BBieDuoczGZv9xduZ85t1A_WChRapHf';
+<div id="veil"></div>
+<aside id="pane" aria-hidden="true"></aside>
+<div class="toast" id="toast"></div>
 
+<script>
+const ST = [['new','חדש'],['talking','בטיפול'],['call','נקבעה שיחה'],['offer','נשלחה הצעה'],['won','נסגר'],['lost','לא רלוונטי']];
+const SL = Object.fromEntries(ST);
+const OPEN = ['new','talking','call','offer'];
 const $ = s => document.querySelector(s);
-const store = {
-  get: () => { try { return JSON.parse(localStorage.getItem('roni-admin') || 'null'); } catch (e) { return null; } },
-  set: s  => localStorage.setItem('roni-admin', JSON.stringify(s)),
-  clear:() => localStorage.removeItem('roni-admin'),
+const esc = v => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const IC = {
+  wa:'<svg class="i" viewBox="0 0 24 24"><path d="M4.5 19.5l1.2-3.6A8 8 0 1 1 8.4 18.6z"/><path d="M9.2 8.6c.2 2.6 2.6 5 5.2 5.3l1.1-1.2-1.8-.9-.7.6c-.9-.4-1.7-1.2-2.1-2.1l.6-.7-.9-1.8z"/></svg>',
+  tel:'<svg class="i" viewBox="0 0 24 24"><path d="M7 3.5h-2a1.5 1.5 0 0 0-1.5 1.6c.6 8 7.4 14.8 15.4 15.4A1.5 1.5 0 0 0 20.5 19v-2l-4-1.6-1.8 1.8a11 11 0 0 1-5.9-5.9L10.6 9.5 9 5.5z"/></svg>',
+  cal:'<svg class="i" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14" rx="3"/><path d="M8 3.5v4M16 3.5v4M4 10h16"/></svg>',
+  src:'<svg class="i" viewBox="0 0 24 24"><path d="M12 20s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="10" r="2.2"/></svg>',
+  x:'<svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>',
 };
 
-let session = store.get();
-let leads = [];
+let leads = [], filt = 'open', openId = null;
 
-/* ---------- talking to the database ---------- */
-
-async function auth(path, body) {
-  const r = await fetch(`${DB}/auth/v1/${path}`, {
-    method: 'POST',
-    headers: { apikey: KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  const data = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(data.error_description || data.msg || data.error || 'failed');
-  return data;
+/* ---------- talking to the server ---------- */
+async function call(method, body){
+  const r = await fetch('/api/admin', { method, headers:{'Content-Type':'application/json'}, credentials:'same-origin', body: body ? JSON.stringify(body) : undefined });
+  const d = await r.json().catch(() => ({}));
+  if (r.status === 401 && !(body && body.action === 'login')) { showGate(); throw new Error('signed_out'); }
+  if (!r.ok) throw new Error(d.error || 'failed');
+  return d;
 }
-
-/* a session that has aged out is renewed once, quietly, before giving up */
-async function api(path, opts = {}, retry = true) {
-  const r = await fetch(`${DB}/rest/v1/${path}`, {
-    ...opts,
-    headers: {
-      apikey: KEY,
-      Authorization: `Bearer ${session.access_token}`,
-      'Content-Type': 'application/json',
-      ...(opts.headers || {}),
-    },
-  });
-
-  if (r.status === 401 && retry && session.refresh_token) {
-    try {
-      session = await auth('token?grant_type=refresh_token', { refresh_token: session.refresh_token });
-      store.set(session);
-      return api(path, opts, false);
-    } catch (e) { signOut(); throw e; }
-  }
-  if (!r.ok) throw new Error(await r.text());
-  return r.status === 204 ? null : r.json();
-}
+const toast = t => { const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.k); toast.k = setTimeout(() => el.classList.remove('on'), 2200); };
 
 /* ---------- screens ---------- */
-
-function signOut() {
-  store.clear();
-  session = null;
-  $('#app').classList.add('hidden');
-  $('#gate').classList.remove('hidden');
-}
-
-function enter() {
-  $('#gate').classList.add('hidden');
-  $('#app').classList.remove('hidden');
-  load();
-}
+function showGate(){ $('#app').classList.add('hidden'); $('#gate').classList.remove('hidden'); closePane(); setTimeout(() => $('#pw').focus(), 50); }
+function showApp(){ $('#gate').classList.add('hidden'); $('#app').classList.remove('hidden'); }
 
 $('#gate-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const btn = $('#go');
-  btn.disabled = true;
-  $('#gate-err').textContent = '';
-  try {
-    session = await auth('token?grant_type=password', {
-      email: $('#em').value.trim(),
-      password: $('#pw').value,
-    });
-    store.set(session);
-    $('#pw').value = '';
-    enter();
-  } catch (err) {
-    $('#gate-err').textContent = 'האימייל או הסיסמה לא נכונים';
-  } finally {
-    btn.disabled = false;
-  }
+  e.preventDefault(); const b = $('#go'); b.disabled = true; $('#gate-err').textContent = '';
+  try { await call('POST', { action:'login', password: $('#pw').value }); $('#pw').value = ''; showApp(); load(); }
+  catch (err) { $('#gate-err').textContent = err.message === 'no_admin_password' ? 'עוד לא הוגדרה סיסמה לעמוד' : 'הסיסמה לא נכונה'; }
+  finally { b.disabled = false; }
 });
+$('#out').onclick = async () => { try { await call('POST', { action:'logout' }); } catch (e) {} showGate(); };
+$('#refresh').onclick = () => load(true);
+$('#q').oninput = render; $('#period').onchange = render; $('#sort').onchange = render;
 
-$('#out').addEventListener('click', signOut);
-$('#refresh').addEventListener('click', load);
-$('#q').addEventListener('input', render);
-$('#only-new').addEventListener('change', render);
-
-/* ---------- the list ---------- */
-
-async function load() {
-  $('#list').innerHTML = '<p class="empty">טוען...</p>';
+/* ---------- loading ---------- */
+async function load(loud){
   try {
-    leads = await api('leads?select=*&order=created_at.desc');
-    render();
+    const d = await call('GET'); showApp();
+    const before = new Set(leads.map(l => l.id));
+    leads = d.leads || [];
+    const fresh = before.size && leads.filter(l => !before.has(l.id)).length;
+    if (fresh) toast(fresh === 1 ? 'ליד חדש הגיע' : fresh + ' לידים חדשים הגיעו');
+    else if (loud) toast('הרשימה מעודכנת');
+    $('#live-t').textContent = 'מעודכן ' + new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
+    render(); if (openId) renderPane();
   } catch (err) {
-    $('#list').innerHTML = '<p class="empty">לא הצלחתי לטעון את הפניות</p>';
+    if (err.message === 'signed_out') return;
+    $('#list').innerHTML = '<p class="empty">' + (err.message === 'no_database' ? 'מאגר הלידים עוד לא מחובר לאתר' : 'לא הצלחתי לטעון את הלידים. נסי לרענן.') + '</p>';
   }
 }
+setInterval(() => { if (!document.hidden && !$('#app').classList.contains('hidden')) load(); }, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden && !$('#app').classList.contains('hidden')) load(); });
 
-const esc = v => String(v == null ? '' : v)
-  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+/* ---------- dates ---------- */
+const DAY = 864e5;
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+const addDays = n => { const d = new Date(Date.now() + n*DAY); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+const fmtDay = s => { const [y,m,d] = s.split('-'); return d + '.' + m; };
+function ago(iso){
+  const m = Math.round((Date.now() - new Date(iso)) / 6e4);
+  if (m < 1) return 'עכשיו'; if (m < 60) return 'לפני ' + m + ' דק׳';
+  const h = Math.round(m / 60); if (h < 24) return h === 1 ? 'לפני שעה' : 'לפני ' + h + ' שעות';
+  const d = Math.round(h / 24); if (d === 1) return 'אתמול'; if (d < 7) return 'לפני ' + d + ' ימים';
+  return new Date(iso).toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'2-digit'});
+}
+const fullDate = iso => new Date(iso).toLocaleString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+const status = l => l.status || 'new';
+const ils = n => '₪' + Number(n).toLocaleString('en-US');
+const intl = p => { const d = String(p).replace(/\D/g,''); return d.startsWith('972') ? d : '972' + d.replace(/^0/,''); };
+function fuTag(l){
+  if (!l.follow_up || !OPEN.includes(status(l))) return '';
+  const t = today(), cls = l.follow_up < t ? 'fu-late' : l.follow_up === t ? 'fu-today' : '';
+  const txt = l.follow_up < t ? 'באיחור, ' + fmtDay(l.follow_up) : l.follow_up === t ? 'לחזור היום' : 'לחזור ב-' + fmtDay(l.follow_up);
+  return '<span class="tag ' + cls + '">' + IC.cal + txt + '</span>';
+}
 
-const when = iso => new Date(iso).toLocaleString('he-IL',
-  { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+/* ---------- the overview ---------- */
+function renderStats(){
+  const now = Date.now(), wk = leads.filter(l => now - new Date(l.created_at) < 7*DAY).length;
+  const m0 = new Date(); m0.setDate(1); m0.setHours(0,0,0,0);
+  const month = leads.filter(l => new Date(l.created_at) >= m0);
+  const won = leads.filter(l => status(l) === 'won'), wonM = won.filter(l => new Date(l.updated_at || l.created_at) >= m0);
+  const fresh = leads.filter(l => status(l) === 'new').length;
+  const closed = leads.filter(l => ['won','lost'].includes(status(l))).length;
+  const rate = closed ? Math.round(won.length / closed * 100) : 0;
+  const sum = wonM.reduce((a, l) => a + (l.value || 0), 0);
+  $('#stats').innerHTML = `
+    <div class="stat hot"><span class="k">חדשים שלא טופלו</span><span class="v num">${fresh}</span><span class="s">מתוך ${leads.filter(l=>OPEN.includes(status(l))).length} פתוחים</span></div>
+    <div class="stat"><span class="k">הגיעו השבוע</span><span class="v num">${wk}</span><span class="s">${month.length} מתחילת החודש</span></div>
+    <div class="stat"><span class="k">נסגרו החודש</span><span class="v num">${wonM.length}</span><span class="s">${sum ? ils(sum) + ' בעסקאות' : 'עוד אין סכום'}</span></div>
+    <div class="stat"><span class="k">אחוז סגירה</span><span class="v num">${rate}%</span><span class="s">מתוך ${closed} לידים שהסתיימו</span></div>`;
+  const t = today(), due = leads.filter(l => l.follow_up && l.follow_up <= t && OPEN.includes(status(l)));
+  $('#due').classList.toggle('hidden', !due.length);
+  $('#due-row').innerHTML = due.map(l => `<button class="chip-l" type="button" data-open="${l.id}"><b>${esc(l.name)}</b>${l.follow_up < t ? '<span class="late">באיחור</span>' : ''}</button>`).join('');
+}
 
-/* israeli mobile numbers reach whatsapp in international form */
-const wa = p => '972' + String(p).replace(/\D/g,'').replace(/^0/,'');
+function renderChips(){
+  const c = k => k === 'all' ? leads.length : k === 'open' ? leads.filter(l => OPEN.includes(status(l))).length : leads.filter(l => status(l) === k).length;
+  const list = [['open','פתוחים'],['all','הכל']].concat(ST);
+  $('#chips').innerHTML = list.map(([k, t]) => `<button type="button" data-f="${k}" class="${filt === k ? 'on' : ''}">${t}<span class="num">${c(k)}</span></button>`).join('');
+}
 
-const cell = (k, v) => v
-  ? `<div class="cell"><div class="k">${k}</div><div class="v">${esc(v)}</div></div>`
-  : '';
-
-function render() {
-  const q = $('#q').value.trim().toLowerCase();
-  const onlyNew = $('#only-new').checked;
-
-  const shown = leads.filter(l => {
-    if (onlyNew && l.handled) return false;
+function shown(){
+  const q = $('#q').value.trim().toLowerCase(), days = +$('#period').value, sort = $('#sort').value;
+  let out = leads.filter(l => {
+    if (filt === 'open' && !OPEN.includes(status(l))) return false;
+    if (filt !== 'open' && filt !== 'all' && status(l) !== filt) return false;
+    if (days && Date.now() - new Date(l.created_at) > days * DAY) return false;
     if (!q) return true;
-    return [l.name, l.phone, l.business, l.field, l.goal]
-      .some(v => v && String(v).toLowerCase().includes(q));
+    return [l.name, l.phone, l.business, l.goal, l.source, ...(l.notes || []).map(n => n.text)].some(v => v && String(v).toLowerCase().includes(q));
   });
+  if (sort === 'fu') out.sort((a, b) => (a.follow_up || '9999').localeCompare(b.follow_up || '9999'));
+  if (sort === 'value') out.sort((a, b) => (b.value || 0) - (a.value || 0));
+  return out;
+}
 
-  const open = leads.filter(l => !l.handled).length;
-  $('#count').innerHTML = `<b>${open}</b> ממתינות, ${leads.length} בסך הכל`;
-
-  $('#list').innerHTML = shown.length ? shown.map(l => `
-    <article class="lead ${l.handled ? 'done' : ''}" data-id="${l.id}">
-      <div class="lead-top">
-        <span class="who">${esc(l.name)}</span>
-        <a class="phone" href="https://wa.me/${wa(l.phone)}" target="_blank" rel="noopener">${esc(l.phone)}</a>
-        <span class="spacer"></span>
-        <span class="when">${when(l.created_at)}</span>
-      </div>
-      <div class="grid">
-        ${cell('שם העסק או אתר קיים', l.business)}
-        ${cell('תחום העסק', l.field)}
-        ${cell('יעד האתר', l.goal)}
-      </div>
-      <div class="row-actions">
-        <label class="check">
-          <input type="checkbox" class="mark" ${l.handled ? 'checked' : ''}> טופל
-        </label>
+function render(){
+  renderStats(); renderChips();
+  const s = shown();
+  $('#list').innerHTML = s.length ? s.map(l => `
+    <article class="lead ${status(l) === 'new' ? 'is-new' : ''}" data-open="${l.id}">
+      <div class="top"><h3>${esc(l.name)}</h3><span class="when">${ago(l.created_at)}</span></div>
+      ${l.business ? `<div class="biz">${esc(l.business)}</div>` : ''}
+      ${l.goal ? `<div class="goal">${esc(l.goal)}</div>` : ''}
+      <div class="meta"><span class="st st-${status(l)}">${SL[status(l)]}</span>${fuTag(l)}${l.value ? `<span class="tag num">${ils(l.value)}</span>` : ''}${l.source ? `<span class="tag">${IC.src}${esc(l.source)}</span>` : ''}</div>
+      <div class="acts">
+        <a class="btn wa sm" href="https://wa.me/${intl(l.phone)}" target="_blank" rel="noopener" data-stop>${IC.wa}וואטסאפ</a>
+        <a class="btn sm" href="tel:${esc(l.phone)}" data-stop>${IC.tel}<span class="num">${esc(l.phone)}</span></a>
       </div>
     </article>`).join('')
-    : '<p class="empty">אין פניות להצגה</p>';
-
-  document.querySelectorAll('.mark').forEach(box => {
-    box.addEventListener('change', async e => {
-      const card = e.target.closest('.lead');
-      const id = card.dataset.id;
-      const handled = e.target.checked;
-      card.classList.toggle('done', handled);
-      const lead = leads.find(l => l.id === id);
-      if (lead) lead.handled = handled;
-      try {
-        await api(`leads?id=eq.${id}`, {
-          method: 'PATCH',
-          headers: { Prefer: 'return=minimal' },
-          body: JSON.stringify({ handled }),
-        });
-        render();
-      } catch (err) {
-        e.target.checked = !handled;
-        card.classList.toggle('done', !handled);
-      }
-    });
-  });
+    : `<p class="empty">${leads.length ? 'אין לידים שמתאימים לסינון הזה' : 'עוד לא הגיעו לידים. ברגע שמישהו ימלא את הטופס באתר, הוא יופיע כאן.'}</p>`;
 }
 
-if (session && session.access_token) enter();
+document.addEventListener('click', e => {
+  const f = e.target.closest('[data-f]'); if (f) { filt = f.dataset.f; render(); return; }
+  if (e.target.closest('[data-stop]')) return;
+  const o = e.target.closest('[data-open]'); if (o) { openId = o.dataset.open; renderPane(); openPane(); }
+});
+
+/* ---------- one lead ---------- */
+const veil = $('#veil'), pane = $('#pane');
+function openPane(){ veil.classList.add('on'); pane.classList.add('on'); pane.setAttribute('aria-hidden','false'); }
+function closePane(){ veil.classList.remove('on'); pane.classList.remove('on'); pane.setAttribute('aria-hidden','true'); openId = null; }
+veil.onclick = closePane;
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePane(); });
+
+const first = n => String(n || '').trim().split(/\s+/)[0];
+const TPL = l => [
+  ['פנייה ראשונה', `היי ${first(l.name)}, כאן רוני מסטודיו רוני 😊 קיבלתי את הפנייה שלך מהאתר. מתי נוח לך לשיחת היכרות קצרה של 20 דקות?`],
+  ['תזכורת עדינה', `היי ${first(l.name)}, רציתי לבדוק אם עוד רלוונטי לך לדבר על האתר. אשמח לקבוע שיחה קצרה מתי שנוח לך.`],
+  ['אחרי ההצעה', `היי ${first(l.name)}, רציתי לוודא שההצעה הגיעה ולשאול אם יש שאלות. אני כאן לכל דבר.`],
+];
+
+function renderPane(){
+  const l = leads.find(x => x.id === openId); if (!l) { closePane(); return; }
+  const s = status(l);
+  pane.innerHTML = `
+    <div class="p-top"><h2>${esc(l.name)}</h2><button class="btn sq" type="button" id="p-x" aria-label="סגירה">${IC.x}</button></div>
+    <div class="p-sub">השאיר פרטים ${fullDate(l.created_at)}</div>
+    <div class="p-acts">
+      <a class="btn wa" href="https://wa.me/${intl(l.phone)}" target="_blank" rel="noopener">${IC.wa}וואטסאפ</a>
+      <a class="btn" href="tel:${esc(l.phone)}">${IC.tel}<span class="num">${esc(l.phone)}</span></a>
+    </div>
+    <div class="sec"><span class="k">איפה זה עומד</span><div class="steps">${ST.map(([k, t]) => `<button type="button" data-st="${k}" class="${s === k ? 'on' : ''}">${t}</button>`).join('')}</div></div>
+    <div class="sec"><span class="k">מתי לחזור אליו</span><div class="fu">
+      <input class="field num" type="date" id="p-fu" value="${l.follow_up || ''}" aria-label="תאריך לחזור">
+      <button class="btn sm" type="button" data-fu="1">מחר</button><button class="btn sm" type="button" data-fu="3">בעוד 3 ימים</button><button class="btn sm" type="button" data-fu="7">בעוד שבוע</button>
+      ${l.follow_up ? '<button class="btn sm" type="button" data-fu="x">בלי תזכורת</button>' : ''}</div></div>
+    <div class="sec"><span class="k">סכום העסקה</span><div class="money"><span>₪</span><input class="field" id="p-val" inputmode="numeric" value="${l.value || ''}" placeholder="למשל 4500" aria-label="סכום העסקה"></div></div>
+    <div class="sec"><span class="k">מה הוא השאיר בטופס</span><div class="facts">
+      <div class="fact"><div class="k">טלפון</div><div class="v num" style="text-align:right">${esc(l.phone)}</div></div>
+      ${l.business ? `<div class="fact"><div class="k">העסק</div><div class="v">${esc(l.business)}</div></div>` : ''}
+      ${l.goal ? `<div class="fact"><div class="k">מה הוא צריך</div><div class="v">${esc(l.goal)}</div></div>` : ''}
+      ${l.source ? `<div class="fact"><div class="k">הגיע מ</div><div class="v">${esc(l.source)}</div></div>` : ''}
+    </div></div>
+    <div class="sec"><span class="k">הודעה מוכנה בוואטסאפ</span><div class="tpl">${TPL(l).map(([t, m], i) => `<button type="button" data-tpl="${i}"><span>${t}</span>${IC.wa}</button>`).join('')}</div></div>
+    <div class="sec"><span class="k">הערות</span>
+      <textarea class="field" id="p-note" placeholder="מה דיברנו, מה הוא ביקש, מה הצעד הבא"></textarea>
+      <div style="margin-top:10px"><button class="btn fill sm" type="button" id="p-add">שמירת הערה</button></div>
+      <div class="notes">${(l.notes || []).slice().reverse().map(n => `<div class="note"><time>${fullDate(n.t)}</time><p>${esc(n.text)}</p></div>`).join('')}</div>
+    </div>
+    <button class="del" type="button" id="p-del">מחיקת הליד</button>`;
+
+  $('#p-x').onclick = closePane;
+  pane.querySelectorAll('[data-st]').forEach(b => b.onclick = () => save({ status: b.dataset.st }, 'השלב עודכן'));
+  pane.querySelectorAll('[data-fu]').forEach(b => b.onclick = () => save({ follow_up: b.dataset.fu === 'x' ? null : addDays(+b.dataset.fu) }, 'התזכורת נשמרה'));
+  $('#p-fu').onchange = e => save({ follow_up: e.target.value || null }, 'התזכורת נשמרה');
+  $('#p-val').onchange = e => save({ value: e.target.value }, 'הסכום נשמר');
+  pane.querySelectorAll('[data-tpl]').forEach(b => b.onclick = () => {
+    const m = TPL(l)[+b.dataset.tpl][1];
+    window.open('https://wa.me/' + intl(l.phone) + '?text=' + encodeURIComponent(m), '_blank', 'noopener');
+    if (s === 'new') save({ status: 'talking' }, 'עבר לבטיפול');
+  });
+  $('#p-add').onclick = async () => {
+    const t = $('#p-note').value.trim(); if (!t) return;
+    try { const d = await call('POST', { action:'note', id:l.id, text:t }); swap(d.lead); toast('ההערה נשמרה'); } catch (e) { toast('לא הצלחתי לשמור'); }
+  };
+  $('#p-del').onclick = async () => {
+    if (!confirm('למחוק את ' + l.name + '? אי אפשר לבטל את זה.')) return;
+    try { await call('POST', { action:'delete', id:l.id }); leads = leads.filter(x => x.id !== l.id); closePane(); render(); toast('הליד נמחק'); } catch (e) { toast('לא הצלחתי למחוק'); }
+  };
+}
+function swap(lead){ leads = leads.map(x => x.id === lead.id ? lead : x); render(); renderPane(); }
+async function save(patch, msg){
+  try { const d = await call('POST', { action:'update', id:openId, patch }); swap(d.lead); toast(msg); } catch (e) { toast('לא הצלחתי לשמור'); }
+}
+
+/* ---------- export: opens in Excel with the Hebrew intact ---------- */
+$('#csv').onclick = () => {
+  const head = ['תאריך','שם','טלפון','עסק','מה צריך','הגיע מ','שלב','לחזור ב','סכום','הערות'];
+  const rows = shown().map(l => [fullDate(l.created_at), l.name, l.phone, l.business, l.goal, l.source, SL[status(l)], l.follow_up, l.value, (l.notes || []).map(n => n.text).join(' | ')]);
+  const csv = [head].concat(rows).map(r => r.map(v => '"' + String(v == null ? '' : v).replace(/"/g,'""') + '"').join(',')).join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type:'text/csv;charset=utf-8' }));
+  a.download = 'לידים-' + today() + '.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+
+load();
 </script>
 </body>
 </html>
