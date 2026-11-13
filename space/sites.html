@@ -2170,7 +2170,7 @@
      so the middle sits farther back and the sides read bigger. it runs on its own and stops while hovered */
   const stripEl = document.querySelector('.intro .strip'), stripCards = [...document.querySelectorAll('.strip a')];
   let stOff = 0, stV = 22, stLast = 0, stHover = false;
-  /* phones: the scroll speed feeds the carousel, so a quick scroll sends the covers rushing past, stretched and blurred like light speed */
+  /* the scroll speed feeds the carousel (desktop and phone), so a quick scroll sends the covers rushing past, stretched and blurred like light speed */
   let stY = scrollY, stB = 0;
   stripEl.addEventListener('mouseenter', () => stHover = true);
   stripEl.addEventListener('mouseleave', () => stHover = false);
@@ -2189,7 +2189,7 @@
     const dt = Math.min(.05, (now - (stLast || now)) / 1000); stLast = now;
     stV += ((stHover ? 0 : 22) - stV) * .06; stOff += stV * dt;
     const stPh = innerWidth <= 860, sdy = scrollY - stY; stY = scrollY;
-    stB += ((stPh ? Math.abs(sdy) * 1.6 : 0) - stB) * .35; stOff += stB;
+    stB += (Math.abs(sdy) * 1.6 - stB) * .35; stOff += stB;
     const stSk = Math.min(18, stB * .55), stBl = Math.min(6, stB * .16);
     if (scrollY < innerHeight * 1.2){
       const W = innerWidth, TW = stripCards[0].offsetWidth, step = TW + (W < 769 ? 14 : 24), span = stripCards.length * step;
