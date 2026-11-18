@@ -1051,6 +1051,8 @@
     <div class="pr-invite"><img src="assets/pr-invite.webp" alt=""></div>
   </div>
 </section>
+<!-- print - removed when the page is opened with ?tech (tech/SaaS roles, where print isn't relevant) -->
+<script>if (new URLSearchParams(location.search).has('tech')) { document.getElementById('g-print').remove(); document.querySelector('.gd-sec[data-gd="8"]').remove(); }</script>
 
   <section class="film" id="film" aria-label="רוני בסטודיו - סרטון">
     <div class="film-pin"><div class="film-stage"><video muted playsinline preload="none" aria-hidden="true"></video>
